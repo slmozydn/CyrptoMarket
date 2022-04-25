@@ -1,4 +1,4 @@
-package com.selim.cyrptomarket
+package com.selim.cyrptomarket.ui
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
