@@ -1,2 +1,2 @@
 rootProject.name = "CyrptoMarket"
-include ':app'
+include(":app")
