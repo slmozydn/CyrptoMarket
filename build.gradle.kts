@@ -18,6 +18,10 @@ allprojects {
   }
 }
 
+subprojects {
+  apply(from = rootProject.file("ktlint.gradle.kts"))
+}
+
 task("clean", Delete::class) {
   delete(rootProject.buildDir)
 }
