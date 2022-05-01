@@ -1,33 +1,35 @@
 val ktlint by configurations.creating
 
 dependencies {
-  ktlint("com.pinterest:ktlint:0.45.2") {
-    attributes {
-      attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+    ktlint("com.pinterest:ktlint:0.45.2") {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+        }
     }
-  }
-  // ktlint(project(":custom-ktlint-ruleset")) // in case of custom ruleset
+    // ktlint(project(":custom-ktlint-ruleset")) // in case of custom ruleset
 }
 
 val outputDir = "${project.buildDir}/reports/ktlint/"
 val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
 
 val ktlintCheck by tasks.creating(JavaExec::class) {
-  inputs.files(inputFiles)
-  outputs.dir(outputDir)
+    inputs.files(inputFiles)
+    outputs.dir(outputDir)
 
-  description = "Check Kotlin code style."
-  classpath = ktlint
-  mainClass.set("com.pinterest.ktlint.Main")
-  args = listOf("src/**/*.kt")
+    description = "Check Kotlin code style."
+    classpath = ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    args = listOf("src/**/*.kt")
 }
 
 val ktlintFormat by tasks.creating(JavaExec::class) {
-  inputs.files(inputFiles)
-  outputs.dir(outputDir)
+    inputs.files(inputFiles)
+    outputs.dir(outputDir)
 
-  description = "Fix Kotlin code style deviations."
-  classpath = ktlint
-  mainClass.set("com.pinterest.ktlint.Main")
-  args = listOf("-F", "src/**/*.kt")
+    description = "Fix Kotlin code style deviations."
+    classpath = ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    args = listOf("-F", "src/**/*.kt")
+    // jvmArgs = listOf("--add-opens", "java.base/java.lang=ALL-UNNAMED")
+    // jvmArgs = listOf("--add-opens", "java.base/java.util=ALL-UNNAMED", "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED")
 }
