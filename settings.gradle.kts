@@ -1,2 +1,2 @@
-rootProject.name = "CyrptoMarket"
+rootProject.name = "CryptoMarket"
 include(":app")

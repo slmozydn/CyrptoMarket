@@ -1,12 +1,12 @@
-package com.selim.cyrptomarket.ui
+package com.selim.cryptomarket.ui
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.selim.cyrptomarket.R
-import com.selim.cyrptomarket.databinding.FragmentHomeBinding
-import com.selim.cyrptomarket.util.viewBinding
+import com.selim.cryptomarket.R
+import com.selim.cryptomarket.databinding.FragmentHomeBinding
+import com.selim.cryptomarket.util.viewBinding
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 

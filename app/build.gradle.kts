@@ -10,7 +10,7 @@ android {
   compileSdk = 32
 
   defaultConfig {
-    applicationId = "com.selim.cyrptomarket"
+    applicationId = "com.selim.cryptomarket"
     minSdk = 23
     targetSdk = 32
     versionCode = 1

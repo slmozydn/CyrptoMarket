@@ -1,6 +1,6 @@
-package com.selim.cyrptomarket.service
+package com.selim.cryptomarket.service
 
-import com.selim.cyrptomarket.data.SearchResponse
+import com.selim.cryptomarket.data.SearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

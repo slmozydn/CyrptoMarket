@@ -1,6 +1,6 @@
-package com.selim.cyrptomarket.ui
+package com.selim.cryptomarket.ui
 
 import androidx.fragment.app.Fragment
-import com.selim.cyrptomarket.R
+import com.selim.cryptomarket.R
 
 class SearchFragment : Fragment(R.layout.fragment_search)

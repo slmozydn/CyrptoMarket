@@ -1,6 +1,6 @@
-package com.selim.cyrptomarket.di
+package com.selim.cryptomarket.di
 
-import com.selim.cyrptomarket.service.CryptoCurrencyService
+import com.selim.cryptomarket.service.CryptoCurrencyService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

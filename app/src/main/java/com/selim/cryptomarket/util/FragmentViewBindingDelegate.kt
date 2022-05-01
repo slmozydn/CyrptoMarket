@@ -1,4 +1,4 @@
-package com.selim.cyrptomarket.util
+package com.selim.cryptomarket.util
 
 import android.view.View
 import androidx.fragment.app.Fragment

@@ -1,4 +1,4 @@
-package com.selim.cyrptomarket
+package com.selim.cryptomarket
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
