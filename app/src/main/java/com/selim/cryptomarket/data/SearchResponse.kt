@@ -1,3 +1,3 @@
 package com.selim.cryptomarket.data
 
-data class SearchResponse(val coins: List<CoinResponse>)
+data class SearchResponse(val coins: List<CoinResult>)

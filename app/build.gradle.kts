@@ -43,6 +43,11 @@ dependencies {
   implementation("androidx.appcompat:appcompat:1.4.1")
   implementation("com.google.android.material:material:1.5.0")
   implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+  implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
+
+  // Glide
+  implementation("com.github.bumptech.glide:glide:4.13.0")
+  kapt("com.github.bumptech.glide:compiler:4.12.0")
 
   // Navigation
   implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
@@ -57,7 +62,7 @@ dependencies {
   kapt("com.google.dagger:hilt-compiler:2.41")
 
   // Network
-  implementation("com.squareup.okhttp3:okhttp:4.9.3")
+  implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
   implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
   // Test
