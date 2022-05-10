@@ -65,8 +65,12 @@ dependencies {
   implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
   implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
+  // Paging 3
+  implementation("androidx.paging:paging-runtime:3.1.1")
+
   // Test
   testImplementation("junit:junit:4.13.2")
   androidTestImplementation("androidx.test.ext:junit:1.1.3")
   androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+  testImplementation("androidx.paging:paging-common:3.1.1")
 }

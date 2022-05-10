@@ -1,17 +1,16 @@
-package com.selim.cryptomarket.ui
+package com.selim.cryptomarket.ui.home
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.databinding.FragmentHomeBinding
 import com.selim.cryptomarket.util.viewBinding
+import com.selim.cryptomarket.util.withLoadStateAdapters
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -28,16 +27,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun initUi() = with(binding) {
-        coinsRecyclerView.adapter = coinAdapter
+        coinsRecyclerView.apply {
+            adapter = coinAdapter.withLoadStateAdapters(
+                header = LoadingStateAdapter(coinAdapter::retry),
+                footer = LoadingStateAdapter(coinAdapter::retry)
+            )
+        }
     }
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.uiState.flowWithLifecycle(lifecycle).collect { uiState ->
-                if (uiState.error != null) {
-                    Toast.makeText(requireContext(), uiState.error.message, Toast.LENGTH_LONG).show()
-                }
-                coinAdapter.submitList(uiState.coins)
+            homeViewModel.coins.collectLatest {
+                coinAdapter.submitData(it)
             }
         }
     }

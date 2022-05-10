@@ -6,7 +6,7 @@
 
   <fragment
       android:id="@+id/homeFragment"
-      android:name="com.selim.cryptomarket.ui.HomeFragment"
+      android:name="com.selim.cryptomarket.ui.home.HomeFragment"
       android:label="HomeFragment" >
     <action
         android:id="@+id/action_homeFragment_to_searchFragment"
