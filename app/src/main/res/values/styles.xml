@@ -17,7 +17,7 @@
   </style>
 
   <style name="SearchViewTheme" parent="Widget.AppCompat.SearchView">
-    <item name="android:textSize">12sp</item>
+    <item name="android:textSize">@dimen/text_small</item>
   </style>
 
 </resources>

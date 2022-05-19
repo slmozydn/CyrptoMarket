@@ -37,29 +37,33 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         observeViewModel()
     }
 
-    private fun observeViewModel() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            searchViewModel.uiState.flowWithLifecycle(lifecycle).collectLatest { uiState ->
-                searchAdapter.submitList(uiState.searchResult)
-            }
+    private fun observeViewModel() = viewLifecycleOwner.lifecycleScope.launch {
+        searchViewModel.uiState.flowWithLifecycle(lifecycle).collectLatest { uiState ->
+            searchAdapter.submitList(uiState)
         }
     }
 
     private fun initUi() {
-        toolbarBinding = (requireActivity() as MainActivity).binding.toolbar
+        initToolbar()
         binding.searchRecyclerView.apply {
-            val gridLayoutManager = GridLayoutManager(requireContext(), 6)
+            val gridLayoutManager = GridLayoutManager(requireContext(), 2)
             gridLayoutManager.spanSizeLookup = object : SpanSizeLookup() {
                 override fun getSpanSize(position: Int) = when (searchAdapter.getItemViewType(position)) {
-                    R.layout.item_coin -> 6
-                    else -> 3
+                    R.layout.item_coin -> 2
+                    R.layout.item_title -> 2
+                    R.layout.item_loading -> 2
+                    R.layout.item_error -> 2
+                    else -> 1
                 }
             }
             layoutManager = gridLayoutManager
             setHasFixedSize(true)
             adapter = searchAdapter
         }
+    }
 
+    private fun initToolbar() {
+        toolbarBinding = (requireActivity() as MainActivity).binding.toolbar
         with(toolbarBinding) {
             searchViewModel.setQueryChanges(toolbarBinding.searchView.textChanges())
             searchView.setOnQueryTextFocusChangeListener { _, _ -> }

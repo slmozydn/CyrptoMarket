@@ -5,21 +5,32 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.selim.cryptomarket.R
-import com.selim.cryptomarket.data.SearchData
-import com.selim.cryptomarket.data.SearchData.CurrencyResponse
-import com.selim.cryptomarket.data.SearchData.NftResponse
+import com.selim.cryptomarket.ui.search.SearchItem.Currency
+import com.selim.cryptomarket.ui.search.SearchItem.Error
+import com.selim.cryptomarket.ui.search.SearchItem.Loading
+import com.selim.cryptomarket.ui.search.SearchItem.Nft
+import com.selim.cryptomarket.ui.search.SearchItem.Title
 import com.selim.cryptomarket.databinding.ItemCoinBinding
+import com.selim.cryptomarket.databinding.ItemErrorBinding
+import com.selim.cryptomarket.databinding.ItemLoadingBinding
 import com.selim.cryptomarket.databinding.ItemNftBinding
+import com.selim.cryptomarket.databinding.ItemTitleBinding
 import com.selim.cryptomarket.ui.search.SearchViewHolder.CoinViewHolder
+import com.selim.cryptomarket.ui.search.SearchViewHolder.ErrorViewHolder
+import com.selim.cryptomarket.ui.search.SearchViewHolder.LoadingViewHolder
 import com.selim.cryptomarket.ui.search.SearchViewHolder.NftViewHolder
+import com.selim.cryptomarket.ui.search.SearchViewHolder.TitleViewHolder
 
-class SearchAdapter : ListAdapter<SearchData, SearchViewHolder>(DiffCallback) {
+class SearchAdapter : ListAdapter<SearchItem, SearchViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             R.layout.item_coin -> CoinViewHolder(ItemCoinBinding.inflate(layoutInflater))
             R.layout.item_nft -> NftViewHolder(ItemNftBinding.inflate(layoutInflater))
+            R.layout.item_title -> TitleViewHolder(ItemTitleBinding.inflate(layoutInflater))
+            R.layout.item_loading -> LoadingViewHolder(ItemLoadingBinding.inflate(layoutInflater))
+            R.layout.item_error -> ErrorViewHolder(ItemErrorBinding.inflate(layoutInflater))
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -28,29 +39,35 @@ class SearchAdapter : ListAdapter<SearchData, SearchViewHolder>(DiffCallback) {
         val item = getItem(position)
 
         when (holder) {
-            is CoinViewHolder -> holder.bind(item as CurrencyResponse)
-            is NftViewHolder -> holder.bind(item as NftResponse)
+            is CoinViewHolder -> holder.bind(item as Currency)
+            is NftViewHolder -> holder.bind(item as Nft)
+            is TitleViewHolder -> holder.bind(item as Title)
+            is LoadingViewHolder -> {}
+            is ErrorViewHolder -> {}
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is CurrencyResponse -> R.layout.item_coin
-            is NftResponse -> R.layout.item_nft
+            is Loading -> R.layout.item_loading
+            is Error -> R.layout.item_error
+            is Currency -> R.layout.item_coin
+            is Nft -> R.layout.item_nft
+            is Title -> R.layout.item_title
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
-    object DiffCallback : DiffUtil.ItemCallback<SearchData>() {
-        override fun areItemsTheSame(oldItem: SearchData, newItem: SearchData) = when {
-            oldItem is CurrencyResponse && newItem is CurrencyResponse -> oldItem.id == newItem.id
-            oldItem is NftResponse && newItem is NftResponse -> oldItem.id == newItem.id
+    object DiffCallback : DiffUtil.ItemCallback<SearchItem>() {
+        override fun areItemsTheSame(oldItem: SearchItem, newItem: SearchItem) = when {
+            oldItem is Currency && newItem is Currency -> oldItem.currencyResponse.id == newItem.currencyResponse.id
+            oldItem is Nft && newItem is Nft -> oldItem.nftResponse.id == newItem.nftResponse.id
             else -> false
         }
 
-        override fun areContentsTheSame(oldItem: SearchData, newItem: SearchData) = when {
-            oldItem is CurrencyResponse && newItem is CurrencyResponse -> oldItem == newItem
-            oldItem is NftResponse && newItem is NftResponse -> oldItem == newItem
+        override fun areContentsTheSame(oldItem: SearchItem, newItem: SearchItem) = when {
+            oldItem is Currency && newItem is Currency -> oldItem == newItem
+            oldItem is Nft && newItem is Nft -> oldItem == newItem
             else -> false
         }
     }

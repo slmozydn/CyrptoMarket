@@ -2,7 +2,11 @@ package com.selim.cryptomarket.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.selim.cryptomarket.data.SearchData
+import com.selim.cryptomarket.ui.search.SearchItem.Currency
+import com.selim.cryptomarket.ui.search.SearchItem.Error
+import com.selim.cryptomarket.ui.search.SearchItem.Loading
+import com.selim.cryptomarket.ui.search.SearchItem.Nft
+import com.selim.cryptomarket.ui.search.SearchItem.Title
 import com.selim.cryptomarket.service.CryptoCurrencyService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -14,7 +18,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,8 +26,8 @@ class SearchViewModel @Inject constructor(
     private val cryptoCurrencyService: CryptoCurrencyService
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SearchUiState())
-    val uiState: StateFlow<SearchUiState> = _uiState
+    private val _uiState = MutableStateFlow<List<SearchItem>>(emptyList())
+    val uiState: StateFlow<List<SearchItem>> = _uiState
 
     @FlowPreview
     fun setQueryChanges(queryChanges: Flow<CharSequence?>) {
@@ -36,30 +39,29 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun searchCoins(searchString: String) {
-        _uiState.update { currentUiState -> currentUiState.copy(loading = true) }
         viewModelScope.launch {
+            _uiState.emit(listOf(Loading))
             try {
                 val response = cryptoCurrencyService.searchCoins(searchString)
-                _uiState.update { currentUiState ->
-                    val result = buildList {
-                        addAll(response.coins.take(RESULT_SIZE))
-                        addAll(response.nfts.filter { it.thumb != EMPTY_IMAGE_URL }.take(RESULT_SIZE))
+                val result = buildList {
+                    val coins = response.coins.take(RESULT_SIZE).map(::Currency)
+                    val nfts = response.nfts.filter { it.thumb != EMPTY_IMAGE_URL }.take(RESULT_SIZE).map(::Nft)
+
+                    if (coins.isNotEmpty()) {
+                        add(Title("Coins"))
+                        addAll(coins)
                     }
-                    currentUiState.copy(searchResult = result, loading = false)
+                    if (nfts.isNotEmpty()) {
+                        add(Title("Nfts"))
+                        addAll(nfts)
+                    }
                 }
+                _uiState.emit(result)
             } catch (exception: Exception) {
-                _uiState.update { currentUiState ->
-                    currentUiState.copy(error = exception, loading = false)
-                }
+                _uiState.emit(listOf(Error))
             }
         }
     }
-
-    data class SearchUiState(
-        val searchResult: List<SearchData> = emptyList(),
-        val loading: Boolean = false,
-        val error: Throwable? = null
-    )
 
     companion object {
         private const val EMPTY_IMAGE_URL = "missing_thumb.png"
