@@ -14,7 +14,9 @@
       android:theme="@style/Theme.CryptoMarket">
     <activity
         android:name="com.selim.cryptomarket.ui.MainActivity"
-        android:exported="true">
+        android:exported="true"
+        android:theme="@style/AppTheme"
+        >
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
 

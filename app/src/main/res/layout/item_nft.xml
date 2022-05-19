@@ -2,13 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="16dp"
+    android:padding="@dimen/spacing_medium"
     >
 
   <com.google.android.material.imageview.ShapeableImageView
-      android:id="@+id/coinImageView"
+      android:id="@+id/nftImageView"
       android:layout_width="60dp"
       android:layout_height="60dp"
       app:layout_constraintStart_toStartOf="parent"
@@ -19,23 +19,22 @@
       />
 
   <TextView
-      android:id="@+id/coinNameTextView"
+      android:id="@+id/nftNameTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/spacing_small"
-      app:layout_constraintStart_toEndOf="@+id/coinImageView"
-      app:layout_constraintTop_toTopOf="@+id/coinImageView"
+      app:layout_constraintStart_toEndOf="@+id/nftImageView"
+      app:layout_constraintTop_toTopOf="@+id/nftImageView"
       tools:text="Bitcoin"
       />
 
   <TextView
-      android:id="@+id/coinSymbolTextView"
+      android:id="@+id/nftSymbolTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/spacing_small"
-      android:layout_marginTop="@dimen/spacing_small"
-      app:layout_constraintStart_toEndOf="@+id/coinImageView"
-      app:layout_constraintTop_toBottomOf="@+id/coinNameTextView"
+      app:layout_constraintStart_toEndOf="@+id/nftImageView"
+      app:layout_constraintTop_toBottomOf="@+id/nftNameTextView"
       tools:text="BTC"
       />
 

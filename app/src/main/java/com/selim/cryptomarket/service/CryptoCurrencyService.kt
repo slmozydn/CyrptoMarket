@@ -1,7 +1,7 @@
 package com.selim.cryptomarket.service
 
 import com.selim.cryptomarket.data.CoinResponse
-import com.selim.cryptomarket.data.SearchResponse
+import com.selim.cryptomarket.data.SearchResult
 import com.selim.cryptomarket.ui.home.HomeViewModel.Companion.PAGE_SIZE
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -16,5 +16,5 @@ interface CryptoCurrencyService {
     ): List<CoinResponse>
 
     @GET("search")
-    suspend fun searchCoins(@Query("query") searchQuery: String): SearchResponse
+    suspend fun searchCoins(@Query("query") searchQuery: String): SearchResult
 }

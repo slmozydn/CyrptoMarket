@@ -15,13 +15,13 @@ class LoadingStateViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
 
     fun bind(loadState: LoadState, retry: () -> Unit) = with(binding) {
         if (loadState is LoadState.Error) {
-            errorMsg.text = loadState.error.localizedMessage
+            errorTextView.text = loadState.error.localizedMessage
         }
         retryButton.apply {
             setOnClickListener { retry() }
             isVisible = loadState is LoadState.Error
         }
-        errorMsg.isVisible = loadState is LoadState.Error
+        errorTextView.isVisible = loadState is LoadState.Error
         progressBar.isVisible = loadState is LoadState.Loading
     }
 }
