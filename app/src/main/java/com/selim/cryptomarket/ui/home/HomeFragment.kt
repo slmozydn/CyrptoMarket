@@ -2,15 +2,14 @@ package com.selim.cryptomarket.ui.home
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.databinding.FragmentHomeBinding
-import com.selim.cryptomarket.databinding.LayoutToolbarBinding
 import com.selim.cryptomarket.ui.MainActivity
+import com.selim.cryptomarket.ui.toolbar.ToolbarConfig
 import com.selim.cryptomarket.util.viewBinding
 import com.selim.cryptomarket.util.withLoadStateAdapters
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +22,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val binding: FragmentHomeBinding by viewBinding(FragmentHomeBinding::bind)
     private val homeViewModel: HomeViewModel by viewModels()
     private val coinAdapter = CoinAdapter()
-    private lateinit var toolbarBinding: LayoutToolbarBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,21 +44,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun initToolbar() {
-        toolbarBinding = (requireActivity() as MainActivity).binding.toolbar
+        val toolbarBinding = (requireActivity() as MainActivity).binding.toolbarLayout
+        val toolbarConfig = ToolbarConfig(searchVisible = true, settingsVisible = true, themeVisible = true)
+
         with(toolbarBinding) {
-            searchView.setQuery("", false)
-            searchView.setOnQueryTextFocusChangeListener { _, _ ->
-                val directions = HomeFragmentDirections.actionHomeFragmentToSearchFragment()
+            render(toolbarConfig)
+            onSearchViewClicked = {
+                val directions = HomeFragmentDirections.actionHomeToSearch()
                 findNavController().navigate(directions)
             }
-            settingsImageView.apply {
-                isVisible = true
-                setOnClickListener {
-                    val directions = HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
-                    findNavController().navigate(directions)
-                }
+            onSettingsClicked = {
+                val directions = HomeFragmentDirections.actionHomeToSettings()
+                findNavController().navigate(directions)
             }
-            themeImageView.isVisible = true
         }
     }
 

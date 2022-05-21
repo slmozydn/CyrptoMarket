@@ -9,10 +9,10 @@
       android:name="com.selim.cryptomarket.ui.home.HomeFragment"
       android:label="HomeFragment">
     <action
-        android:id="@+id/action_homeFragment_to_searchFragment"
+        android:id="@+id/action_home_to_search"
         app:destination="@id/searchFragment" />
     <action
-        android:id="@+id/action_homeFragment_to_settingsFragment"
+        android:id="@+id/action_home_to_settings"
         app:destination="@id/settingsFragment" />
   </fragment>
   <fragment
@@ -24,7 +24,7 @@
       android:name="com.selim.cryptomarket.ui.settings.SettingsFragment"
       android:label="SettingsFragment">
     <action
-        android:id="@+id/action_settingsFragment_to_settingsBottomSheetFragment"
+        android:id="@+id/action_settings_to_settingsBottomSheet"
         app:destination="@id/settingsBottomSheetFragment" />
 
   </fragment>

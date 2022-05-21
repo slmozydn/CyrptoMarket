@@ -7,7 +7,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.selim.cryptomarket.R
+import com.selim.cryptomarket.R.string
 import com.selim.cryptomarket.databinding.FragmentSettingsBinding
+import com.selim.cryptomarket.ui.MainActivity
+import com.selim.cryptomarket.ui.toolbar.ToolbarConfig
 import com.selim.cryptomarket.ui.settings.ChangeCurrencyBottomSheetFragment.Companion.ARG_CURRENCY
 import com.selim.cryptomarket.util.restart
 import com.selim.cryptomarket.util.viewBinding
@@ -30,6 +33,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
         initUi()
         observeBackStackEntry()
         observeViewModel()
@@ -39,9 +43,20 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         currencyLayout.apply {
             settingsValueTextView.text = currencyPreference
             root.setOnClickListener {
-                val directions = SettingsFragmentDirections.actionSettingsFragmentToSettingsBottomSheetFragment(currencyArg = currencyPreference)
+                val directions =
+                    SettingsFragmentDirections.actionSettingsToSettingsBottomSheet(currencyArg = currencyPreference)
                 findNavController().navigate(directions)
             }
+        }
+    }
+
+    private fun initToolbar() {
+        val toolbarBinding = (requireActivity() as MainActivity).binding.toolbarLayout
+        val toolbarConfig = ToolbarConfig(titleRes = string.settings_title, backButtonVisible = true)
+
+        with(toolbarBinding) {
+            render(toolbarConfig)
+            onBackButtonClicked = { findNavController().popBackStack() }
         }
     }
 

@@ -2,17 +2,17 @@ package com.selim.cryptomarket.ui.search
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.databinding.FragmentSearchBinding
-import com.selim.cryptomarket.databinding.LayoutToolbarBinding
 import com.selim.cryptomarket.ui.MainActivity
+import com.selim.cryptomarket.ui.toolbar.ToolbarConfig
 import com.selim.cryptomarket.util.textChanges
 import com.selim.cryptomarket.util.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,10 +29,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private val binding: FragmentSearchBinding by viewBinding(FragmentSearchBinding::bind)
     private val searchViewModel: SearchViewModel by viewModels()
     private val searchAdapter = SearchAdapter()
-    private lateinit var toolbarBinding: LayoutToolbarBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
         initUi()
         observeViewModel()
     }
@@ -44,7 +44,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     }
 
     private fun initUi() {
-        initToolbar()
         binding.searchRecyclerView.apply {
             val gridLayoutManager = GridLayoutManager(requireContext(), 2)
             gridLayoutManager.spanSizeLookup = object : SpanSizeLookup() {
@@ -63,12 +62,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     }
 
     private fun initToolbar() {
-        toolbarBinding = (requireActivity() as MainActivity).binding.toolbar
+        val toolbarBinding = (requireActivity() as MainActivity).binding.toolbarLayout
+        val toolbarConfig = ToolbarConfig(searchVisible = true, cancelTextVisible = true)
         with(toolbarBinding) {
-            searchViewModel.setQueryChanges(toolbarBinding.searchView.textChanges())
-            searchView.setOnQueryTextFocusChangeListener { _, _ -> }
-            themeImageView.isVisible = false
-            settingsImageView.isVisible = false
+            render(toolbarConfig)
+            searchViewModel.setQueryChanges(binding.searchView.textChanges())
+            onSearchViewClicked = {}
+            onCancelTextClicked = { findNavController().popBackStack() }
         }
     }
 }

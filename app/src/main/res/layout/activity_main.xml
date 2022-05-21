@@ -5,9 +5,13 @@
     android:layout_height="match_parent"
     >
 
-  <include
-      android:id="@+id/toolbar"
-      layout="@layout/layout_toolbar"
+  <com.selim.cryptomarket.ui.toolbar.ToolbarLayout
+      android:id="@+id/toolbarLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
       />
 
   <androidx.fragment.app.FragmentContainerView
@@ -19,7 +23,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/toolbar"
+      app:layout_constraintTop_toBottomOf="@+id/toolbarLayout"
       app:navGraph="@navigation/nav_graph"
       />
 

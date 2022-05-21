@@ -6,3 +6,8 @@ import androidx.viewbinding.ViewBinding
 
 fun <T : ViewBinding> Fragment.viewBinding(viewBindingFactory: (View) -> T) =
     FragmentViewBindingDelegate(this, viewBindingFactory)
+
+inline fun <T : ViewBinding> View.viewBinding(crossinline factory: (View) -> T) =
+    lazy(LazyThreadSafetyMode.NONE) {
+        factory(this)
+    }

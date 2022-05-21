@@ -1,62 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:background="@color/primary_color"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:paddingHorizontal="@dimen/spacing_large"
+    android:paddingVertical="@dimen/spacing_small"
     >
 
-  <androidx.constraintlayout.widget.ConstraintLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingStart="0dp"
-      android:paddingEnd="@dimen/spacing_large"
-      >
+  <ImageView
+      android:id="@+id/backButton"
+      android:layout_width="26dp"
+      android:layout_height="26dp"
+      android:layout_marginEnd="@dimen/spacing_small"
+      android:foreground="?android:attr/selectableItemBackground"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@drawable/icon_back"
+      tools:ignore="ContentDescription"
+      />
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
-        style="@style/SearchView"
-        android:layout_width="0dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="@dimen/spacing_small"
-        android:animateLayoutChanges="true"
-        android:theme="@style/SearchViewTheme"
-        app:iconifiedByDefault="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/themeImageView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:queryHint="@string/search"
-        app:searchIcon="@drawable/icon_search"
-        />
+  <TextView
+      android:id="@+id/titleTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/spacing_small"
+      android:textColor="@color/white"
+      android:textSize="@dimen/text_xlarge"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/backButton"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:text="Ayarlar"
+      />
+
+  <androidx.appcompat.widget.SearchView
+      android:id="@+id/searchView"
+      style="@style/SearchView"
+      android:layout_width="0dp"
+      android:layout_height="32dp"
+      android:layout_marginEnd="@dimen/spacing_small"
+      android:animateLayoutChanges="true"
+      android:theme="@style/SearchViewTheme"
+      app:iconifiedByDefault="false"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/rightGroup"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:queryHint="@string/search"
+      app:searchIcon="@drawable/icon_search"
+      />
+
+  <LinearLayout
+      android:id="@+id/rightGroup"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      >
 
     <ImageView
         android:id="@+id/themeImageView"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         android:layout_marginEnd="@dimen/spacing_small"
         android:foreground="?android:attr/selectableItemBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/settingsImageView"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/icon_night"
         tools:ignore="ContentDescription"
         />
 
     <ImageView
         android:id="@+id/settingsImageView"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         android:foreground="?android:attr/selectableItemBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/icon_settings"
         tools:ignore="ContentDescription"
         />
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:id="@+id/cancelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:text="İptal Et"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_medium"
+        android:textStyle="bold"
+        android:visibility="gone"
+        />
+  </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
