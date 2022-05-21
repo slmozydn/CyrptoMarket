@@ -10,7 +10,6 @@ interface CryptoCurrencyService {
 
     @GET("coins/markets")
     suspend fun fetchCoins(
-        @Query("vs_currency") currency: String = "usd",
         @Query("page") page: Int,
         @Query("per_page") perPage: Int = PAGE_SIZE
     ): List<CoinResponse>

@@ -12,6 +12,7 @@ class CoinViewHolder(private val binding: ItemCoinBinding) : RecyclerView.ViewHo
 
         coinNameTextView.text = coin.name
         coinSymbolTextView.text = coin.symbol
+        priceTextView.text = coin.currentPrice.toString()
         coinImageView.load(coin.image)
     }
 }

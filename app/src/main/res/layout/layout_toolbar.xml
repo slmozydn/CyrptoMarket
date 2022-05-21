@@ -21,36 +21,40 @@
         style="@style/SearchView"
         android:layout_width="0dp"
         android:layout_height="32dp"
+        android:layout_marginEnd="@dimen/spacing_small"
         android:animateLayoutChanges="true"
         android:theme="@style/SearchViewTheme"
-        app:closeIcon="@null"
         app:iconifiedByDefault="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/themeImageView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:queryHint="@string/search"
+        app:searchIcon="@drawable/icon_search"
         />
 
     <ImageView
         android:id="@+id/themeImageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="@dimen/spacing_small"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/settingsImageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_foreground"
+        app:srcCompat="@drawable/icon_night"
         tools:ignore="ContentDescription"
         />
 
     <ImageView
         android:id="@+id/settingsImageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_foreground"
+        app:srcCompat="@drawable/icon_settings"
         tools:ignore="ContentDescription"
         />
 

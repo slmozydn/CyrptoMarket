@@ -4,6 +4,8 @@
     <item name="colorPrimary">@color/primary_color</item>
     <item name="colorPrimaryDark">@color/primary_dark_color</item>
     <item name="colorAccent">@color/accent_color</item>
+
+    <item name="bottomSheetDialogTheme">@style/RoundedBottomSheetDialog</item>
   </style>
 
   <style name="RoundedImageView">
@@ -18,6 +20,15 @@
 
   <style name="SearchViewTheme" parent="Widget.AppCompat.SearchView">
     <item name="android:textSize">@dimen/text_small</item>
+  </style>
+
+  <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+    <item name="android:background">@drawable/background_bottom_sheet</item>
+  </style>
+
+  <style name="RoundedBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+    <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    <item name="android:windowIsFloating">false</item>
   </style>
 
 </resources>

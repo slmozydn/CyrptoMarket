@@ -53,7 +53,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 val directions = HomeFragmentDirections.actionHomeFragmentToSearchFragment()
                 findNavController().navigate(directions)
             }
-            settingsImageView.isVisible = true
+            settingsImageView.apply {
+                isVisible = true
+                setOnClickListener {
+                    val directions = HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
+                    findNavController().navigate(directions)
+                }
+            }
             themeImageView.isVisible = true
         }
     }

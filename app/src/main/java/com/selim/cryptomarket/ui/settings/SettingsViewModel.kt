@@ -1,0 +1,28 @@
+package com.selim.cryptomarket.ui.settings
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+    private val currencyDataStore: CurrencyDataStore
+) : ViewModel() {
+
+    private val _onSettingsChanged = MutableSharedFlow<Unit>(replay = 1)
+    val onSettingsChanged: Flow<Unit> = _onSettingsChanged
+
+    fun onCurrencySelected(currencyCode: String) {
+        viewModelScope.launch() {
+            if (currencyCode == currencyDataStore.currencyCode.first()) return@launch
+
+            currencyDataStore.selectCurrencyPreference(currencyCode)
+            _onSettingsChanged.emit(Unit)
+        }
+    }
+}

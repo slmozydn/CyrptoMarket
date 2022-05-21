@@ -1,6 +1,7 @@
 package com.selim.cryptomarket.di
 
 import com.selim.cryptomarket.service.CryptoCurrencyService
+import com.selim.cryptomarket.ui.settings.CurrencyDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,15 +34,23 @@ object NetworkModule {
     @Singleton
     fun provideCryptoCurrencyService(retrofit: Retrofit) = retrofit.create(CryptoCurrencyService::class.java)
 
-    @Singleton
     @Provides
-    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor) = OkHttpClient.Builder()
-        .addInterceptor(httpLoggingInterceptor)
-        .build()
-
     @Singleton
-    @Provides
     fun provideHttpLoggingInterceptor() = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.HEADERS)
     }
+
+    @Provides
+    @Singleton
+    fun provideCurrencyInterceptor(currencyDataStore: CurrencyDataStore) = CurrencyInterceptor(currencyDataStore)
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        currencyInterceptor: CurrencyInterceptor
+    ) = OkHttpClient.Builder()
+        .addInterceptor(httpLoggingInterceptor)
+        .addInterceptor(currencyInterceptor)
+        .build()
 }

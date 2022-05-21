@@ -39,4 +39,15 @@
       tools:text="BTC"
       />
 
+  <TextView
+      android:id="@+id/priceTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/spacing_small"
+      android:layout_marginTop="@dimen/spacing_small"
+      app:layout_constraintStart_toEndOf="@+id/coinImageView"
+      app:layout_constraintTop_toBottomOf="@+id/coinSymbolTextView"
+      tools:text="52.465 $"
+      />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

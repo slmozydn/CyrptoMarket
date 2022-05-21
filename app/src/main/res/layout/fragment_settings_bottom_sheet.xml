@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingVertical="@dimen/spacing_large"
+    >
+
+  <TextView
+      android:id="@+id/usdTextView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:foreground="?android:attr/selectableItemBackground"
+      android:gravity="center_vertical"
+      android:paddingHorizontal="@dimen/spacing_large"
+      android:paddingVertical="@dimen/spacing_small"
+      android:text="USD $"
+      android:textSize="@dimen/text_medium"
+      />
+
+  <TextView
+      android:id="@+id/euroTextView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginVertical="@dimen/spacing_medium"
+      android:foreground="?android:attr/selectableItemBackground"
+      android:gravity="center_vertical"
+      android:paddingHorizontal="@dimen/spacing_large"
+      android:paddingVertical="@dimen/spacing_small"
+      android:text="EUR €"
+      android:textSize="@dimen/text_medium"
+      />
+
+  <TextView
+      android:id="@+id/tryTextView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:foreground="?android:attr/selectableItemBackground"
+      android:gravity="center_vertical"
+      android:paddingHorizontal="@dimen/spacing_large"
+      android:paddingVertical="@dimen/spacing_small"
+      android:text="TRY ₺"
+      android:textSize="@dimen/text_medium"
+      />
+
+</LinearLayout>
