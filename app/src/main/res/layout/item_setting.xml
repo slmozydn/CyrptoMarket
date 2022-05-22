@@ -12,8 +12,11 @@
       android:id="@+id/settingsNameTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:drawablePadding="@dimen/spacing_small"
       android:text="Para Birimi"
       android:textColor="@color/black"
+      android:textStyle="bold"
+      app:drawableLeftCompat="@drawable/icon_dollar"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       />

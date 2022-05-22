@@ -5,12 +5,13 @@ import androidx.viewbinding.ViewBinding
 import com.selim.cryptomarket.ui.search.SearchItem.Currency
 import com.selim.cryptomarket.ui.search.SearchItem.Nft
 import com.selim.cryptomarket.ui.search.SearchItem.Title
-import com.selim.cryptomarket.databinding.ItemCoinBinding
+import com.selim.cryptomarket.databinding.ItemCoinSearchBinding
 import com.selim.cryptomarket.databinding.ItemErrorBinding
 import com.selim.cryptomarket.databinding.ItemLoadingBinding
 import com.selim.cryptomarket.databinding.ItemNftBinding
 import com.selim.cryptomarket.databinding.ItemTitleBinding
 import com.selim.cryptomarket.util.load
+import com.selim.cryptomarket.util.formatMarketCap
 
 sealed class SearchViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -19,16 +20,17 @@ sealed class SearchViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(bi
     class ErrorViewHolder(binding: ItemErrorBinding) : SearchViewHolder(binding)
 
     class TitleViewHolder(private val binding: ItemTitleBinding) : SearchViewHolder(binding) {
-        fun bind(title: Title) {
-            binding.titleTextView.text = title.titleText
+        fun bind(title: Title) = with(binding) {
+            titleTextView.text = root.context.getString(title.titleResId)
         }
     }
 
-    class CoinViewHolder(private val binding: ItemCoinBinding) : SearchViewHolder(binding) {
+    class CoinViewHolder(private val binding: ItemCoinSearchBinding) : SearchViewHolder(binding) {
         fun bind(coin: Currency) = with(binding) {
             coinImageView.load(coin.currencyResponse.large)
             coinNameTextView.text = coin.currencyResponse.name
             coinSymbolTextView.text = coin.currencyResponse.symbol
+            marketCapTextView.text = coin.currencyResponse.marketCapRank.formatMarketCap()
         }
     }
 

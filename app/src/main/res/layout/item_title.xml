@@ -3,15 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_medium"
+    android:paddingHorizontal="@dimen/spacing_large"
     >
 
   <TextView
       android:id="@+id/titleTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/spacing_large"
+      android:textColor="@color/black"
       android:textSize="@dimen/text_xlarge"
+      android:textStyle="bold"
       tools:text="Title"
       />
 

@@ -37,7 +37,11 @@ class ChangeCurrencyBottomSheetFragment : BottomSheetDialogFragment() {
             TRY.value -> binding.tryTextView
             else -> binding.euroTextView
         }
-        selectedTextView.setTypeface(selectedTextView.typeface, Typeface.BOLD)
+        selectedTextView.apply {
+            setTextColor(context.getColor(R.color.black))
+            setTypeface(selectedTextView.typeface, Typeface.BOLD)
+            setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_gold_dot, 0, 0, 0);
+        }
 
         binding.usdTextView.setOnClickListener {
             navigateBack(USD)

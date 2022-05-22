@@ -10,7 +10,7 @@ import com.selim.cryptomarket.ui.search.SearchItem.Error
 import com.selim.cryptomarket.ui.search.SearchItem.Loading
 import com.selim.cryptomarket.ui.search.SearchItem.Nft
 import com.selim.cryptomarket.ui.search.SearchItem.Title
-import com.selim.cryptomarket.databinding.ItemCoinBinding
+import com.selim.cryptomarket.databinding.ItemCoinSearchBinding
 import com.selim.cryptomarket.databinding.ItemErrorBinding
 import com.selim.cryptomarket.databinding.ItemLoadingBinding
 import com.selim.cryptomarket.databinding.ItemNftBinding
@@ -26,7 +26,7 @@ class SearchAdapter : ListAdapter<SearchItem, SearchViewHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            R.layout.item_coin -> CoinViewHolder(ItemCoinBinding.inflate(layoutInflater))
+            R.layout.item_coin -> CoinViewHolder(ItemCoinSearchBinding.inflate(layoutInflater))
             R.layout.item_nft -> NftViewHolder(ItemNftBinding.inflate(layoutInflater))
             R.layout.item_title -> TitleViewHolder(ItemTitleBinding.inflate(layoutInflater))
             R.layout.item_loading -> LoadingViewHolder(ItemLoadingBinding.inflate(layoutInflater))

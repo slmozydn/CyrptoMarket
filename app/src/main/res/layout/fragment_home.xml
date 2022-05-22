@@ -4,14 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.selim.cryptomarket.ui.MainActivity"
     >
 
   <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/coinsRecyclerView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:layout_marginTop="@dimen/spacing_small"
+      android:background="@drawable/background_top_rounded"
       android:clipToPadding="false"
+      android:elevation="2dp"
       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
       tools:listitem="@layout/item_coin"
       />

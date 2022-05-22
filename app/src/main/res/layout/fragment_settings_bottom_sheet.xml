@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingVertical="@dimen/spacing_large"
+    android:paddingBottom="@dimen/spacing_large"
     >
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      app:srcCompat="@drawable/icon_bottom_sheet"
+      tools:ignore="ContentDescription"
+      />
 
   <TextView
       android:id="@+id/usdTextView"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:drawablePadding="@dimen/spacing_small"
       android:foreground="?android:attr/selectableItemBackground"
       android:gravity="center_vertical"
-      android:paddingHorizontal="@dimen/spacing_large"
-      android:paddingVertical="@dimen/spacing_small"
-      android:text="USD $"
-      android:textSize="@dimen/text_medium"
+      android:paddingHorizontal="24dp"
+      android:paddingVertical="@dimen/spacing_tiny"
+      android:text="@string/usd"
+      android:textSize="@dimen/text_large"
+      app:drawableStartCompat="@drawable/icon_white_dot"
       />
 
   <TextView
@@ -23,24 +35,28 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginVertical="@dimen/spacing_medium"
+      android:drawablePadding="@dimen/spacing_small"
       android:foreground="?android:attr/selectableItemBackground"
       android:gravity="center_vertical"
-      android:paddingHorizontal="@dimen/spacing_large"
-      android:paddingVertical="@dimen/spacing_small"
-      android:text="EUR €"
-      android:textSize="@dimen/text_medium"
+      android:paddingHorizontal="24dp"
+      android:paddingVertical="@dimen/spacing_tiny"
+      android:text="@string/eur"
+      android:textSize="@dimen/text_large"
+      app:drawableStartCompat="@drawable/icon_white_dot"
       />
 
   <TextView
       android:id="@+id/tryTextView"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:drawablePadding="@dimen/spacing_small"
       android:foreground="?android:attr/selectableItemBackground"
       android:gravity="center_vertical"
-      android:paddingHorizontal="@dimen/spacing_large"
-      android:paddingVertical="@dimen/spacing_small"
-      android:text="TRY ₺"
-      android:textSize="@dimen/text_medium"
+      android:paddingHorizontal="24dp"
+      android:paddingVertical="@dimen/spacing_tiny"
+      android:text="@string/tl"
+      android:textSize="@dimen/text_large"
+      app:drawableStartCompat="@drawable/icon_white_dot"
       />
 
 </LinearLayout>

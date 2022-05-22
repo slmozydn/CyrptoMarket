@@ -43,7 +43,7 @@
       />
 
   <TextView
-      android:id="@+id/volumeTextView"
+      android:id="@+id/marketCapTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="@dimen/spacing_small"
@@ -52,44 +52,6 @@
       app:layout_constraintBottom_toBottomOf="@+id/coinImageView"
       app:layout_constraintStart_toEndOf="@+id/coinImageView"
       tools:text="Hacim 669.81"
-      />
-
-  <View
-      android:layout_width="wrap_content"
-      android:layout_height="1dp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/priceTextView"
-      app:layout_constraintStart_toEndOf="@+id/volumeTextView"
-      app:layout_constraintTop_toTopOf="parent"
-      />
-
-  <TextView
-      android:id="@+id/priceTextView"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/spacing_small"
-      android:textColor="@color/black"
-      android:textStyle="bold"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/priceChangeTextView"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:text="52.465 $"
-      />
-
-  <TextView
-      android:id="@+id/priceChangeTextView"
-      android:layout_width="75dp"
-      android:layout_height="wrap_content"
-      android:background="@drawable/background_green"
-      android:gravity="center"
-      android:maxLength="6"
-      android:padding="@dimen/spacing_small"
-      android:textColor="@color/white"
-      android:textStyle="bold"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:text="+0.71%"
       />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

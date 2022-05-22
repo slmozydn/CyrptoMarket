@@ -1,6 +1,13 @@
 <resources>
   <string name="app_name">CryptoMarket</string>
-  <string name="search">Search</string>
-  <string name="settings_title">Settings</string>
-  <string name="search_error_message">Oops !</string>
+  <string name="search">Ara</string>
+  <string name="settings_title">Ayarlar</string>
+  <string name="coins">Coins</string>
+  <string name="nfts">Nfts</string>
+  <string name="cancel">İptal et</string>
+  <string name="volume">Hacim</string>
+  <string name="tl">TRY</string>
+  <string name="usd">USD</string>
+  <string name="eur">EUR</string>
+  <string name="search_error_message">Hata !</string>
 </resources>

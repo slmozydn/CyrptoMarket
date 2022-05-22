@@ -27,7 +27,7 @@ class CoinAdapter : PagingDataAdapter<CoinResponse, CoinViewHolder>(DiffCallback
         }
     }
 
-    object DiffCallback : DiffUtil.ItemCallback<CoinResponse>() {
+    companion object DiffCallback : DiffUtil.ItemCallback<CoinResponse>() {
         override fun areItemsTheSame(oldItem: CoinResponse, newItem: CoinResponse) = oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: CoinResponse, newItem: CoinResponse) = oldItem == newItem

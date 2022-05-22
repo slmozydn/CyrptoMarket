@@ -2,6 +2,7 @@ package com.selim.cryptomarket.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.selim.cryptomarket.R
 import com.selim.cryptomarket.ui.search.SearchItem.Currency
 import com.selim.cryptomarket.ui.search.SearchItem.Error
 import com.selim.cryptomarket.ui.search.SearchItem.Loading
@@ -44,15 +45,15 @@ class SearchViewModel @Inject constructor(
             try {
                 val response = cryptoCurrencyService.searchCoins(searchString)
                 val result = buildList {
-                    val coins = response.coins.take(RESULT_SIZE).map(::Currency)
-                    val nfts = response.nfts.filter { it.thumb != EMPTY_IMAGE_URL }.take(RESULT_SIZE).map(::Nft)
+                    val coins = response.coins.take(RESULT_COIN_SIZE).map(::Currency)
+                    val nfts = response.nfts.filter { it.thumb != EMPTY_IMAGE_URL }.take(RESULT_NFT_SIZE).map(::Nft)
 
                     if (coins.isNotEmpty()) {
-                        add(Title("Coins"))
+                        add(Title(R.string.coins))
                         addAll(coins)
                     }
                     if (nfts.isNotEmpty()) {
-                        add(Title("Nfts"))
+                        add(Title(R.string.nfts))
                         addAll(nfts)
                     }
                 }
@@ -65,7 +66,8 @@ class SearchViewModel @Inject constructor(
 
     companion object {
         private const val EMPTY_IMAGE_URL = "missing_thumb.png"
-        private const val RESULT_SIZE = 10
+        private const val RESULT_COIN_SIZE = 10
+        private const val RESULT_NFT_SIZE = 16
         private const val DEBOUNCE_MS = 400L
     }
 }

@@ -7,6 +7,6 @@ import com.selim.cryptomarket.R
 fun ImageView.load(url: String) {
     Glide.with(context)
         .load(url)
-        .placeholder(R.drawable.ic_launcher_foreground)
+        .placeholder(R.drawable.icon_loading)
         .into(this)
 }
