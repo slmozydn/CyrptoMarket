@@ -28,4 +28,5 @@ fun Double?.formatPrice(currencyCode: String? = null): String {
 
 fun Double?.formatVolume(): String = "Hacim ${this.formatPrice()}"
 
-fun Int.formatMarketCap(): String = "Market Cap ${this.toDouble().formatPrice()}"
+fun Int.formatMarketCap(): String = "Market Cap: $this"
+

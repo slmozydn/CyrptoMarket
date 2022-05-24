@@ -2,16 +2,18 @@ package com.selim.cryptomarket.ui.search
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.selim.cryptomarket.ui.search.SearchItem.Currency
-import com.selim.cryptomarket.ui.search.SearchItem.Nft
-import com.selim.cryptomarket.ui.search.SearchItem.Title
 import com.selim.cryptomarket.databinding.ItemCoinSearchBinding
 import com.selim.cryptomarket.databinding.ItemErrorBinding
 import com.selim.cryptomarket.databinding.ItemLoadingBinding
 import com.selim.cryptomarket.databinding.ItemNftBinding
 import com.selim.cryptomarket.databinding.ItemTitleBinding
-import com.selim.cryptomarket.util.load
+import com.selim.cryptomarket.databinding.ItemTrendingBinding
+import com.selim.cryptomarket.ui.search.SearchItem.Currency
+import com.selim.cryptomarket.ui.search.SearchItem.Nft
+import com.selim.cryptomarket.ui.search.SearchItem.Title
+import com.selim.cryptomarket.ui.search.SearchItem.Trending
 import com.selim.cryptomarket.util.formatMarketCap
+import com.selim.cryptomarket.util.load
 
 sealed class SearchViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -39,6 +41,16 @@ sealed class SearchViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(bi
             nftImageView.load(nft.nftResponse.thumb)
             nftNameTextView.text = nft.nftResponse.name
             nftSymbolTextView.text = nft.nftResponse.symbol
+        }
+    }
+
+    class TrendingViewHolder(private val binding: ItemTrendingBinding) : SearchViewHolder(binding) {
+        fun bind(trending: Trending) = with(binding) {
+            val item = trending.trendingResponse.trendingCoin
+            coinImageView.load(item.imageUrl)
+            coinNameTextView.text = item.name
+            coinSymbolTextView.text = item.symbol
+            marketCapTextView.text = item.marketCapRank.formatMarketCap()
         }
     }
 }

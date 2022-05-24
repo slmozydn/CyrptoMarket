@@ -48,11 +48,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             val gridLayoutManager = GridLayoutManager(requireContext(), 2)
             gridLayoutManager.spanSizeLookup = object : SpanSizeLookup() {
                 override fun getSpanSize(position: Int) = when (searchAdapter.getItemViewType(position)) {
-                    R.layout.item_coin -> 2
-                    R.layout.item_title -> 2
-                    R.layout.item_loading -> 2
-                    R.layout.item_error -> 2
-                    else -> 1
+                    R.layout.item_nft -> 1
+                    else -> 2
                 }
             }
             layoutManager = gridLayoutManager

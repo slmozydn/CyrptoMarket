@@ -15,11 +15,14 @@ import com.selim.cryptomarket.databinding.ItemErrorBinding
 import com.selim.cryptomarket.databinding.ItemLoadingBinding
 import com.selim.cryptomarket.databinding.ItemNftBinding
 import com.selim.cryptomarket.databinding.ItemTitleBinding
+import com.selim.cryptomarket.databinding.ItemTrendingBinding
+import com.selim.cryptomarket.ui.search.SearchItem.Trending
 import com.selim.cryptomarket.ui.search.SearchViewHolder.CoinViewHolder
 import com.selim.cryptomarket.ui.search.SearchViewHolder.ErrorViewHolder
 import com.selim.cryptomarket.ui.search.SearchViewHolder.LoadingViewHolder
 import com.selim.cryptomarket.ui.search.SearchViewHolder.NftViewHolder
 import com.selim.cryptomarket.ui.search.SearchViewHolder.TitleViewHolder
+import com.selim.cryptomarket.ui.search.SearchViewHolder.TrendingViewHolder
 
 class SearchAdapter : ListAdapter<SearchItem, SearchViewHolder>(DiffCallback) {
 
@@ -27,6 +30,7 @@ class SearchAdapter : ListAdapter<SearchItem, SearchViewHolder>(DiffCallback) {
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             R.layout.item_coin -> CoinViewHolder(ItemCoinSearchBinding.inflate(layoutInflater))
+            R.layout.item_trending -> TrendingViewHolder(ItemTrendingBinding.inflate(layoutInflater))
             R.layout.item_nft -> NftViewHolder(ItemNftBinding.inflate(layoutInflater))
             R.layout.item_title -> TitleViewHolder(ItemTitleBinding.inflate(layoutInflater))
             R.layout.item_loading -> LoadingViewHolder(ItemLoadingBinding.inflate(layoutInflater))
@@ -40,6 +44,7 @@ class SearchAdapter : ListAdapter<SearchItem, SearchViewHolder>(DiffCallback) {
 
         when (holder) {
             is CoinViewHolder -> holder.bind(item as Currency)
+            is TrendingViewHolder -> holder.bind(item as Trending)
             is NftViewHolder -> holder.bind(item as Nft)
             is TitleViewHolder -> holder.bind(item as Title)
             is LoadingViewHolder -> {}
@@ -52,6 +57,7 @@ class SearchAdapter : ListAdapter<SearchItem, SearchViewHolder>(DiffCallback) {
             is Loading -> R.layout.item_loading
             is Error -> R.layout.item_error
             is Currency -> R.layout.item_coin
+            is Trending -> R.layout.item_trending
             is Nft -> R.layout.item_nft
             is Title -> R.layout.item_title
             else -> throw IllegalArgumentException("Invalid view type")

@@ -4,6 +4,7 @@
   <string name="settings_title">Ayarlar</string>
   <string name="coins">Coins</string>
   <string name="nfts">Nfts</string>
+  <string name="trending">Trending</string>
   <string name="cancel">İptal et</string>
   <string name="retry">Tekrar Deneyin</string>
   <string name="currency">Para Birimi</string>
