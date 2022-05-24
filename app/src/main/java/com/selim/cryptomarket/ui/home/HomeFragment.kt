@@ -36,6 +36,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 footer = LoadingStateAdapter(coinAdapter::retry)
             )
         }
+        refreshLayout.setOnRefreshListener(coinAdapter::refresh)
     }
 
     private fun initToolbar(isDarkMode: Boolean) {
@@ -60,6 +61,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             homeViewModel.coins.collectLatest {
+                binding.refreshLayout.isRefreshing = false
                 coinAdapter.submitData(it)
             }
         }
