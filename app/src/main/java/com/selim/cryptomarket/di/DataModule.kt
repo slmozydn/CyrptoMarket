@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.selim.cryptomarket.ui.settings.CurrencyDataStore
+import com.selim.cryptomarket.ui.settings.SettingsDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,6 +20,6 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideCurrencyDataStore(@ApplicationContext context: Context) = CurrencyDataStore(context.settingsDataStore)
+    fun provideCurrencyDataStore(@ApplicationContext context: Context) = SettingsDataStore(context.settingsDataStore)
 
 }

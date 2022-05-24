@@ -25,11 +25,11 @@ import javax.inject.Inject
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     @Inject
-    lateinit var currencyDataStore: CurrencyDataStore
+    lateinit var settingsDataStore: SettingsDataStore
 
     private val binding: FragmentSettingsBinding by viewBinding(FragmentSettingsBinding::bind)
     private val settingsViewModel: SettingsViewModel by viewModels()
-    private val currencyPreference get() = runBlocking { currencyDataStore.currencyCode.first() }
+    private val currencyPreference get() = runBlocking { settingsDataStore.currencyCode.first() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

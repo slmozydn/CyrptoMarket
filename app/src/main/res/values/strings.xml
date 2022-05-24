@@ -5,6 +5,8 @@
   <string name="coins">Coins</string>
   <string name="nfts">Nfts</string>
   <string name="cancel">İptal et</string>
+  <string name="retry">Tekrar Deneyin</string>
+  <string name="currency">Para Birimi</string>
   <string name="volume">Hacim</string>
   <string name="tl">TRY</string>
   <string name="usd">USD</string>

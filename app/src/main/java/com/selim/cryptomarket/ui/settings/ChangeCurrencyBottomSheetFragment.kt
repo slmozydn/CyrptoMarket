@@ -38,7 +38,7 @@ class ChangeCurrencyBottomSheetFragment : BottomSheetDialogFragment() {
             else -> binding.euroTextView
         }
         selectedTextView.apply {
-            setTextColor(context.getColor(R.color.black))
+            setTextColor(context.getColor(R.color.tertiary_color))
             setTypeface(selectedTextView.typeface, Typeface.BOLD)
             setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_gold_dot, 0, 0, 0);
         }

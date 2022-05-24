@@ -1,7 +1,7 @@
 package com.selim.cryptomarket.di
 
 import com.selim.cryptomarket.service.CryptoCurrencyService
-import com.selim.cryptomarket.ui.settings.CurrencyDataStore
+import com.selim.cryptomarket.ui.settings.SettingsDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,7 +42,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideCurrencyInterceptor(currencyDataStore: CurrencyDataStore) = CurrencyInterceptor(currencyDataStore)
+    fun provideCurrencyInterceptor(settingsDataStore: SettingsDataStore) = CurrencyInterceptor(settingsDataStore)
 
     @Provides
     @Singleton

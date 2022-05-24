@@ -10,5 +10,6 @@ data class ToolbarConfig(
     val searchVisible: Boolean = false,
     val settingsVisible: Boolean = false,
     val themeVisible: Boolean = false,
-    val backButtonVisible: Boolean = false
+    val backButtonVisible: Boolean = false,
+    val isDarkMode: Boolean = false
 )

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="primary_color">@color/white</color>
-  <color name="primary_dark_color">@color/white_smoke</color>
+  <color name="primary_color">@color/baltic_sea</color>
+  <color name="primary_dark_color">@color/mirage</color>
   <color name="accent_color">@color/gold</color>
-  <color name="icon_color">#8F9BA7</color>
-  <color name="secondary_color">#888D91</color>
-  <color name="tertiary_color">@color/black</color>
-  <color name="background_search_view_color">@color/dawn_pink</color>
+  <color name="icon_color">#717887</color>
+  <color name="secondary_color">#9499A5</color>
+  <color name="tertiary_color">@color/white</color>
+  <color name="background_search_view_color">#343B46</color>
 
   <color name="white_smoke">#F5F5F5</color>
   <color name="white">#FFFFFF</color>
@@ -17,5 +17,5 @@
   <color name="mirage">#181E26</color>
   <color name="baltic_sea">#202630</color>
   <color name="black">#FF000000</color>
-  <color name="gray">#BAC3D0</color>
+  <color name="gray">#999999</color>
 </resources>

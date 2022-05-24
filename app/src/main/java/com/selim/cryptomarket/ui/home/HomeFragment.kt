@@ -29,11 +29,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         observeViewModel()
     }
 
-    override fun onResume() {
-        super.onResume()
-        initToolbar()
-    }
-
     private fun initUi() = with(binding) {
         coinsRecyclerView.apply {
             adapter = coinAdapter.withLoadStateAdapters(
@@ -43,9 +38,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
-    private fun initToolbar() {
+    private fun initToolbar(isDarkMode: Boolean) {
         val toolbarBinding = (requireActivity() as MainActivity).binding.toolbarLayout
-        val toolbarConfig = ToolbarConfig(searchVisible = true, settingsVisible = true, themeVisible = true)
+        val toolbarConfig =
+            ToolbarConfig(searchVisible = true, settingsVisible = true, themeVisible = true, isDarkMode = isDarkMode)
 
         with(toolbarBinding) {
             render(toolbarConfig)
@@ -57,12 +53,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 val directions = HomeFragmentDirections.actionHomeToSettings()
                 findNavController().navigate(directions)
             }
+            onThemeClicked = { homeViewModel.onChangeTheme() }
         }
     }
 
-    private fun observeViewModel() = viewLifecycleOwner.lifecycleScope.launch {
-        homeViewModel.coins.collectLatest {
-            coinAdapter.submitData(it)
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            homeViewModel.coins.collectLatest {
+                coinAdapter.submitData(it)
+            }
         }
+        homeViewModel.onChangeTheme.observe(viewLifecycleOwner, ::initToolbar)
     }
 }

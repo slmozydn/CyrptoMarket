@@ -4,9 +4,8 @@
     <item name="colorPrimary">@color/primary_color</item>
     <item name="colorPrimaryDark">@color/primary_dark_color</item>
     <item name="colorAccent">@color/accent_color</item>
-    <item name="android:textColor">@color/text_color</item>
+    <item name="android:textColor">@color/secondary_color</item>
     <item name="android:windowLightStatusBar">true</item>
-
     <item name="bottomSheetDialogTheme">@style/RoundedBottomSheetDialog</item>
   </style>
 
@@ -31,6 +30,10 @@
   <style name="RoundedBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
     <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
     <item name="android:windowIsFloating">false</item>
+  </style>
+
+  <style name="ButtonTheme" parent="ThemeOverlay.AppCompat">
+    <item name="colorPrimary">@color/icon_color</item>
   </style>
 
 </resources>

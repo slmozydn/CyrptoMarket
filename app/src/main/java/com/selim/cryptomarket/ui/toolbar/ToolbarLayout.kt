@@ -2,6 +2,7 @@ package com.selim.cryptomarket.ui.toolbar
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.selim.cryptomarket.R
@@ -41,7 +42,10 @@ class ToolbarLayout constructor(context: Context, attrs: AttributeSet) : Constra
             }
             themeImageView.apply {
                 isVisible = themeVisible
+                if (themeVisible.not()) return@apply
+
                 setOnClickListener { onThemeClicked?.invoke() }
+                changeTheme(isDarkMode)
             }
             cancelTextView.apply {
                 isVisible = cancelTextVisible
@@ -52,5 +56,15 @@ class ToolbarLayout constructor(context: Context, attrs: AttributeSet) : Constra
                 setOnClickListener { onBackButtonClicked?.invoke() }
             }
         }
+    }
+
+    private fun changeTheme(isDarkMode: Boolean) {
+        val (nightMode, themeResId) = if (isDarkMode) {
+            AppCompatDelegate.MODE_NIGHT_YES to R.drawable.icon_sun
+        } else {
+            AppCompatDelegate.MODE_NIGHT_NO to R.drawable.icon_night
+        }
+        AppCompatDelegate.setDefaultNightMode(nightMode)
+        binding.themeImageView.setImageResource(themeResId)
     }
 }
