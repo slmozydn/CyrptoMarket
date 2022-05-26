@@ -1,103 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/primary_dark_color"
-    android:paddingHorizontal="@dimen/spacing_medium"
-    android:paddingVertical="@dimen/spacing_small"
+    android:layout_height="40dp"
+    app:contentInsetStart="0dp"
     >
 
-  <ImageView
-      android:id="@+id/backButton"
-      android:layout_width="26dp"
-      android:layout_height="26dp"
-      android:layout_marginEnd="@dimen/spacing_small"
-      android:background="?selectableItemBackgroundBorderless"
-      android:visibility="gone"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:srcCompat="@drawable/icon_back"
-      tools:ignore="ContentDescription"
-      />
-
-  <TextView
-      android:id="@+id/titleTextView"
-      android:layout_width="wrap_content"
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/spacing_medium"
-      android:textColor="@color/tertiary_color"
-      android:textSize="@dimen/text_xlarge"
-      android:textStyle="bold"
-      android:visibility="gone"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:text="Ayarlar"
-      />
-
-  <androidx.appcompat.widget.SearchView
-      android:id="@+id/searchView"
-      style="@style/SearchView"
-      android:layout_width="0dp"
-      android:layout_height="32dp"
       android:layout_marginEnd="@dimen/spacing_medium"
-      android:animateLayoutChanges="true"
-      android:paddingVertical="@dimen/spacing_tiny"
-      android:theme="@style/SearchViewTheme"
-      app:closeIcon="@drawable/icon_close"
-      app:iconifiedByDefault="false"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/buttonLayout"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:queryHint="@string/search"
-      app:searchIcon="@drawable/icon_search"
-      />
-
-  <LinearLayout
-      android:id="@+id/buttonLayout"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
       >
 
-    <ImageView
-        android:id="@+id/themeImageView"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_marginEnd="@dimen/spacing_medium"
-        android:background="?selectableItemBackgroundBorderless"
-        app:srcCompat="@drawable/icon_night"
-        tools:ignore="ContentDescription"
-        />
-
-    <ImageView
-        android:id="@+id/settingsImageView"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:background="?selectableItemBackgroundBorderless"
-        app:srcCompat="@drawable/icon_settings"
-        tools:ignore="ContentDescription"
-        />
-
     <TextView
-        android:id="@+id/cancelTextView"
+        android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:text="@string/cancel"
-        android:textColor="@color/gold"
-        android:textSize="@dimen/text_medium"
+        android:textColor="@color/tertiary_color"
+        android:textSize="@dimen/text_xlarge"
         android:textStyle="bold"
-        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Ayarlar"
         />
-  </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        style="@style/SearchView"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="@dimen/spacing_medium"
+        android:theme="@style/SearchViewTheme"
+        app:closeIcon="@drawable/icon_close"
+        app:iconifiedByDefault="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:queryHint="@string/search"
+        app:searchIcon="@drawable/icon_search"
+        />
+
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+      <ImageView
+          android:id="@+id/themeImageView"
+          android:layout_width="26dp"
+          android:layout_height="26dp"
+          android:layout_marginEnd="@dimen/spacing_medium"
+          android:background="?selectableItemBackgroundBorderless"
+          app:srcCompat="@drawable/icon_night"
+          tools:ignore="ContentDescription"
+          />
+
+      <ImageView
+          android:id="@+id/settingsImageView"
+          android:layout_width="26dp"
+          android:layout_height="26dp"
+          android:background="?selectableItemBackgroundBorderless"
+          app:srcCompat="@drawable/icon_settings"
+          tools:ignore="ContentDescription"
+          />
+
+      <TextView
+          android:id="@+id/cancelTextView"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:background="?selectableItemBackgroundBorderless"
+          android:text="@string/cancel"
+          android:textColor="@color/gold"
+          android:textSize="@dimen/text_medium"
+          android:textStyle="bold"
+          />
+    </LinearLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.Toolbar>

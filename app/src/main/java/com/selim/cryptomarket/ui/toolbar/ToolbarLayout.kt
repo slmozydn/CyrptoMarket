@@ -3,20 +3,19 @@ package com.selim.cryptomarket.ui.toolbar
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.databinding.LayoutToolbarBinding
 import com.selim.cryptomarket.util.viewBinding
 
-class ToolbarLayout constructor(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
+class ToolbarLayout constructor(context: Context, attrs: AttributeSet) : Toolbar(context, attrs) {
 
     val binding by viewBinding(LayoutToolbarBinding::bind)
 
     var onSettingsClicked: (() -> Unit)? = null
     var onThemeClicked: (() -> Unit)? = null
     var onSearchViewClicked: (() -> Unit)? = null
-    var onBackButtonClicked: (() -> Unit)? = null
     var onCancelTextClicked: (() -> Unit)? = null
 
     init {
@@ -34,7 +33,9 @@ class ToolbarLayout constructor(context: Context, attrs: AttributeSet) : Constra
                 isVisible = searchVisible
                 queryHint = context.getString(searchHintRes)
                 setQuery("", false)
-                setOnQueryTextFocusChangeListener { _, _ -> onSearchViewClicked?.invoke() }
+                setOnQueryTextFocusChangeListener { _, _ ->
+                    onSearchViewClicked?.invoke()
+                }
             }
             settingsImageView.apply {
                 isVisible = settingsVisible
@@ -49,11 +50,10 @@ class ToolbarLayout constructor(context: Context, attrs: AttributeSet) : Constra
             }
             cancelTextView.apply {
                 isVisible = cancelTextVisible
-                setOnClickListener { onCancelTextClicked?.invoke() }
-            }
-            backButton.apply {
-                isVisible = backButtonVisible
-                setOnClickListener { onBackButtonClicked?.invoke() }
+                setOnClickListener {
+                    searchView.clearFocus()
+                    onCancelTextClicked?.invoke()
+                }
             }
         }
     }

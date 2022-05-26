@@ -53,11 +53,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private fun initToolbar() {
         val toolbarBinding = (requireActivity() as MainActivity).binding.toolbarLayout
         val toolbarConfig = ToolbarConfig(titleRes = string.settings_title, backButtonVisible = true)
-
-        with(toolbarBinding) {
-            render(toolbarConfig)
-            onBackButtonClicked = { findNavController().popBackStack() }
-        }
+        toolbarBinding.render(toolbarConfig)
     }
 
     private fun observeBackStackEntry() {
