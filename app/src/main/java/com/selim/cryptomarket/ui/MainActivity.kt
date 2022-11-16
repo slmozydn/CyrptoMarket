@@ -1,6 +1,7 @@
 package com.selim.cryptomarket.ui
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -19,6 +20,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContent {
+            PlaygroundTheme {
+
+            }
+        }
+
+        /*
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -28,5 +36,6 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(setOf(R.id.homeFragment, R.id.searchFragment))
         toolbar.setupWithNavController(navController, appBarConfiguration)
+         */
     }
 }
