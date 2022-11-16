@@ -9,6 +9,7 @@ data class Trending(
     @SerializedName("symbol") val symbol: String,
     @SerializedName("name") val name: String,
     @SerializedName("large") val imageUrl: String,
+    @SerializedName("score") val score: Int,
     @SerializedName("price_btc") val currentPrice: Double,
     @SerializedName("market_cap_rank") val marketCapRank: Int
 )

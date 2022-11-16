@@ -30,3 +30,4 @@ fun Double?.formatVolume(): String = "Hacim ${this.formatPrice()}"
 
 fun Int.formatMarketCap(): String = "Market Cap: $this"
 
+fun Int.formatScore(): String = "#${this + 1}"

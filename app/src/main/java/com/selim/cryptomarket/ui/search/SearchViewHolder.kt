@@ -13,6 +13,8 @@ import com.selim.cryptomarket.ui.search.SearchItem.Nft
 import com.selim.cryptomarket.ui.search.SearchItem.Title
 import com.selim.cryptomarket.ui.search.SearchItem.Trending
 import com.selim.cryptomarket.util.formatMarketCap
+import com.selim.cryptomarket.util.formatScore
+import com.selim.cryptomarket.util.formatSymbol
 import com.selim.cryptomarket.util.load
 
 sealed class SearchViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -31,7 +33,7 @@ sealed class SearchViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(bi
         fun bind(coin: Currency) = with(binding) {
             coinImageView.load(coin.currencyResponse.large)
             coinNameTextView.text = coin.currencyResponse.name
-            coinSymbolTextView.text = coin.currencyResponse.symbol
+            coinSymbolTextView.text = coin.currencyResponse.symbol.formatSymbol()
             marketCapTextView.text = coin.currencyResponse.marketCapRank.formatMarketCap()
         }
     }
@@ -49,8 +51,9 @@ sealed class SearchViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(bi
             val item = trending.trendingResponse.trendingCoin
             coinImageView.load(item.imageUrl)
             coinNameTextView.text = item.name
-            coinSymbolTextView.text = item.symbol
+            coinSymbolTextView.text = item.symbol.formatSymbol()
             marketCapTextView.text = item.marketCapRank.formatMarketCap()
+            scoreTextView.text = item.score.formatScore()
         }
     }
 }

@@ -9,8 +9,8 @@
 
   <com.google.android.material.imageview.ShapeableImageView
       android:id="@+id/coinImageView"
-      android:layout_width="40dp"
-      android:layout_height="40dp"
+      android:layout_width="44dp"
+      android:layout_height="44dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
@@ -23,7 +23,7 @@
       android:id="@+id/coinNameTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/spacing_small"
+      android:layout_marginStart="@dimen/spacing_large"
       android:textColor="@color/tertiary_color"
       android:textStyle="bold"
       app:layout_constraintStart_toEndOf="@+id/coinImageView"
@@ -39,14 +39,14 @@
       android:textSize="@dimen/text_small"
       app:layout_constraintBottom_toBottomOf="@+id/coinNameTextView"
       app:layout_constraintStart_toEndOf="@+id/coinNameTextView"
-      tools:text="BTC"
+      tools:text="/BTC"
       />
 
   <TextView
       android:id="@+id/marketCapTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/spacing_small"
+      android:layout_marginStart="@dimen/spacing_large"
       android:layout_marginTop="@dimen/spacing_small"
       android:textSize="@dimen/text_small"
       app:layout_constraintBottom_toBottomOf="@+id/coinImageView"

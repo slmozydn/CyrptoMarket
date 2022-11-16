@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_large"
+    android:paddingHorizontal="@dimen/spacing_large"
+    android:paddingVertical="@dimen/spacing_medium"
     >
 
   <com.google.android.material.imageview.ShapeableImageView
       android:id="@+id/coinImageView"
-      android:layout_width="40dp"
-      android:layout_height="40dp"
+      android:layout_width="44dp"
+      android:layout_height="44dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
@@ -26,10 +27,11 @@
       android:layout_marginStart="@dimen/spacing_small"
       android:textColor="@color/tertiary_color"
       android:textStyle="bold"
-      app:layout_constraintStart_toEndOf="@+id/coinImageView"
-      app:layout_constraintTop_toTopOf="@+id/coinImageView"
+      app:layout_constraintStart_toEndOf="@+id/scoreTextView"
+      app:layout_constraintTop_toTopOf="@+id/scoreTextView"
       tools:text="Bitcoin"
       />
+
   <TextView
       android:id="@+id/coinSymbolTextView"
       android:layout_width="wrap_content"
@@ -39,41 +41,33 @@
       android:textSize="@dimen/text_small"
       app:layout_constraintBottom_toBottomOf="@+id/coinNameTextView"
       app:layout_constraintStart_toEndOf="@+id/coinNameTextView"
-      tools:text="BTC"
+      tools:text="/BTC"
       />
 
   <TextView
       android:id="@+id/marketCapTextView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/spacing_small"
-      android:layout_marginTop="@dimen/spacing_small"
+      android:layout_marginStart="@dimen/spacing_large"
+      android:includeFontPadding="false"
       android:textSize="@dimen/text_small"
       app:layout_constraintBottom_toBottomOf="@+id/coinImageView"
       app:layout_constraintStart_toEndOf="@+id/coinImageView"
       tools:text="Market Cap: 101"
       />
 
-  <View
-      android:layout_width="wrap_content"
-      android:layout_height="1dp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/priceTextView"
-      app:layout_constraintStart_toEndOf="@+id/marketCapTextView"
-      app:layout_constraintTop_toTopOf="parent"
-      />
-
   <TextView
-      android:id="@+id/priceTextView"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/spacing_small"
-      android:textColor="@color/tertiary_color"
-      android:textStyle="bold"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:text="52.465 $"
+      android:id="@+id/scoreTextView"
+      android:layout_width="20dp"
+      android:layout_height="20dp"
+      android:layout_marginStart="@dimen/spacing_large"
+      android:background="@drawable/background_score"
+      android:gravity="center"
+      android:textColor="@color/burnt_yellow"
+      android:textSize="@dimen/text_small"
+      app:layout_constraintStart_toEndOf="@+id/coinImageView"
+      app:layout_constraintTop_toTopOf="@+id/coinImageView"
+      tools:text="#1"
       />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -78,10 +78,10 @@
           android:layout_height="wrap_content"
           android:layout_gravity="center"
           android:background="?selectableItemBackgroundBorderless"
+          android:letterSpacing="0.02"
           android:text="@string/cancel"
-          android:textColor="@color/gold"
+          android:textColor="@color/burnt_yellow"
           android:textSize="@dimen/text_medium"
-          android:textStyle="bold"
           />
     </LinearLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
