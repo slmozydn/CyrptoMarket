@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,10 +17,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -94,15 +98,19 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
                     .background(MaterialTheme.colors.onBackground)
                     .fillMaxSize()
             ) {
-                items(uiState) {
-                    when (it) {
+                items(uiState) { uiState ->
+                    when (uiState) {
                         SearchItem.Error -> ErrorState(message = "error")
                         SearchItem.Loading -> LoadingState()
-                        is SearchItem.SearchHistory -> SearchHistory(it.searchQueries, viewModel::onSearch)
-                        is SearchItem.Title -> Title(it)
-                        is SearchItem.Nfts -> Nfts(it.nfts)
-                        is SearchItem.Currency -> Currency(it.currencyResponse)
-                        is SearchItem.Trending -> Trending(trending = it.trendingResponse.trendingCoin)
+                        is SearchItem.SearchHistory -> SearchHistory(
+                            uiState.searchQueries,
+                            viewModel::onSearch,
+                            viewModel::clearHistory
+                        )
+                        is SearchItem.Title -> Title(uiState.titleResId)
+                        is SearchItem.Nfts -> Nfts(uiState.nfts)
+                        is SearchItem.Currency -> Currency(uiState.currencyResponse)
+                        is SearchItem.Trending -> Trending(trending = uiState.trendingResponse.trendingCoin)
                     }
                 }
             }
@@ -111,19 +119,23 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Title(title: SearchItem.Title) {
+fun Title(titleResId: Int) {
     Text(
-        text = stringResource(id = title.titleResId),
+        text = stringResource(id = titleResId),
         style = MaterialTheme.typography.h2,
         modifier = Modifier.padding(vertical = 16.dp)
     )
 }
 
 @Composable
-fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit) {
-    val colors = MaterialTheme.colors
+fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit, onClear: () -> Unit) {
+    if (searchQueries.isEmpty()) return
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Title(titleResId = R.string.search_history)
+    val colors = MaterialTheme.colors
+    val coroutineScope = rememberCoroutineScope()
+
+    Row(modifier = Modifier.fillMaxWidth()) {
         LazyRow {
             items(
                 count = searchQueries.size,
@@ -147,6 +159,20 @@ fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit) {
                 }
             )
         }
+        Spacer(modifier = Modifier.weight(1f))
+
+        Icon(
+            imageVector = Icons.Filled.Clear,
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .clickable {
+                    coroutineScope.launch {
+                        onClear()
+                    }
+                },
+            tint = colors.onSurface
+        )
     }
 }
 

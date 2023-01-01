@@ -16,8 +16,16 @@ class SearchDataStore @Inject constructor(private val searchDataStore: DataStore
 
     suspend fun updateSearchPreference(query: String) {
         searchDataStore.edit { search ->
-            val ss = search[KEY_SEARCH_QUERY] ?: ""
-            search[KEY_SEARCH_QUERY] = "$ss $query"
+            val previousHistory = search[KEY_SEARCH_QUERY] ?: ""
+            val searchQueries = previousHistory.split(" ").toList().dropWhile { it == "" }.takeLast(3).toMutableList()
+            searchQueries.add(query)
+            search[KEY_SEARCH_QUERY] = searchQueries.joinToString(separator = " ")
+        }
+    }
+
+    suspend fun clearSearchPreference() {
+        searchDataStore.edit { search ->
+            search[KEY_SEARCH_QUERY] = ""
         }
     }
 

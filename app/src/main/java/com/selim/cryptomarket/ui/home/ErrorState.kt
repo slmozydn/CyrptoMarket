@@ -22,7 +22,7 @@ fun ErrorState(message: String, modifier: Modifier = Modifier) {
     ) {
         Icon(
             imageVector = Icons.Filled.Warning,
-            contentDescription = "Error",
+            contentDescription = null,
             modifier = modifier.size(48.dp)
         )
         Text(text = message, modifier = modifier.padding(top = 16.dp))

@@ -50,14 +50,6 @@ class SearchViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    internal fun onSearch(query: String) {
-        queryChanges.tryEmit(query)
-    }
-
-    internal suspend fun saveHistory(query: String) {
-        searchDataStore.updateSearchPreference(query)
-    }
-
     private fun searchCoins(searchString: String) {
         viewModelScope.launch {
             _uiState.emit(listOf(Loading))
@@ -73,8 +65,7 @@ class SearchViewModel @Inject constructor(
                     val nfts = searchResult.nfts.filter { it.thumb != EMPTY_IMAGE_URL }.take(RESULT_NFT_SIZE)
 
                     if (searchHistory.isNotEmpty()) {
-                        val searchQueries: List<String> = searchHistory.split(" ").toList().dropWhile { it.isEmpty() }
-                        add(Title(R.string.search_history))
+                        val searchQueries: List<String> = searchHistory.split(" ").toList().reversed()
                         add(SearchHistory(searchQueries))
                     }
 
@@ -95,6 +86,21 @@ class SearchViewModel @Inject constructor(
             } catch (exception: Exception) {
                 _uiState.emit(listOf(Error))
             }
+        }
+    }
+
+    internal fun onSearch(query: String) {
+        queryChanges.tryEmit(query)
+    }
+
+    internal suspend fun saveHistory(query: String) {
+        searchDataStore.updateSearchPreference(query)
+    }
+
+    internal fun clearHistory() {
+        viewModelScope.launch {
+            searchDataStore.clearSearchPreference()
+            _uiState.value = _uiState.value.dropWhile { it is SearchHistory }
         }
     }
 
