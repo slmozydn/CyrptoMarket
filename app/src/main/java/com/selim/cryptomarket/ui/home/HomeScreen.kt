@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -41,6 +42,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -100,7 +102,7 @@ private fun MainAppBar(navController: NavController, themeViewModel: ThemeViewMo
             .background(colors.background),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SearchBar(searchQuery = null, navController, readOnly = true) {}
+        SearchBar(searchQuery = null, navController, readOnly = true)
 
         val icon = if (isDarkTheme) R.drawable.icon_sun else R.drawable.icon_night
 
@@ -127,7 +129,8 @@ internal fun SearchBar(
     searchQuery: MutableState<String>?,
     navController: NavController,
     readOnly: Boolean,
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit = {},
+    saveHistory: (String) -> Unit = {}
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -152,7 +155,7 @@ internal fun SearchBar(
         textStyle = MaterialTheme.typography.caption,
         shape = RoundedCornerShape(24.dp),
         singleLine = true,
-        placeholder = { Text(text = "Search", style = MaterialTheme.typography.caption) },
+        placeholder = { Text(text = stringResource(id = R.string.search), style = MaterialTheme.typography.caption) },
         leadingIcon = { Icon(painterResource(R.drawable.icon_search), contentDescription = null) },
         trailingIcon = {
             if (searchQuery?.value?.isEmpty() == false) {
@@ -163,6 +166,10 @@ internal fun SearchBar(
             }
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                saveHistory(searchQuery?.value ?: "")
+            }),
         onValueChange = { query ->
             searchQuery?.value = query
             onSearch(query)
@@ -190,7 +197,7 @@ private fun CoinList(coinPagingItems: LazyPagingItems<CoinResponse>) {
 
     Card(
         backgroundColor = MaterialTheme.colors.onBackground,
-        elevation = 1.dp,
+        elevation = 8.dp,
         shape = RoundedCornerShape(
             topStart = 24.dp,
             topEnd = 24.dp,
@@ -293,3 +300,6 @@ private fun CoinContent(coinItem: CoinResponse, modifier: Modifier = Modifier) {
 // TODO refresh
 // TODO splash
 // TODO rank
+// TODO app icon
+// TODO placeholder
+// TODO format pricing

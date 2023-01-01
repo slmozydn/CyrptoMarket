@@ -9,7 +9,7 @@ val LightTypography = Typography(
     h2 = Typography().h3.copy(
         fontWeight = FontWeight.Bold,
         color = Color.Black,
-        fontSize = 20.sp
+        fontSize = 18.sp
     ),
 
     h3 = Typography().h3.copy(
@@ -31,8 +31,8 @@ val LightTypography = Typography(
     ),
 
     caption = Typography().caption.copy(
-        fontWeight = FontWeight.Light,
-        color = Color.Gray,
+        fontWeight = FontWeight.Normal,
+        color = Color(0xFF888D91),
         fontSize = 12.sp
     )
 )
@@ -41,7 +41,7 @@ val DarkTypography = Typography(
     h2 = Typography().h3.copy(
         fontWeight = FontWeight.Bold,
         color = Color.White,
-        fontSize = 20.sp
+        fontSize = 18.sp
     ),
 
     h3 = Typography().h3.copy(
@@ -63,8 +63,8 @@ val DarkTypography = Typography(
     ),
 
     caption = Typography().caption.copy(
-        fontWeight = FontWeight.Light,
-        color = Color.LightGray,
+        fontWeight = FontWeight.Normal,
+        color = Color(0xFF888D91),
         fontSize = 12.sp
     )
 )

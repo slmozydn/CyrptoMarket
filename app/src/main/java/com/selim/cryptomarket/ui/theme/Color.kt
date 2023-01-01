@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 // use material 3
 val LightThemeColors = lightColors(
     primary = Color(0xFFF0B90B),
-    primaryVariant = Color.Cyan, // boş
+    primaryVariant = Color(0xFF888D91),
     secondary = Color(0xFFBAC3D0),
     secondaryVariant = Color(0xFFEBECEF),
     background = Color(0xFFF5F5F5),
@@ -22,7 +22,7 @@ val LightThemeColors = lightColors(
 
 val DarkThemeColors = darkColors(
     primary = Color(0xFFF0B90B),
-    primaryVariant = Color(0xFF971C1C), // boş
+    primaryVariant = Color(0xFF888D91),
     secondary = Color(0xFFBAC3D0),
     secondaryVariant = Color(0xFF343B46),
     background = Color(0xFF181E26),

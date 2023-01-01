@@ -9,8 +9,8 @@ import com.selim.cryptomarket.ui.search.SearchItem.Loading
 import com.selim.cryptomarket.ui.search.SearchItem.Nfts
 import com.selim.cryptomarket.ui.search.SearchItem.Title
 import com.selim.cryptomarket.service.CryptoCurrencyService
+import com.selim.cryptomarket.ui.search.SearchItem.SearchHistory
 import com.selim.cryptomarket.ui.search.SearchItem.Trending
-import com.selim.cryptomarket.ui.settings.SettingsDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
@@ -19,14 +19,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val cryptoCurrencyService: CryptoCurrencyService
+    private val cryptoCurrencyService: CryptoCurrencyService,
+    private val searchDataStore: SearchDataStore
 ) : ViewModel() {
 
     private val queryChanges = MutableStateFlow("")
@@ -35,6 +38,7 @@ class SearchViewModel @Inject constructor(
 
     init {
         setQueryChanges()
+        onSearch(" ")
     }
 
     @OptIn(FlowPreview::class)
@@ -50,17 +54,29 @@ class SearchViewModel @Inject constructor(
         queryChanges.tryEmit(query)
     }
 
+    internal suspend fun saveHistory(query: String) {
+        searchDataStore.updateSearchPreference(query)
+    }
+
     private fun searchCoins(searchString: String) {
         viewModelScope.launch {
             _uiState.emit(listOf(Loading))
             try {
                 val searchResponse = async { cryptoCurrencyService.search(searchString) }
                 val trendingResponse = async { cryptoCurrencyService.searchTrending() }
+                val searchHistory = runBlocking { searchDataStore.searchQueries.first() }
+
                 val result = buildList {
                     val searchResult = searchResponse.await()
                     val trendingCoins = trendingResponse.await().coins.map(::Trending).take(RESULT_COIN_SIZE)
                     val coins = searchResult.coins.take(RESULT_COIN_SIZE).map(::Currency)
                     val nfts = searchResult.nfts.filter { it.thumb != EMPTY_IMAGE_URL }.take(RESULT_NFT_SIZE)
+
+                    if (searchHistory.isNotEmpty()) {
+                        val searchQueries: List<String> = searchHistory.split(" ").toList().dropWhile { it.isEmpty() }
+                        add(Title(R.string.search_history))
+                        add(SearchHistory(searchQueries))
+                    }
 
                     if (coins.isNotEmpty()) {
                         add(Title(R.string.coins))
