@@ -39,7 +39,7 @@ fun Navigation(
             SearchScreen(navController)
         }
         composable(route = Detail.route, arguments = Detail.arguments) {
-            DetailScreen(it.arguments?.getString("id")!!)
+            DetailScreen()
         }
     }
 }

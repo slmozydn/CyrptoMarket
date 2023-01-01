@@ -1,6 +1,5 @@
 package com.selim.cryptomarket.ui.detail
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,13 +15,10 @@ import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-enum class TimeRange {
-    ONE_DAY, SEVEN_DAYS, THIRTY_DAYS, SIXTY_DAYS, NINETY_DAYS, ONE_YEAR;
-}
 
 @Composable
 fun TimeRangePicker(
@@ -50,23 +46,23 @@ fun TimeRangePicker(
 
         TimeRangeChip(
             time = "14d",
+            isSelected = selectedTimeRange == TimeRange.FOURTEEN_DAYS
+        ) {
+            onTimeRangeSelected(TimeRange.FOURTEEN_DAYS)
+        }
+
+        TimeRangeChip(
+            time = "30d",
             isSelected = selectedTimeRange == TimeRange.THIRTY_DAYS
         ) {
             onTimeRangeSelected(TimeRange.THIRTY_DAYS)
         }
 
         TimeRangeChip(
-            time = "30d",
+            time = "60d",
             isSelected = selectedTimeRange == TimeRange.SIXTY_DAYS
         ) {
             onTimeRangeSelected(TimeRange.SIXTY_DAYS)
-        }
-
-        TimeRangeChip(
-            time = "60d",
-            isSelected = selectedTimeRange == TimeRange.NINETY_DAYS
-        ) {
-            onTimeRangeSelected(TimeRange.NINETY_DAYS)
         }
 
         TimeRangeChip(
@@ -87,7 +83,7 @@ private fun TimeRangeChip(
     Box(
         modifier = Modifier
             .background(
-                color = if (isSelected) colors.secondaryVariant else colors.secondaryVariant,
+                color = colors.secondaryVariant,
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { onTimeRangeSelected() }
@@ -99,15 +95,13 @@ private fun TimeRangeChip(
                 .padding(vertical = 4.dp),
             text = time,
             textAlign = TextAlign.Center,
+            fontWeight = if (isSelected) FontWeight.Bold else Companion.Normal,
             style = MaterialTheme.typography.subtitle2,
-            color = if (isSelected) colors.primaryVariant else colors.primaryVariant
+            color = if (isSelected) colors.onSecondary else colors.primaryVariant
         )
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun TimeRangePickerPreview() {
-    TimeRangePicker(modifier = Modifier.fillMaxWidth())
+enum class TimeRange(val value: String) {
+    ONE_DAY("1"), SEVEN_DAYS("7"), FOURTEEN_DAYS("14"), THIRTY_DAYS("30"), SIXTY_DAYS("60"), ONE_YEAR("365");
 }

@@ -24,7 +24,6 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.ui.detail.DetailViewModel.DetailUiState
-import com.selim.cryptomarket.ui.detail.TimeRange.ONE_DAY
 import com.selim.cryptomarket.ui.home.ErrorState
 import com.selim.cryptomarket.ui.home.LoadingState
 import com.selim.cryptomarket.ui.settings.CurrencyType.TRY
@@ -34,20 +33,19 @@ import com.selim.cryptomarket.util.formatPrice
 import com.selim.cryptomarket.util.formatVolume
 
 @Composable
-fun DetailScreen(currencyId: String) {
+fun DetailScreen() {
     val viewModel = hiltViewModel<DetailViewModel>()
-    viewModel.getDetail(currencyId)
     val uiState = viewModel.uiState.collectAsState().value
 
     when {
         uiState.loading -> LoadingState()
         uiState.error != null -> ErrorState(message = uiState.error.message.orEmpty())
-        else -> DetailContent(viewModel, uiState, currencyId)
+        else -> DetailContent(viewModel, uiState)
     }
 }
 
 @Composable
-private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState, currencyId: String) {
+private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
     val currencyCode = uiState.currencyCode
     val coin = uiState.coinDetail ?: return
     val currentPrice = when (currencyCode) {
@@ -106,7 +104,7 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState, cu
         SwipeRefresh(
             state = swipeRefreshState,
             onRefresh = {
-                viewModel.getDetail(currencyId)
+                viewModel.getDetail(coin.id)
             },
             indicator = { state, trigger ->
                 SwipeRefreshIndicator(
@@ -127,7 +125,7 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState, cu
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                    currency = coin.name + " " + "(${coin.symbol.uppercase()})",
+                    currency = coin.name + " (${coin.symbol.uppercase()})",
                     icon = coin.image.small,
                     price = currentPrice,
                     changeRate = changePercentage,
@@ -138,9 +136,9 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState, cu
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                    selectedTimeRange = ONE_DAY
+                    selectedTimeRange = uiState.timeRange
                 ) { timeRange ->
-                    //todo
+                    viewModel.onTimeRangeChange(coin.id, timeRange)
                 }
 
                 Chart(
