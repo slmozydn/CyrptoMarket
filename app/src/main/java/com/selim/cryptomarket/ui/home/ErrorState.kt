@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ErrorColumn(message: String, modifier: Modifier = Modifier) {
+fun ErrorState(message: String, modifier: Modifier = Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.wrapContentSize()
@@ -23,7 +23,7 @@ fun ErrorColumn(message: String, modifier: Modifier = Modifier) {
         Icon(
             imageVector = Icons.Filled.Warning,
             contentDescription = "Error",
-            modifier = Modifier.size(48.dp)
+            modifier = modifier.size(48.dp)
         )
         Text(text = message, modifier = modifier.padding(top = 16.dp))
     }
@@ -32,5 +32,5 @@ fun ErrorColumn(message: String, modifier: Modifier = Modifier) {
 @Preview(showSystemUi = true)
 @Composable
 private fun ErrorColumnPreview() {
-    ErrorColumn(message = "Something went wrong !")
+    ErrorState(message = "Something went wrong !")
 }

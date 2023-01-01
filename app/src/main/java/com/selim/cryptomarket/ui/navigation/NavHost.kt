@@ -9,7 +9,9 @@ import com.selim.cryptomarket.ui.home.HomeScreen
 import com.selim.cryptomarket.ui.home.SettingsScreen
 import com.selim.cryptomarket.ui.home.ThemeViewModel
 import com.selim.cryptomarket.ui.navigation.Screen.Home
+import com.selim.cryptomarket.ui.navigation.Screen.Search
 import com.selim.cryptomarket.ui.navigation.Screen.Settings
+import com.selim.cryptomarket.ui.search.SearchScreen
 
 @Composable
 fun Navigation(
@@ -30,6 +32,9 @@ fun Navigation(
         }
         composable(route = Settings.route) {
             SettingsScreen(navController)
+        }
+        composable(route = Search.route) {
+            SearchScreen(navController)
         }
     }
 }

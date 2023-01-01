@@ -6,6 +6,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 val LightTypography = Typography(
+    h3 = Typography().h3.copy(
+        fontWeight = FontWeight.Bold,
+        color = Color.Black,
+        fontSize = 16.sp
+    ),
+
     subtitle1 = Typography().subtitle1.copy(
         fontWeight = FontWeight.Bold,
         color = Color.Black,
@@ -26,6 +32,12 @@ val LightTypography = Typography(
 )
 
 val DarkTypography = Typography(
+    h3 = Typography().h3.copy(
+        fontWeight = FontWeight.Bold,
+        color = Color.White,
+        fontSize = 16.sp
+    ),
+
     subtitle1 = Typography().subtitle1.copy(
         fontWeight = FontWeight.Bold,
         color = Color.White,

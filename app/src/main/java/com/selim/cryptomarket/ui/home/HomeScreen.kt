@@ -1,7 +1,6 @@
 package com.selim.cryptomarket.ui.home
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,12 +28,15 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -51,6 +53,7 @@ import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.data.CoinResponse
+import com.selim.cryptomarket.ui.navigation.Screen.Search
 import com.selim.cryptomarket.ui.navigation.Screen.Settings
 import com.selim.cryptomarket.util.formatPercentage
 import com.selim.cryptomarket.util.formatPrice
@@ -67,19 +70,17 @@ fun HomeScreen(navController: NavController, themeViewModel: ThemeViewModel, isD
         modifier = Modifier.statusBarsPadding(),
         topBar = {
             Surface(modifier = Modifier.fillMaxWidth()) {
-                Column {
-                    MainAppBar(navController, themeViewModel, isDarkTheme)
-                }
+                MainAppBar(navController, themeViewModel, isDarkTheme)
             }
         },
         content = {
             when (coins.loadState.refresh) {
                 is LoadState.Loading -> {
-                    Loading()
+                    LoadingState()
                 }
                 is LoadState.Error -> {
                     val error = coins.loadState.refresh as LoadState.Error
-                    ErrorColumn(error.error.message.orEmpty())
+                    ErrorState(error.error.message.orEmpty())
                 }
                 else -> {
                     CoinList(coins)
@@ -91,16 +92,15 @@ fun HomeScreen(navController: NavController, themeViewModel: ThemeViewModel, isD
 
 @Composable
 private fun MainAppBar(navController: NavController, themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
-    val searchQuery = remember { mutableStateOf("") }
     val colors = MaterialTheme.colors
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(colors.background),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        SearchBar(searchQuery)
+        SearchBar(null, navController, true)
 
         val icon = if (isDarkTheme) R.drawable.icon_sun else R.drawable.icon_night
 
@@ -123,30 +123,43 @@ private fun MainAppBar(navController: NavController, themeViewModel: ThemeViewMo
 }
 
 @Composable
-private fun SearchBar(searchQuery: MutableState<String>) {
+internal fun SearchBar(searchQuery: MutableState<String>?, navController: NavController, readOnly: Boolean) {
+    val focusRequester = remember { FocusRequester() }
+
     TextField(
-        modifier = Modifier.height(48.dp),
-        value = searchQuery.value,
+        readOnly = readOnly,
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .height(48.dp)
+            .onFocusChanged {
+                if (it.isFocused && readOnly) {
+                    navController.navigate(Search.route)
+                }
+            }
+            .run {
+                if (!readOnly) {
+                    this.focusRequester(focusRequester)
+                } else {
+                    this
+                }
+            },
+        value = searchQuery?.value ?: "",
         textStyle = MaterialTheme.typography.caption,
         shape = RoundedCornerShape(24.dp),
         singleLine = true,
         placeholder = { Text(text = "Search", style = MaterialTheme.typography.caption) },
         leadingIcon = { Icon(painterResource(R.drawable.icon_search), contentDescription = null) },
         trailingIcon = {
-            AnimatedVisibility(visible = searchQuery.value.isNotEmpty()) {
-                Icon(
-                    painterResource(R.drawable.icon_close),
-                    contentDescription = null,
-                    modifier = Modifier.clickable {
-                        searchQuery.value = ""
-                        // onSearch("")
-                    }
-                )
+            if (searchQuery?.value?.isEmpty() == false) {
+                Icon(painterResource(R.drawable.icon_close), contentDescription = null, modifier = Modifier.clickable {
+                    searchQuery.value = ""
+                    // onSearch("")
+                })
             }
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         onValueChange = { query ->
-            searchQuery.value = query
+            searchQuery?.value = query
             // onSearch(query)
         },
         colors = TextFieldDefaults.textFieldColors(
@@ -158,6 +171,12 @@ private fun SearchBar(searchQuery: MutableState<String>) {
             disabledIndicatorColor = Color.Transparent
         )
     )
+
+    if (!readOnly) {
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+    }
 }
 
 @Composable
@@ -263,3 +282,6 @@ private fun CoinContent(coinItem: CoinResponse, modifier: Modifier = Modifier) {
 // TODO row error
 // TODO row loading
 // TODO theme
+// TODO nested scroll
+// TODO review JJJ
+// TODO nested scroll
