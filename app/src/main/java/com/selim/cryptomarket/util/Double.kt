@@ -1,9 +1,10 @@
 package com.selim.cryptomarket.util
 
-import com.selim.cryptomarket.ui.settings.ChangeCurrencyBottomSheetFragment.CurrencyType.EUR
 import com.selim.cryptomarket.ui.settings.ChangeCurrencyBottomSheetFragment.CurrencyType.TRY
 import com.selim.cryptomarket.ui.settings.ChangeCurrencyBottomSheetFragment.CurrencyType.USD
 import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.Locale
 import kotlin.math.ln
 import kotlin.math.pow
 
@@ -19,13 +20,15 @@ fun Double?.formatPercentage(): String {
 }
 
 fun Double?.formatPrice(currencyCode: String? = null): String {
-    // TODO val price = DecimalFormat("###.00").format(this)
-    return when (currencyCode) {
-        USD.value -> "$this $"
-        TRY.value -> "$this ₺"
-        EUR.value -> "$this €"
-        else -> this.toString()
+    val locale = when (currencyCode) {
+        USD.value -> Locale("en", "US")
+        TRY.value -> Locale("tr", "TR")
+        else -> Locale("en", "DE")
     }
+    return NumberFormat
+        .getCurrencyInstance(locale)
+        .format(this ?: 0.0)
+        .orEmpty()
 }
 
 fun Double?.formatVolume(): String {
@@ -33,7 +36,7 @@ fun Double?.formatVolume(): String {
 
     if (this.toLong() < 1000) return "$this"
     val exp = (ln(this) / ln(1000.0)).toInt()
-    return "Volume %.1f %c".format(this / 1000.0.pow(exp.toDouble()), "kMBTPE"[exp-1])
+    return "Volume %.1f %c".format(this / 1000.0.pow(exp.toDouble()), "kMBTPE"[exp - 1])
 }
 
 fun Int.formatMarketCap(): String = "Market Cap: $this"

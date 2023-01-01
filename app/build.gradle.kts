@@ -17,10 +17,6 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildFeatures {
-            compose = true
-        }
-
         composeOptions {
             kotlinCompilerExtensionVersion = "1.3.2"
         }
@@ -42,6 +38,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        dataBinding = true
         compose = true
     }
 
@@ -79,6 +76,10 @@ dependencies {
     implementation("androidx.paging:paging-compose:1.0.0-alpha17")
     implementation("androidx.paging:paging-runtime:3.1.1")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+
+    // Third Party
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     // Coil
     implementation("io.coil-kt:coil:2.2.2")

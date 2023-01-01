@@ -19,7 +19,7 @@ class CoinViewHolder(private val binding: ItemCoinBinding) : RecyclerView.ViewHo
         coinImageView.load(coin.image)
         coinNameTextView.text = coin.name
         coinSymbolTextView.text = coin.symbol.formatSymbol()
-        priceTextView.text = coin.currentPrice.formatPrice(coin.currencyCode)
+        //priceTextView.text = coin.currentPrice.formatPrice(coin.currencyCode)
         volumeTextView.text = coin.totalVolume.formatVolume()
         renderPercentage(coin.priceChangePercentage24h)
     }

@@ -55,6 +55,7 @@ import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.data.CoinResponse
+import com.selim.cryptomarket.ui.navigation.Screen.Detail
 import com.selim.cryptomarket.ui.navigation.Screen.Search
 import com.selim.cryptomarket.ui.navigation.Screen.Settings
 import com.selim.cryptomarket.util.formatPercentage
@@ -85,7 +86,7 @@ fun HomeScreen(navController: NavController, themeViewModel: ThemeViewModel, isD
                     ErrorState(error.error.message.orEmpty())
                 }
                 else -> {
-                    CoinList(coins)
+                    CoinList(navController, coins)
                 }
             }
         }
@@ -192,7 +193,7 @@ internal fun SearchBar(
 }
 
 @Composable
-private fun CoinList(coinPagingItems: LazyPagingItems<CoinResponse>) {
+private fun CoinList(navController: NavController, coinPagingItems: LazyPagingItems<CoinResponse>) {
     val listState = rememberLazyListState()
 
     Card(
@@ -213,7 +214,7 @@ private fun CoinList(coinPagingItems: LazyPagingItems<CoinResponse>) {
         ) {
             items(coinPagingItems) { coinItem ->
                 if (coinItem != null) {
-                    CoinContent(coinItem)
+                    CoinContent(navController, coinItem)
                 }
             }
         }
@@ -221,7 +222,7 @@ private fun CoinList(coinPagingItems: LazyPagingItems<CoinResponse>) {
 }
 
 @Composable
-private fun CoinContent(coinItem: CoinResponse, modifier: Modifier = Modifier) {
+private fun CoinContent(navController: NavController, coinItem: CoinResponse, modifier: Modifier = Modifier) {
     val colors = MaterialTheme.colors
     Surface {
         Row(
@@ -229,6 +230,14 @@ private fun CoinContent(coinItem: CoinResponse, modifier: Modifier = Modifier) {
             modifier = modifier
                 .fillMaxWidth()
                 .background(colors.onBackground)
+                .clickable {
+                    navController.navigate(
+                        Detail.route.replace(
+                            oldValue = "{id}",
+                            newValue = coinItem.id
+                        )
+                    )
+                }
                 .padding(vertical = 8.dp)
         ) {
             AsyncImage(

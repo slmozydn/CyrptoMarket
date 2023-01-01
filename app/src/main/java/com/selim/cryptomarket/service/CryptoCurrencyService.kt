@@ -3,8 +3,11 @@ package com.selim.cryptomarket.service
 import com.selim.cryptomarket.data.CoinResponse
 import com.selim.cryptomarket.data.SearchResult
 import com.selim.cryptomarket.data.SearchTrendingResult
+import com.selim.cryptomarket.ui.detail.CoinChartResponse
+import com.selim.cryptomarket.ui.detail.CoinDetailResponse
 import com.selim.cryptomarket.ui.home.HomeViewModel.Companion.PAGE_SIZE
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CryptoCurrencyService {
@@ -20,4 +23,14 @@ interface CryptoCurrencyService {
 
     @GET("search/trending")
     suspend fun searchTrending(): SearchTrendingResult
+
+    @GET("coins/{id}")
+    suspend fun coinDetails(@Path("id") id: String): CoinDetailResponse
+
+    @GET("coins/{id}/market_chart")
+    suspend fun coinChart(
+        @Path("id") id: String,
+        @Query("days") days: String = "30",
+        @Query("interval") interval: String = "daily"
+    ): CoinChartResponse
 }
