@@ -36,7 +36,7 @@ fun Double?.formatVolume(): String {
 
     if (this.toLong() < 1000) return "$this"
     val exp = (ln(this) / ln(1000.0)).toInt()
-    return "Volume %.1f %c".format(this / 1000.0.pow(exp.toDouble()), "kMBTPE"[exp - 1])
+    return "Volume %.1f %c".format(this / 1000.0.pow(exp.toDouble()),"kMBTPE"[exp - 1])
 }
 
 fun Int.formatMarketCap(): String = "Market Cap: $this"

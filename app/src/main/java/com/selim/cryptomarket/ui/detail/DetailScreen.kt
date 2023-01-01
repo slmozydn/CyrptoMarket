@@ -85,11 +85,13 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
         TRY.value -> coin.marketData.atl.tryX
         else -> coin.marketData.atl.eur
     }.formatPrice()
+
     val volume = when (currencyCode) {
         USD.value -> coin.marketData.totalVolume.usd
         TRY.value -> coin.marketData.totalVolume.tryX
         else -> coin.marketData.totalVolume.eur
     }.formatVolume().replace("Volume ", "")
+
     val isPositive = coin.marketData.priceChangePercentage24h > 0
     val chartValues = uiState.coinChart!!.prices.map {
         Entry(

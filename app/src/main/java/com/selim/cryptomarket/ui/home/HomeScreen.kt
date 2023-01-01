@@ -46,6 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -268,8 +269,8 @@ private fun CoinContent(navController: NavController, coinItem: CoinResponse, mo
             Column(Modifier.padding(start = 16.dp)) {
                 Row {
                     Text(
-                        text = coinItem.name,
-                        style = MaterialTheme.typography.subtitle1
+                        text = coinItem.name.take(10),
+                        style = MaterialTheme.typography.subtitle1,
                     )
                     Text(
                         text = coinItem.symbol.formatSymbol(),
@@ -277,11 +278,13 @@ private fun CoinContent(navController: NavController, coinItem: CoinResponse, mo
                         modifier = modifier.padding(top = 2.dp, start = 4.dp)
                     )
                 }
+
                 Text(
                     text = coinItem.totalVolume.formatVolume(),
                     style = MaterialTheme.typography.caption
                 )
             }
+
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
@@ -316,16 +319,10 @@ private fun CoinContent(navController: NavController, coinItem: CoinResponse, mo
     }
 }
 
-// TODO typography
-// TODO search
 // TODO row error
 // TODO row loading
-// TODO theme
 // TODO nested scroll
 // TODO review JJJ
-// TODO nested scroll
-// TODO refresh
 // TODO splash
-// TODO app icon
 // TODO placeholder
 // TODO bottomsheet bg
