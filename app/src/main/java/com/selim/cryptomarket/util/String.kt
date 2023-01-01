@@ -1,3 +1,5 @@
 package com.selim.cryptomarket.util
 
-fun String?.formatSymbol(): String = "/$this"
+import java.util.Locale
+
+fun String?.formatSymbol(): String = "/${this?.uppercase(Locale.getDefault())}"

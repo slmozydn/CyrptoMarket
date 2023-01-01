@@ -42,44 +42,50 @@ android {
 
     buildFeatures {
         viewBinding = true
-    compose = true
-  }
+        compose = true
+    }
 
-  composeOptions {
-    kotlinCompilerExtensionVersion = "1.3.2"
-  }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.3.2"
+    }
 
-  namespace = "com.selim.cryptomarket"
+    namespace = "com.selim.cryptomarket"
 }
 
 dependencies {
-  val composeBom = platform("androidx.compose:compose-bom:2022.10.00")
-  implementation(composeBom)
-  androidTestImplementation(composeBom)
+    val composeBom = platform("androidx.compose:compose-bom:2022.10.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
 
-  implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("com.google.android.material:material:1.7.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
-  // Compose
-  implementation("androidx.compose.material3:material3")
-  implementation("androidx.compose.material:material")
-  implementation("androidx.compose.foundation:foundation")
-  implementation("androidx.compose.ui:ui")
-  implementation("androidx.compose.ui:ui-tooling-preview")
-  debugImplementation("androidx.compose.ui:ui-tooling")
-  implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
-  implementation("androidx.compose.runtime:runtime-livedata")
-  implementation("androidx.activity:activity-compose:1.5.1")
-  implementation("androidx.navigation:navigation-compose:2.5.3")
-  implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
-  implementation("com.airbnb.android:lottie-compose:4.2.0")
+    // Compose
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
+    implementation("androidx.compose.runtime:runtime-livedata")
+    implementation("androidx.activity:activity-compose:1.5.1")
+    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
+    implementation("com.airbnb.android:lottie-compose:4.2.0")
+    implementation("androidx.paging:paging-compose:1.0.0-alpha17")
+    implementation("androidx.paging:paging-runtime:3.1.1")
 
-  // Data Store
-  implementation("androidx.datastore:datastore-preferences:1.0.0")
+    // Coil
+    implementation("io.coil-kt:coil:2.2.2")
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
+    // Data Store
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     // Glide
     implementation("com.github.bumptech.glide:glide:4.13.0")
