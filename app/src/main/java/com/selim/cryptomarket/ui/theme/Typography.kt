@@ -28,19 +28,19 @@ val LightTypography = Typography(
 val DarkTypography = Typography(
     subtitle1 = Typography().subtitle1.copy(
         fontWeight = FontWeight.Bold,
-        color = Color.Black,
+        color = Color.White,
         fontSize = 14.sp
     ),
 
     subtitle2 = Typography().subtitle2.copy(
         fontWeight = FontWeight.Normal,
-        color = Color.Black,
+        color = Color.White,
         fontSize = 14.sp
     ),
 
     caption = Typography().caption.copy(
         fontWeight = FontWeight.Light,
         color = Color.LightGray,
-        fontSize = 8.sp
+        fontSize = 12.sp
     )
 )

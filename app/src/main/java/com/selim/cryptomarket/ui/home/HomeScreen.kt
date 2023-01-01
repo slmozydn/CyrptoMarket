@@ -2,29 +2,22 @@ package com.selim.cryptomarket.ui.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -35,9 +28,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -51,10 +41,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -69,7 +57,7 @@ import com.selim.cryptomarket.util.formatVolume
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(isDarkTheme: MutableState<Boolean>) {
+fun HomeScreen(themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
     val homeViewModel = hiltViewModel<HomeViewModel>()
     val coins = homeViewModel.coins.collectAsLazyPagingItems()
 
@@ -78,7 +66,7 @@ fun HomeScreen(isDarkTheme: MutableState<Boolean>) {
         topBar = {
             Surface(modifier = Modifier.fillMaxWidth()) {
                 Column {
-                    MainAppBar(isDarkTheme)
+                    MainAppBar(themeViewModel,isDarkTheme)
                 }
             }
         },
@@ -100,10 +88,9 @@ fun HomeScreen(isDarkTheme: MutableState<Boolean>) {
 }
 
 @Composable
-private fun MainAppBar(isDarkTheme: MutableState<Boolean>) {
+private fun MainAppBar(themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
     val searchQuery = remember { mutableStateOf("") }
     val colors = MaterialTheme.colors
-    val tint = animateColorAsState(if (isDarkTheme.value) colors.onSurface else colors.primary).value
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -113,14 +100,13 @@ private fun MainAppBar(isDarkTheme: MutableState<Boolean>) {
     ) {
         SearchBar(searchQuery)
 
-        val icon = if (isDarkTheme.value) R.drawable.icon_sun else R.drawable.icon_night
+        val icon = if (isDarkTheme) R.drawable.icon_sun else R.drawable.icon_night
 
-        IconButton(onClick = { isDarkTheme.value = isDarkTheme.value.not() }) {
+        IconButton(onClick = { themeViewModel.onChangeTheme() }) {
             Icon(
                 painterResource(icon),
                 contentDescription = null,
-                modifier = Modifier
-                    .size(26.dp)
+                modifier = Modifier.size(26.dp)
             )
         }
 
@@ -128,7 +114,7 @@ private fun MainAppBar(isDarkTheme: MutableState<Boolean>) {
             Icon(
                 painterResource(R.drawable.icon_settings),
                 modifier = Modifier.size(26.dp),
-                contentDescription = null,
+                contentDescription = null
             )
         }
     }
@@ -137,11 +123,12 @@ private fun MainAppBar(isDarkTheme: MutableState<Boolean>) {
 @Composable
 private fun SearchBar(searchQuery: MutableState<String>) {
     TextField(
-        modifier = Modifier.height(50.dp),
+        modifier = Modifier.height(48.dp),
         value = searchQuery.value,
-        textStyle = MaterialTheme.typography.subtitle1,
+        textStyle = MaterialTheme.typography.caption,
+        shape = RoundedCornerShape(24.dp),
         singleLine = true,
-        placeholder = { Text("Search", color = Color.Gray) },
+        placeholder = { Text(text = "Search", style = MaterialTheme.typography.caption) },
         leadingIcon = { Icon(painterResource(R.drawable.icon_search), contentDescription = null) },
         trailingIcon = {
             AnimatedVisibility(visible = searchQuery.value.isNotEmpty()) {
@@ -163,7 +150,7 @@ private fun SearchBar(searchQuery: MutableState<String>) {
         colors = TextFieldDefaults.textFieldColors(
             textColor = Color.Gray,
             disabledTextColor = Color.Transparent,
-            backgroundColor = Color.Transparent,
+            backgroundColor = MaterialTheme.colors.secondaryVariant,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
