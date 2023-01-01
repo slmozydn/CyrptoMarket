@@ -63,7 +63,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         val toolbarConfig = ToolbarConfig(searchVisible = true, cancelTextVisible = true)
         with(toolbarBinding) {
             render(toolbarConfig)
-            searchViewModel.setQueryChanges(binding.searchView.textChanges())
+            //searchViewModel.setQueryChanges(binding.searchView.textChanges())
             onSearchViewClicked = {}
             onCancelTextClicked = { findNavController().popBackStack() }
         }

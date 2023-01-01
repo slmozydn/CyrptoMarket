@@ -9,7 +9,7 @@ import com.selim.cryptomarket.databinding.ItemNftBinding
 import com.selim.cryptomarket.databinding.ItemTitleBinding
 import com.selim.cryptomarket.databinding.ItemTrendingBinding
 import com.selim.cryptomarket.ui.search.SearchItem.Currency
-import com.selim.cryptomarket.ui.search.SearchItem.Nft
+import com.selim.cryptomarket.ui.search.SearchItem.Nfts
 import com.selim.cryptomarket.ui.search.SearchItem.Title
 import com.selim.cryptomarket.ui.search.SearchItem.Trending
 import com.selim.cryptomarket.util.formatMarketCap
@@ -39,10 +39,10 @@ sealed class SearchViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(bi
     }
 
     class NftViewHolder(private val binding: ItemNftBinding) : SearchViewHolder(binding) {
-        fun bind(nft: Nft) = with(binding) {
-            nftImageView.load(nft.nftResponse.thumb)
-            nftNameTextView.text = nft.nftResponse.name
-            nftSymbolTextView.text = nft.nftResponse.symbol
+        fun bind(nft: Nfts) = with(binding) {
+            // nftImageView.load(nft.nftResponse.thumb)
+            // nftNameTextView.text = nft.nftResponse.name
+            // nftSymbolTextView.text = nft.nftResponse.symbol
         }
     }
 

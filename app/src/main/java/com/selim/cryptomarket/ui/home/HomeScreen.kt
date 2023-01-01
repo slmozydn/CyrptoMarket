@@ -100,7 +100,7 @@ private fun MainAppBar(navController: NavController, themeViewModel: ThemeViewMo
             .background(colors.background),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SearchBar(null, navController, true)
+        SearchBar(searchQuery = null, navController, readOnly = true) {}
 
         val icon = if (isDarkTheme) R.drawable.icon_sun else R.drawable.icon_night
 
@@ -123,7 +123,12 @@ private fun MainAppBar(navController: NavController, themeViewModel: ThemeViewMo
 }
 
 @Composable
-internal fun SearchBar(searchQuery: MutableState<String>?, navController: NavController, readOnly: Boolean) {
+internal fun SearchBar(
+    searchQuery: MutableState<String>?,
+    navController: NavController,
+    readOnly: Boolean,
+    onSearch: (String) -> Unit
+) {
     val focusRequester = remember { FocusRequester() }
 
     TextField(
@@ -153,14 +158,14 @@ internal fun SearchBar(searchQuery: MutableState<String>?, navController: NavCon
             if (searchQuery?.value?.isEmpty() == false) {
                 Icon(painterResource(R.drawable.icon_close), contentDescription = null, modifier = Modifier.clickable {
                     searchQuery.value = ""
-                    // onSearch("")
+                    onSearch("")
                 })
             }
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         onValueChange = { query ->
             searchQuery?.value = query
-            // onSearch(query)
+            onSearch(query)
         },
         colors = TextFieldDefaults.textFieldColors(
             textColor = Color.Gray,
@@ -239,7 +244,7 @@ private fun CoinContent(coinItem: CoinResponse, modifier: Modifier = Modifier) {
                 }
                 Text(
                     text = coinItem.totalVolume.formatVolume(),
-                    style = MaterialTheme.typography.caption,
+                    style = MaterialTheme.typography.caption
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -247,15 +252,16 @@ private fun CoinContent(coinItem: CoinResponse, modifier: Modifier = Modifier) {
             Text(
                 text = coinItem.currentPrice.formatPrice(coinItem.currencyCode),
                 style = MaterialTheme.typography.subtitle1,
-                modifier = modifier.padding(end = 8.dp),
+                modifier = modifier.padding(end = 8.dp)
             )
 
             val percentage = coinItem.priceChangePercentage24h
-            val color = when {
+            val priceColor = when {
                 percentage == null || percentage == 0.0 -> colors.secondary
                 percentage > 0 -> colors.onPrimary
                 else -> colors.onSecondary
             }
+
             Text(
                 textAlign = TextAlign.Center,
                 text = coinItem.priceChangePercentage24h.formatPercentage(),
@@ -265,13 +271,12 @@ private fun CoinContent(coinItem: CoinResponse, modifier: Modifier = Modifier) {
                     .drawBehind {
                         drawRoundRect(
                             cornerRadius = CornerRadius(10f, 10f),
-                            color = color
+                            color = priceColor
                         )
                     }
                     .padding(6.dp)
-                    .requiredWidth(62.dp)
+                    .requiredWidth(60.dp)
             )
-
         }
     }
 }
@@ -285,3 +290,6 @@ private fun CoinContent(coinItem: CoinResponse, modifier: Modifier = Modifier) {
 // TODO nested scroll
 // TODO review JJJ
 // TODO nested scroll
+// TODO refresh
+// TODO splash
+// TODO rank

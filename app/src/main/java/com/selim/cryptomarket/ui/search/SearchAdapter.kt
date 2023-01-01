@@ -8,7 +8,7 @@ import com.selim.cryptomarket.R
 import com.selim.cryptomarket.ui.search.SearchItem.Currency
 import com.selim.cryptomarket.ui.search.SearchItem.Error
 import com.selim.cryptomarket.ui.search.SearchItem.Loading
-import com.selim.cryptomarket.ui.search.SearchItem.Nft
+import com.selim.cryptomarket.ui.search.SearchItem.Nfts
 import com.selim.cryptomarket.ui.search.SearchItem.Title
 import com.selim.cryptomarket.databinding.ItemCoinSearchBinding
 import com.selim.cryptomarket.databinding.ItemErrorBinding
@@ -45,7 +45,7 @@ class SearchAdapter : ListAdapter<SearchItem, SearchViewHolder>(DiffCallback) {
         when (holder) {
             is CoinViewHolder -> holder.bind(item as Currency)
             is TrendingViewHolder -> holder.bind(item as Trending)
-            is NftViewHolder -> holder.bind(item as Nft)
+            is NftViewHolder -> holder.bind(item as Nfts)
             is TitleViewHolder -> holder.bind(item as Title)
             is LoadingViewHolder -> {}
             is ErrorViewHolder -> {}
@@ -58,7 +58,7 @@ class SearchAdapter : ListAdapter<SearchItem, SearchViewHolder>(DiffCallback) {
             is Error -> R.layout.item_error
             is Currency -> R.layout.item_coin
             is Trending -> R.layout.item_trending
-            is Nft -> R.layout.item_nft
+            is Nfts -> R.layout.item_nft
             is Title -> R.layout.item_title
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -67,13 +67,13 @@ class SearchAdapter : ListAdapter<SearchItem, SearchViewHolder>(DiffCallback) {
     object DiffCallback : DiffUtil.ItemCallback<SearchItem>() {
         override fun areItemsTheSame(oldItem: SearchItem, newItem: SearchItem) = when {
             oldItem is Currency && newItem is Currency -> oldItem.currencyResponse.id == newItem.currencyResponse.id
-            oldItem is Nft && newItem is Nft -> oldItem.nftResponse.id == newItem.nftResponse.id
+            oldItem is Nfts && newItem is Nfts -> oldItem == newItem
             else -> false
         }
 
         override fun areContentsTheSame(oldItem: SearchItem, newItem: SearchItem) = when {
             oldItem is Currency && newItem is Currency -> oldItem == newItem
-            oldItem is Nft && newItem is Nft -> oldItem == newItem
+            oldItem is Nfts && newItem is Nfts -> oldItem == newItem
             else -> false
         }
     }

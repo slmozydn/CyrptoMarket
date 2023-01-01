@@ -7,7 +7,7 @@ import com.selim.cryptomarket.data.TrendingCoinResponse
 
 sealed class SearchItem {
     data class Currency(val currencyResponse: CurrencyResponse) : SearchItem()
-    data class Nft(val nftResponse: NftResponse) : SearchItem()
+    data class Nfts(val nfts: List<NftResponse>) : SearchItem()
     data class Trending(val trendingResponse: TrendingCoinResponse) : SearchItem()
     data class Title(@StringRes val titleResId: Int) : SearchItem()
     object Loading : SearchItem()
