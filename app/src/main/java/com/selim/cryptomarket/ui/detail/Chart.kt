@@ -1,6 +1,5 @@
 package com.selim.cryptomarket.ui.detail
 
-import android.graphics.Color
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.runtime.Composable
@@ -24,7 +23,7 @@ fun Chart(
                 isDragEnabled = false
                 xAxis.isEnabled = false
                 axisLeft.setDrawAxisLine(false)
-                axisLeft.textColor = Color.BLACK
+                axisLeft.textColor = 0xFF888D91.toInt()
                 axisRight.isEnabled = false
                 legend.isEnabled = false
                 setTouchEnabled(false)

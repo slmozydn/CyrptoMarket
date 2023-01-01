@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -53,6 +54,9 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.AsyncImage
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.data.CoinResponse
 import com.selim.cryptomarket.ui.navigation.Screen.Detail
@@ -78,16 +82,12 @@ fun HomeScreen(navController: NavController, themeViewModel: ThemeViewModel, isD
         },
         content = {
             when (coins.loadState.refresh) {
-                is LoadState.Loading -> {
-                    LoadingState()
-                }
+                is LoadState.Loading -> LoadingState()
                 is LoadState.Error -> {
                     val error = coins.loadState.refresh as LoadState.Error
-                    ErrorState(error.error.message.orEmpty())
+                    ErrorState(message = error.error.message.orEmpty())
                 }
-                else -> {
-                    CoinList(navController, coins)
-                }
+                else -> CoinList(navController, coins)
             }
         }
     )
@@ -195,26 +195,44 @@ internal fun SearchBar(
 @Composable
 private fun CoinList(navController: NavController, coinPagingItems: LazyPagingItems<CoinResponse>) {
     val listState = rememberLazyListState()
+    val swipeRefreshState = rememberSwipeRefreshState(false)
 
-    Card(
-        backgroundColor = MaterialTheme.colors.onBackground,
-        elevation = 8.dp,
-        shape = RoundedCornerShape(
-            topStart = 24.dp,
-            topEnd = 24.dp,
-            bottomEnd = 0.dp,
-            bottomStart = 0.dp
-        ),
-        modifier = Modifier.padding(top = 8.dp)
+    SwipeRefresh(
+        state = swipeRefreshState,
+        onRefresh = {
+            coinPagingItems.refresh()
+        },
+        indicator = { state, trigger ->
+            SwipeRefreshIndicator(
+                state = state,
+                refreshTriggerDistance = trigger,
+                contentColor = MaterialTheme.colors.primary,
+                backgroundColor = MaterialTheme.colors.onBackground
+            )
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 8.dp),
     ) {
-        LazyColumn(
-            state = listState,
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+        Card(
+            backgroundColor = MaterialTheme.colors.onBackground,
+            elevation = 8.dp,
+            shape = RoundedCornerShape(
+                topStart = 24.dp,
+                topEnd = 24.dp,
+                bottomEnd = 0.dp,
+                bottomStart = 0.dp
+            )
         ) {
-            items(coinPagingItems) { coinItem ->
-                if (coinItem != null) {
-                    CoinContent(navController, coinItem)
+            LazyColumn(
+                state = listState,
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                items(coinPagingItems) { coinItem ->
+                    if (coinItem != null) {
+                        CoinContent(navController, coinItem)
+                    }
                 }
             }
         }
@@ -298,7 +316,6 @@ private fun CoinContent(navController: NavController, coinItem: CoinResponse, mo
 }
 
 // TODO typography
-// TODO renkler
 // TODO search
 // TODO row error
 // TODO row loading
@@ -308,8 +325,6 @@ private fun CoinContent(navController: NavController, coinItem: CoinResponse, mo
 // TODO nested scroll
 // TODO refresh
 // TODO splash
-// TODO rank
 // TODO app icon
 // TODO placeholder
-// TODO format pricing
 // TODO bottomsheet bg

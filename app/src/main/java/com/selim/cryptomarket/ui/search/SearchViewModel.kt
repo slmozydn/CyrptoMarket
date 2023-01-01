@@ -2,18 +2,19 @@ package com.selim.cryptomarket.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.selim.cryptomarket.R
+import com.selim.cryptomarket.R.string
+import com.selim.cryptomarket.service.CryptoCurrencyService
 import com.selim.cryptomarket.ui.search.SearchItem.Currency
 import com.selim.cryptomarket.ui.search.SearchItem.Error
 import com.selim.cryptomarket.ui.search.SearchItem.Loading
 import com.selim.cryptomarket.ui.search.SearchItem.Nfts
-import com.selim.cryptomarket.ui.search.SearchItem.Title
-import com.selim.cryptomarket.service.CryptoCurrencyService
 import com.selim.cryptomarket.ui.search.SearchItem.SearchHistory
+import com.selim.cryptomarket.ui.search.SearchItem.Title
 import com.selim.cryptomarket.ui.search.SearchItem.Trending
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
@@ -54,35 +55,37 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.emit(listOf(Loading))
             try {
-                val searchResponse = async { cryptoCurrencyService.search(searchString) }
-                val trendingResponse = async { cryptoCurrencyService.searchTrending() }
-                val searchHistory = runBlocking { searchDataStore.searchQueries.first() }
+                coroutineScope {
+                    val searchResponse = async { cryptoCurrencyService.search(searchString) }
+                    val trendingResponse = async { cryptoCurrencyService.searchTrending() }
+                    val searchHistory = runBlocking { searchDataStore.searchQueries.first() }
 
-                val result = buildList {
-                    val searchResult = searchResponse.await()
-                    val trendingCoins = trendingResponse.await().coins.map(::Trending).take(RESULT_COIN_SIZE)
-                    val coins = searchResult.coins.take(RESULT_COIN_SIZE).map(::Currency)
-                    val nfts = searchResult.nfts.filter { it.thumb != EMPTY_IMAGE_URL }.take(RESULT_NFT_SIZE)
+                    val result = buildList {
+                        val searchResult = searchResponse.await()
+                        val trendingCoins = trendingResponse.await().coins.map(::Trending).take(RESULT_COIN_SIZE)
+                        val coins = searchResult.coins.take(RESULT_COIN_SIZE).map(::Currency)
+                        val nfts = searchResult.nfts.filter { it.thumb != EMPTY_IMAGE_URL }.take(RESULT_NFT_SIZE)
 
-                    if (searchHistory.isNotEmpty()) {
-                        val searchQueries: List<String> = searchHistory.split(" ").toList().reversed()
-                        add(SearchHistory(searchQueries))
-                    }
+                        if (searchHistory.isNotEmpty()) {
+                            val searchQueries: List<String> = searchHistory.split(" ").toList().reversed()
+                            add(SearchHistory(searchQueries))
+                        }
 
-                    if (coins.isNotEmpty()) {
-                        add(Title(R.string.coins))
-                        addAll(coins)
+                        if (coins.isNotEmpty()) {
+                            add(Title(string.coins))
+                            addAll(coins)
+                        }
+                        if (nfts.isNotEmpty()) {
+                            add(Title(string.nfts))
+                            add(Nfts(nfts))
+                        }
+                        if (trendingCoins.isNotEmpty()) {
+                            add(Title(string.trending))
+                            addAll(trendingCoins)
+                        }
                     }
-                    if (nfts.isNotEmpty()) {
-                        add(Title(R.string.nfts))
-                        add(Nfts(nfts))
-                    }
-                    if (trendingCoins.isNotEmpty()) {
-                        add(Title(R.string.trending))
-                        addAll(trendingCoins)
-                    }
+                    _uiState.emit(result)
                 }
-                _uiState.emit(result)
             } catch (exception: Exception) {
                 _uiState.emit(listOf(Error))
             }

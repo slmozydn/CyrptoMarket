@@ -15,28 +15,40 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.selim.cryptomarket.R
+import com.selim.cryptomarket.ui.detail.DetailViewModel.DetailUiState
 import com.selim.cryptomarket.ui.detail.TimeRange.ONE_DAY
+import com.selim.cryptomarket.ui.home.ErrorState
+import com.selim.cryptomarket.ui.home.LoadingState
 import com.selim.cryptomarket.ui.settings.ChangeCurrencyBottomSheetFragment.CurrencyType.TRY
 import com.selim.cryptomarket.ui.settings.ChangeCurrencyBottomSheetFragment.CurrencyType.USD
 import com.selim.cryptomarket.util.formatPercentage
 import com.selim.cryptomarket.util.formatPrice
-
-//import com.google.accompanist.swiperefresh.SwipeRefresh
-//import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.selim.cryptomarket.util.formatVolume
 
 @Composable
 fun DetailScreen(currencyId: String) {
     val viewModel = hiltViewModel<DetailViewModel>()
     viewModel.getDetail(currencyId)
-
     val uiState = viewModel.uiState.collectAsState().value
+
+    when {
+        uiState.loading -> LoadingState()
+        uiState.error != null -> ErrorState(message = uiState.error.message.orEmpty())
+        else -> DetailContent(viewModel, uiState, currencyId)
+    }
+}
+
+@Composable
+private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState, currencyId: String) {
     val currencyCode = uiState.currencyCode
     val coin = uiState.coinDetail ?: return
     val currentPrice = when (currencyCode) {
@@ -76,7 +88,11 @@ fun DetailScreen(currencyId: String) {
         TRY.value -> coin.marketData.atl.tryX
         else -> coin.marketData.atl.eur
     }.formatPrice()
-
+    val volume = when (currencyCode) {
+        USD.value -> coin.marketData.totalVolume.usd
+        TRY.value -> coin.marketData.totalVolume.tryX
+        else -> coin.marketData.totalVolume.eur
+    }.formatVolume().replace("Volume ", "")
     val isPositive = coin.marketData.priceChangePercentage24h > 0
     val chartValues = uiState.coinChart!!.prices.map {
         Entry(
@@ -84,83 +100,77 @@ fun DetailScreen(currencyId: String) {
             it[1].toFloat()
         )
     }
-
-    // val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = uiState is UiState.Loading)
-
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = uiState.loading)
     val scrollState = rememberScrollState()
 
-    // when (uiState) {
-    //   is UiState.Success -> {
-
-    // val viewState = (uiState as UiState.Success<MarketScreenViewState>).data
-
     Surface {
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .fillMaxSize()
-                .background(colors.background)
+        SwipeRefresh(
+            state = swipeRefreshState,
+            onRefresh = {
+                viewModel.getDetail(currencyId)
+            },
+            indicator = { state, trigger ->
+                SwipeRefreshIndicator(
+                    state = state,
+                    refreshTriggerDistance = trigger,
+                    contentColor = colors.primary,
+                    backgroundColor = colors.onBackground,
+                )
+            },
+            modifier = Modifier.fillMaxSize()
         ) {
-            PriceHeader(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                currency = coin.name + " " + "(${coin.symbol.uppercase()})",
-                icon = coin.image.small,
-                price = currentPrice,
-                changeRate = changePercentage,
-                isChangeRatePositive = isPositive
-            )
+                    .verticalScroll(scrollState)
+                    .background(colors.background)
+            ) {
+                PriceHeader(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                    currency = coin.name + " " + "(${coin.symbol.uppercase()})",
+                    icon = coin.image.small,
+                    price = currentPrice,
+                    changeRate = changePercentage,
+                    isChangeRatePositive = isPositive
+                )
 
-            TimeRangePicker(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                selectedTimeRange = ONE_DAY
-            ) { timeRange ->
-                //marketViewModel.getMarketInformation(timeRange)
+                TimeRangePicker(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                    selectedTimeRange = ONE_DAY
+                ) { timeRange ->
+                    //todo
+                }
+
+                Chart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    lineDataSet = getLineDataSet(LocalContext.current, isPositive, chartValues)
+                )
+
+                Price(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                    athPrice = athPrice,
+                    atlPrice = atlPrice,
+                    highPrice = highestPrice,
+                    lowPrice = lowestPrice,
+                    averagePrice = volume,
+                    changePrice = changePrice,
+                )
+
+                AboutChart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 24.dp, end = 16.dp),
+                    aboutChart = coin.description.en
+                )
             }
-
-            Chart(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                lineDataSet = getLineDataSet(LocalContext.current, isPositive, chartValues)
-            )
-
-            Price(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                athPrice = athPrice,
-                atlPrice = atlPrice,
-                highPrice = highestPrice,
-                lowPrice = lowestPrice,
-                averagePrice = "averagePrice",
-                changePrice = changePrice,
-            )
-
-            AboutChart(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 24.dp, end = 16.dp),
-                aboutChart = coin.description.en
-            )
         }
-    }
-    //       }
-    //       is UiState.Error -> {
-    //           ErrorScreen(errorScreenViewState = ErrorScreenViewState((uiState as UiState.Error).exception)) {
-    //               marketViewModel.getMarketInformation(TimeRange.THIRTY_DAYS)
-    //           }
-    //       }
-    //       is UiState.Loading -> {
-    //           LoadingScreen()
-    //       }
-    //   }
-
-    LaunchedEffect(Unit) {
-        //marketViewModel.getMarketInformation(TimeRange.THIRTY_DAYS)
     }
 }
 
@@ -181,12 +191,5 @@ fun getLineDataSet(context: Context, isPositive: Boolean, chartValues: List<Entr
         }
         lineWidth = 1f
         setDrawFilled(true)
-        setDrawCircles(true)
-        circleColors = listOf(ContextCompat.getColor(context, colorX))
+        setDrawCircles(false)
     }
-
-@Preview(showBackground = true)
-@Composable
-private fun MarketScreenPreview() {
-    DetailScreen("currencyId")
-}

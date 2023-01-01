@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -71,7 +72,7 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
             ) {
                 Row(
                     Modifier
-                        .background(MaterialTheme.colors.background)
+                        .background(colors.background)
                         .padding(bottom = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -86,22 +87,23 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
                             .clickable { navController.navigateUp() },
                         text = stringResource(id = R.string.cancel),
                         style = MaterialTheme.typography.h3,
-                        color = MaterialTheme.colors.surface
+                        color = colors.surface
                     )
                 }
             }
         },
         content = {
+            val backgroundColor = colors.onBackground
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 modifier = modifier
-                    .background(MaterialTheme.colors.onBackground)
+                    .background(backgroundColor)
                     .fillMaxSize()
             ) {
                 items(uiState) { uiState ->
                     when (uiState) {
-                        SearchItem.Error -> ErrorState(message = "error")
-                        SearchItem.Loading -> LoadingState()
+                        SearchItem.Error -> ErrorState(backgroundColor = backgroundColor)
+                        SearchItem.Loading -> LoadingState(backgroundColor = backgroundColor)
                         is SearchItem.SearchHistory -> SearchHistory(
                             uiState.searchQueries,
                             viewModel::onSearch,
@@ -182,7 +184,7 @@ fun Currency(currency: CurrencyResponse, modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.onBackground)
+            .background(colors.onBackground)
             .padding(vertical = 8.dp)
     ) {
         AsyncImage(
@@ -283,7 +285,7 @@ fun Nfts(nfts: List<NftResponse>) {
 fun Nft(nft: NftResponse, modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.background(MaterialTheme.colors.onBackground)
+        modifier = modifier.background(colors.onBackground)
     ) {
         AsyncImage(
             model = nft.thumb,

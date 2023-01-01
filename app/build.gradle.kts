@@ -77,9 +77,10 @@ dependencies {
     implementation("androidx.paging:paging-runtime:3.1.1")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.25.0")
 
     // Third Party
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
 
     // Coil
     implementation("io.coil-kt:coil:2.2.2")

@@ -26,7 +26,7 @@ fun AboutChart(
 
         Text(
             text = aboutChart,
-            style = typography.subtitle2
+            style = typography.caption
         )
     }
 }

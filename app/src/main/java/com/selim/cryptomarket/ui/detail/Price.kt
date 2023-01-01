@@ -36,8 +36,8 @@ fun Price(
             textAverage, textAveragePrice,
             textClose, textClosePrice,
             textLow, textLowPrice,
-            textChange, textChangePrice) = createRefs()
-
+            textChange, textChangePrice
+        ) = createRefs()
 
         Text(
             text = "Price",
@@ -94,7 +94,7 @@ fun Price(
         )
 
         Text(
-            text = "Average",
+            text = "Volume",
             style = typography.subtitle1,
             modifier = Modifier
                 .padding(top = 8.dp)
