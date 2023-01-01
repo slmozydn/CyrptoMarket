@@ -114,12 +114,12 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
                     backgroundColor = colors.onBackground,
                 )
             },
-            modifier = Modifier.fillMaxSize()
         ) {
             Column(
-                modifier = Modifier
-                    .verticalScroll(scrollState)
+                Modifier
+                    .fillMaxSize()
                     .background(colors.background)
+                    .verticalScroll(scrollState)
             ) {
                 PriceHeader(
                     modifier = Modifier
