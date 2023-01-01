@@ -43,6 +43,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -50,6 +51,7 @@ import androidx.paging.compose.items
 import coil.compose.AsyncImage
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.data.CoinResponse
+import com.selim.cryptomarket.ui.navigation.Screen.Settings
 import com.selim.cryptomarket.util.formatPercentage
 import com.selim.cryptomarket.util.formatPrice
 import com.selim.cryptomarket.util.formatSymbol
@@ -57,7 +59,7 @@ import com.selim.cryptomarket.util.formatVolume
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
+fun HomeScreen(navController: NavController, themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
     val homeViewModel = hiltViewModel<HomeViewModel>()
     val coins = homeViewModel.coins.collectAsLazyPagingItems()
 
@@ -66,7 +68,7 @@ fun HomeScreen(themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
         topBar = {
             Surface(modifier = Modifier.fillMaxWidth()) {
                 Column {
-                    MainAppBar(themeViewModel,isDarkTheme)
+                    MainAppBar(navController, themeViewModel, isDarkTheme)
                 }
             }
         },
@@ -88,7 +90,7 @@ fun HomeScreen(themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
 }
 
 @Composable
-private fun MainAppBar(themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
+private fun MainAppBar(navController: NavController, themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
     val searchQuery = remember { mutableStateOf("") }
     val colors = MaterialTheme.colors
     Row(
@@ -110,7 +112,7 @@ private fun MainAppBar(themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
             )
         }
 
-        IconButton(onClick = { }) {
+        IconButton(onClick = { navController.navigate(Settings.route) }) {
             Icon(
                 painterResource(R.drawable.icon_settings),
                 modifier = Modifier.size(26.dp),
