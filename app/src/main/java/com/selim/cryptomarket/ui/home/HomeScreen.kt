@@ -265,8 +265,8 @@ private fun CoinContent(coinItem: CoinResponse, modifier: Modifier = Modifier) {
             val percentage = coinItem.priceChangePercentage24h
             val priceColor = when {
                 percentage == null || percentage == 0.0 -> colors.secondary
-                percentage > 0 -> colors.onPrimary
-                else -> colors.onSecondary
+                percentage > 0 -> Color(0xFF2FBE85)
+                else -> Color(0xFFF6455D)
             }
 
             Text(
@@ -303,3 +303,4 @@ private fun CoinContent(coinItem: CoinResponse, modifier: Modifier = Modifier) {
 // TODO app icon
 // TODO placeholder
 // TODO format pricing
+// TODO bottomsheet bg

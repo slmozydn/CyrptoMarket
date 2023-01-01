@@ -8,10 +8,13 @@
   <string name="cancel">Cancel</string>
   <string name="retry">Try Again</string>
   <string name="currency">Currency</string>
+  <string name="language">Language</string>
   <string name="volume">Volume</string>
   <string name="tl">TRY</string>
   <string name="usd">USD</string>
   <string name="eur">EUR</string>
+  <string name="english">EN</string>
+  <string name="turkish">TR</string>
   <string name="search_error_message">Oops !</string>
   <string name="search_history">Search History</string>
 </resources>

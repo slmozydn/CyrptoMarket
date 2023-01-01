@@ -66,8 +66,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun observeViewModel() = viewLifecycleOwner.lifecycleScope.launch {
-        settingsViewModel.onSettingsChanged.collectLatest {
-            requireActivity().restart()
-        }
+        //settingsViewModel.onSettingsChanged.collectLatest {
+        //    requireActivity().restart()
+        //}
     }
 }
