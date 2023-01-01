@@ -318,11 +318,3 @@ private fun CoinContent(navController: NavController, coinItem: CoinResponse, mo
         }
     }
 }
-
-// TODO row error
-// TODO row loading
-// TODO nested scroll
-// TODO review JJJ
-// TODO splash
-// TODO placeholder
-// TODO bottomsheet bg
