@@ -1,7 +1,7 @@
 package com.selim.cryptomarket.util
 
-import com.selim.cryptomarket.ui.settings.ChangeCurrencyBottomSheetFragment.CurrencyType.TRY
-import com.selim.cryptomarket.ui.settings.ChangeCurrencyBottomSheetFragment.CurrencyType.USD
+import com.selim.cryptomarket.ui.settings.CurrencyType.TRY
+import com.selim.cryptomarket.ui.settings.CurrencyType.USD
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale

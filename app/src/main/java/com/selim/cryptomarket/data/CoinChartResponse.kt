@@ -1,4 +1,4 @@
-package com.selim.cryptomarket.ui.detail
+package com.selim.cryptomarket.data
 
 import com.google.gson.annotations.SerializedName
 

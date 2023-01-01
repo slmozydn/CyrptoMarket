@@ -11,7 +11,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,8 +27,8 @@ import com.selim.cryptomarket.ui.detail.DetailViewModel.DetailUiState
 import com.selim.cryptomarket.ui.detail.TimeRange.ONE_DAY
 import com.selim.cryptomarket.ui.home.ErrorState
 import com.selim.cryptomarket.ui.home.LoadingState
-import com.selim.cryptomarket.ui.settings.ChangeCurrencyBottomSheetFragment.CurrencyType.TRY
-import com.selim.cryptomarket.ui.settings.ChangeCurrencyBottomSheetFragment.CurrencyType.USD
+import com.selim.cryptomarket.ui.settings.CurrencyType.TRY
+import com.selim.cryptomarket.ui.settings.CurrencyType.USD
 import com.selim.cryptomarket.util.formatPercentage
 import com.selim.cryptomarket.util.formatPrice
 import com.selim.cryptomarket.util.formatVolume

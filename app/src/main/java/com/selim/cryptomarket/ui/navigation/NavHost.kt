@@ -8,7 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.selim.cryptomarket.ui.detail.DetailScreen
 import com.selim.cryptomarket.ui.home.HomeScreen
 import com.selim.cryptomarket.ui.home.SettingsScreen
-import com.selim.cryptomarket.ui.home.ThemeViewModel
+import com.selim.cryptomarket.ui.theme.ThemeViewModel
 import com.selim.cryptomarket.ui.navigation.Screen.Detail
 import com.selim.cryptomarket.ui.navigation.Screen.Home
 import com.selim.cryptomarket.ui.navigation.Screen.Search

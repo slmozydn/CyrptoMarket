@@ -3,8 +3,8 @@ package com.selim.cryptomarket.service
 import com.selim.cryptomarket.data.CoinResponse
 import com.selim.cryptomarket.data.SearchResult
 import com.selim.cryptomarket.data.SearchTrendingResult
-import com.selim.cryptomarket.ui.detail.CoinChartResponse
-import com.selim.cryptomarket.ui.detail.CoinDetailResponse
+import com.selim.cryptomarket.data.CoinChartResponse
+import com.selim.cryptomarket.data.CoinDetailResponse
 import com.selim.cryptomarket.ui.home.HomeViewModel.Companion.PAGE_SIZE
 import retrofit2.http.GET
 import retrofit2.http.Path

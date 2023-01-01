@@ -5,8 +5,11 @@ import androidx.paging.PagingState
 import com.selim.cryptomarket.data.CoinResponse
 import com.selim.cryptomarket.service.CryptoCurrencyService
 
-class CoinsPagingSource(private val service: CryptoCurrencyService, private val currencyCode: String) :
-    PagingSource<Int, CoinResponse>() {
+class CoinsPagingSource(
+    private val service: CryptoCurrencyService,
+    private val currencyCode: String
+) : PagingSource<Int, CoinResponse>() {
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CoinResponse> {
         val pageNumber = params.key ?: 1
         return try {

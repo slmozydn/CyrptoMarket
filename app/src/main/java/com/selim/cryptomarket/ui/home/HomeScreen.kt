@@ -62,6 +62,7 @@ import com.selim.cryptomarket.data.CoinResponse
 import com.selim.cryptomarket.ui.navigation.Screen.Detail
 import com.selim.cryptomarket.ui.navigation.Screen.Search
 import com.selim.cryptomarket.ui.navigation.Screen.Settings
+import com.selim.cryptomarket.ui.theme.ThemeViewModel
 import com.selim.cryptomarket.util.formatPercentage
 import com.selim.cryptomarket.util.formatPrice
 import com.selim.cryptomarket.util.formatSymbol

@@ -2,8 +2,10 @@ package com.selim.cryptomarket.ui.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.selim.cryptomarket.data.CoinChartResponse
+import com.selim.cryptomarket.data.CoinDetailResponse
 import com.selim.cryptomarket.service.CryptoCurrencyService
-import com.selim.cryptomarket.ui.settings.ChangeCurrencyBottomSheetFragment.CurrencyType.USD
+import com.selim.cryptomarket.ui.settings.CurrencyType.USD
 import com.selim.cryptomarket.ui.settings.SettingsDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async

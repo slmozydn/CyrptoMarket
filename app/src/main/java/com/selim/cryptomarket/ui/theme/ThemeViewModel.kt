@@ -1,4 +1,4 @@
-package com.selim.cryptomarket.ui.home
+package com.selim.cryptomarket.ui.theme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
