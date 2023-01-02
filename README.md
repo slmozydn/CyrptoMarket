@@ -5,11 +5,11 @@ A cryptocurrency tracking app that implemented with Jetpack Compose
 ## Screenshots
 
 <p>
-<img src="screenshots/2.gif" width="28%" height="45%"/>
-<img src="screenshots/3.gif" width="28%" height="45%"/>
-<img src="screenshots/4.gif" width="28%" height="45%"/>
-<img src="screenshots/5.gif" width="28%" height="45%"/>
-<img src="screenshots/6.gif" width="28%" height="45%"/>
+<img src="screenshots/2.gif" width="20%" height="35%"/>
+<img src="screenshots/3.gif" width="20%" height="35%"/>
+<img src="screenshots/4.gif" width="20%" height="35%"/>
+<img src="screenshots/5.gif" width="20%" height="35%"/>
+<img src="screenshots/6.gif" width="20%" height="35%"/>
 </p>
 
 ## Technologies
