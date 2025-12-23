@@ -11,7 +11,7 @@ class ApiKeyInterceptor : Interceptor {
         val apiKey = BuildConfig.COINGECKO_API_KEY
         val newRequest = if (apiKey.isNotEmpty()) {
             request.newBuilder()
-                .addHeader(API_KEY, apiKey)
+                .addHeader(API_KEY_HEADER, apiKey)
                 .build()
         } else {
             request
@@ -21,6 +21,6 @@ class ApiKeyInterceptor : Interceptor {
     }
 
     companion object {
-        private const val API_KEY = "api_key"
+        private const val API_KEY_HEADER = "x-cg-demo-api-key"
     }
 }
