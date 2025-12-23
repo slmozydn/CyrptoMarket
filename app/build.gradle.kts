@@ -1,9 +1,21 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
+}
+
+fun getApiKey(): String {
+    val localPropertiesFile = rootProject.file("local.properties")
+    val props = Properties().apply {
+        load(FileInputStream(localPropertiesFile))
+    }
+
+    return props.getProperty("COINGECKO_API_KEY","")
 }
 
 android {
@@ -17,6 +29,7 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        buildConfigField("String", "COINGECKO_API_KEY", "\"${getApiKey()}\"")
         composeOptions {
             kotlinCompilerExtensionVersion = "1.3.2"
         }
@@ -40,6 +53,7 @@ android {
         viewBinding = true
         dataBinding = true
         compose = true
+        buildConfig = true
     }
 
     composeOptions {

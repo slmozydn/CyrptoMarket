@@ -46,10 +46,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideApiKeyInterceptor() = ApiKeyInterceptor()
+
+    @Provides
+    @Singleton
     fun provideOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        currencyInterceptor: CurrencyInterceptor
+        currencyInterceptor: CurrencyInterceptor,
+        apiKeyInterceptor: ApiKeyInterceptor
     ) = OkHttpClient.Builder()
+        .addInterceptor(apiKeyInterceptor)
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(currencyInterceptor)
         .build()
