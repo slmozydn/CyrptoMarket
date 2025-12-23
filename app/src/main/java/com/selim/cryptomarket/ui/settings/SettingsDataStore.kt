@@ -10,8 +10,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Named
 
-class SettingsDataStore @Inject constructor(private val settingsDataStore: DataStore<Preferences>) {
+class SettingsDataStore @Inject constructor(
+    @Named("settings") private val settingsDataStore: DataStore<Preferences>
+) {
 
     val currencyCode: Flow<String> = settingsDataStore.data.map { preferences ->
         preferences[KEY_CURRENCY] ?: USD.value

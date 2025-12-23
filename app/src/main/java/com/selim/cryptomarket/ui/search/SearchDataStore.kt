@@ -7,8 +7,11 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Named
 
-class SearchDataStore @Inject constructor(private val searchDataStore: DataStore<Preferences>) {
+class SearchDataStore @Inject constructor(
+    @Named("search") private val searchDataStore: DataStore<Preferences>
+) {
 
     val searchQueries: Flow<String> = searchDataStore.data.map { preferences ->
         preferences[KEY_SEARCH_QUERY] ?: ""

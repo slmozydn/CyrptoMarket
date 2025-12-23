@@ -4,13 +4,12 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.selim.cryptomarket.ui.search.SearchDataStore
-import com.selim.cryptomarket.ui.settings.SettingsDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -22,10 +21,15 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideCurrencyDataStore(@ApplicationContext context: Context) = SettingsDataStore(context.settingsDataStore)
+    @Named("settings")
+    fun provideSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return context.settingsDataStore
+    }
 
     @Provides
     @Singleton
-    fun provideSearchDataStore(@ApplicationContext context: Context) = SearchDataStore(context.searchDataStore)
-
+    @Named("search")
+    fun provideSearchDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return context.searchDataStore
+    }
 }
