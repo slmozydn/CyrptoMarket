@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,7 +57,7 @@ class SearchViewModel @Inject constructor(
                 coroutineScope {
                     val searchResponse = async { cryptoCurrencyService.search(searchString) }
                     val trendingResponse = async { cryptoCurrencyService.searchTrending() }
-                    val searchHistory = runBlocking { searchDataStore.searchQueries.first() }
+                    val searchHistory = searchDataStore.searchQueries.first()
 
                     val result = buildList {
                         val searchResult = searchResponse.await()

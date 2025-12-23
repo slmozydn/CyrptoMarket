@@ -12,9 +12,8 @@ import com.selim.cryptomarket.service.CryptoCurrencyService
 import com.selim.cryptomarket.ui.settings.SettingsDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,12 +22,17 @@ class HomeViewModel @Inject constructor(
     private val dataStore: SettingsDataStore
 ) : ViewModel() {
 
-    private val currencyCode = runBlocking { dataStore.currencyCode.first() }
     val onChangeTheme = dataStore.isDarkMode.asLiveData()
 
-    val coins: Flow<PagingData<CoinResponse>> = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-        CoinsPagingSource(cryptoCurrencyService, currencyCode)
-    }.flow.cachedIn(viewModelScope)
+    // Currency code'u Flow olarak tut ve PagingSource'a geçir
+    // İlk değer için default kullan, sonra güncelle
+    val coins: Flow<PagingData<CoinResponse>> = dataStore.currencyCode
+        .flatMapLatest { currencyCode ->
+            Pager(PagingConfig(pageSize = PAGE_SIZE)) {
+                CoinsPagingSource(cryptoCurrencyService, currencyCode)
+            }.flow
+        }
+        .cachedIn(viewModelScope)
 
     fun onChangeTheme() = viewModelScope.launch {
         dataStore.changeThemePreference()

@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,7 +36,7 @@ class DetailViewModel @Inject constructor(
     fun getDetail(id: String) = viewModelScope.launch {
         _uiState.value = try {
             coroutineScope {
-                val currencyCode = runBlocking { settingsDataStore.currencyCode.first() }
+                val currencyCode = settingsDataStore.currencyCode.first()
                 val result = async { cryptoCurrencyService.coinDetails(id) }
                 val chart = async { cryptoCurrencyService.coinChart(id, THIRTY_DAYS.value) }
                 _uiState.value.copy(
