@@ -1,70 +1,76 @@
 package com.selim.cryptomarket.data
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class CoinDetailResponse(
-    @SerializedName("description")
+    @SerialName("description")
     val description: Description,
-    @SerializedName("id")
+    @SerialName("id")
     val id: String,
-    @SerializedName("image")
+    @SerialName("image")
     val image: Image,
-    @SerializedName("last_updated")
+    @SerialName("last_updated")
     val lastUpdated: String,
-    @SerializedName("market_cap_rank")
+    @SerialName("market_cap_rank")
     val marketCapRank: Int,
-    @SerializedName("market_data")
+    @SerialName("market_data")
     val marketData: MarketData,
-    @SerializedName("name")
+    @SerialName("name")
     val name: String,
-    @SerializedName("symbol")
+    @SerialName("symbol")
     val symbol: String,
 )
 
+@Serializable
 data class Description(
-    @SerializedName("en")
+    @SerialName("en")
     val en: String
 )
 
+@Serializable
 data class Image(
-    @SerializedName("large")
+    @SerialName("large")
     val large: String,
-    @SerializedName("small")
+    @SerialName("small")
     val small: String
 )
 
+@Serializable
 data class MarketData(
-    @SerializedName("ath")
+    @SerialName("ath")
     val ath: CurrencyType,
-    @SerializedName("atl")
+    @SerialName("atl")
     val atl: CurrencyType,
-    @SerializedName("current_price")
+    @SerialName("current_price")
     val currentPrice: CurrencyType,
-    @SerializedName("high_24h")
+    @SerialName("high_24h")
     val high24h: CurrencyType,
-    @SerializedName("last_updated")
+    @SerialName("last_updated")
     val lastUpdated: String,
-    @SerializedName("low_24h")
+    @SerialName("low_24h")
     val low24h: CurrencyType,
-    @SerializedName("market_cap")
+    @SerialName("market_cap")
     val marketCap: CurrencyType,
-    @SerializedName("market_cap_rank")
+    @SerialName("market_cap_rank")
     val marketCapRank: Int,
-    @SerializedName("price_change_24h_in_currency")
+    @SerialName("price_change_24h_in_currency")
     val priceChange24hInCurrency: CurrencyType,
-    @SerializedName("price_change_percentage_24h")
+    @SerialName("price_change_percentage_24h")
     val priceChangePercentage24h: Double,
-    @SerializedName("price_change_percentage_24h_in_currency")
+    @SerialName("price_change_percentage_24h_in_currency")
     val priceChangePercentage24hInCurrency: CurrencyType,
-    @SerializedName("total_volume")
+    @SerialName("total_volume")
     val totalVolume: CurrencyType
 )
 
+@Serializable
 data class CurrencyType(
-    @SerializedName("eur")
+    @SerialName("eur")
     val eur: Double,
-    @SerializedName("try")
+    @SerialName("try")
     val tryX: Double,
-    @SerializedName("usd")
+    @SerialName("usd")
     val usd: Double
 )

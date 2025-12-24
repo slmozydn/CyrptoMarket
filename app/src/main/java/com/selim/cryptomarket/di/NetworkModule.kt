@@ -1,15 +1,17 @@
 package com.selim.cryptomarket.di
 
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.selim.cryptomarket.service.CryptoCurrencyService
 import com.selim.cryptomarket.ui.settings.SettingsDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -20,15 +22,21 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(gson: GsonConverterFactory, okHttpClient: OkHttpClient) = Retrofit.Builder()
-        .addConverterFactory(gson)
-        .baseUrl(BASE_URL)
-        .client(okHttpClient)
-        .build()
+    fun provideJson(): Json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+        isLenient = true
+        encodeDefaults = false
+        prettyPrint = false
+    }
 
     @Provides
     @Singleton
-    fun provideGsonConverterFactory() = GsonConverterFactory.create()
+    fun provideRetrofit(json: Json, okHttpClient: OkHttpClient) = Retrofit.Builder()
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        .baseUrl(BASE_URL)
+        .client(okHttpClient)
+        .build()
 
     @Provides
     @Singleton

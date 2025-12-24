@@ -1,17 +1,20 @@
 package com.selim.cryptomarket.data
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
+@Serializable
 data class CoinResponse(
-    @SerializedName("id") val id: String,
-    @SerializedName("symbol") val symbol: String,
-    @SerializedName("name") val name: String,
-    @SerializedName("image") val image: String,
-    @SerializedName("current_price") val currentPrice: Double,
-    @SerializedName("market_cap") val marketCap: Double? = null,
-    @SerializedName("market_cap_rank") val marketCapRank: Int? = null,
-    @SerializedName("total_volume") val totalVolume: Double? = null,
-    @SerializedName("price_change_percentage_24h") val priceChangePercentage24h: Double? = null,
-    @SerializedName("last_updated") val lastUpdated: String? = null,
+    @SerialName("id") val id: String,
+    @SerialName("symbol") val symbol: String,
+    @SerialName("name") val name: String,
+    @SerialName("image") val image: String,
+    @SerialName("current_price") val currentPrice: Double,
+    @SerialName("market_cap") val marketCap: Double? = null,
+    @SerialName("market_cap_rank") val marketCapRank: Int? = null,
+    @SerialName("total_volume") val totalVolume: Double? = null,
+    @SerialName("price_change_percentage_24h") val priceChangePercentage24h: Double? = null,
+    @SerialName("last_updated") val lastUpdated: String? = null,
     @Transient val currencyCode: String? = null
 )

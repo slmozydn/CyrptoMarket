@@ -1,3 +1,8 @@
 package com.selim.cryptomarket.data
 
-data class SearchTrendingResult(val coins: List<TrendingCoinResponse>)
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class SearchTrendingResult(
+    val coins: List<TrendingCoinResponse>,
+)

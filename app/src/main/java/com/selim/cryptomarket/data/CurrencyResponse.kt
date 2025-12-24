@@ -1,11 +1,13 @@
 package com.selim.cryptomarket.data
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class CurrencyResponse(
     val id: String,
     val name: String,
     val symbol: String,
     val large: String,
-    @SerializedName("market_cap_rank") val marketCapRank: Int
+    @SerialName("market_cap_rank") val marketCapRank: Int
 )

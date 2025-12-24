@@ -1,15 +1,18 @@
 package com.selim.cryptomarket.data
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-data class TrendingCoinResponse(@SerializedName("item") val trendingCoin: Trending)
+@Serializable
+data class TrendingCoinResponse(@SerialName("item") val trendingCoin: Trending)
 
+@Serializable
 data class Trending(
-    @SerializedName("id") val id: String,
-    @SerializedName("symbol") val symbol: String,
-    @SerializedName("name") val name: String,
-    @SerializedName("large") val imageUrl: String,
-    @SerializedName("score") val score: Int,
-    @SerializedName("price_btc") val currentPrice: Double,
-    @SerializedName("market_cap_rank") val marketCapRank: Int
+    @SerialName("id") val id: String,
+    @SerialName("symbol") val symbol: String,
+    @SerialName("name") val name: String,
+    @SerialName("large") val imageUrl: String,
+    @SerialName("score") val score: Int,
+    @SerialName("price_btc") val currentPrice: Double,
+    @SerialName("market_cap_rank") val marketCapRank: Int
 )

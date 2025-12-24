@@ -1,8 +1,10 @@
 package com.selim.cryptomarket.data
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class CoinChartResponse(
-    @SerializedName("prices")
+    @SerialName("prices")
     val prices: List<List<Double>>
 )
