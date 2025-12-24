@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.runtime.LaunchedEffect
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.ui.detail.DetailViewModel.DetailUiState
 import com.selim.cryptomarket.ui.home.ErrorState
@@ -31,8 +32,13 @@ import com.selim.cryptomarket.util.formatPrice
 import com.selim.cryptomarket.util.formatVolume
 
 @Composable
-fun DetailScreen() {
+fun DetailScreen(coinId: String) {
     val viewModel = hiltViewModel<DetailViewModel>()
+
+    LaunchedEffect(coinId) {
+        viewModel.getDetail(coinId)
+    }
+
     val uiState = viewModel.uiState.collectAsState().value
 
     when {
@@ -95,7 +101,7 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
     val chartValues = uiState.coinChart!!.prices.map {
         Entry(
             it[0].toFloat(),
-            it[1].toFloat()
+            it[1].toFloat(),
         )
     }
     val pullToRefreshState = rememberPullToRefreshState()
@@ -105,12 +111,12 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
             isRefreshing = uiState.isRefreshing,
             onRefresh = { viewModel.getDetail(coin.id) },
             modifier = Modifier.fillMaxSize(),
-            state = pullToRefreshState
+            state = pullToRefreshState,
         ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surface)
+                    .background(MaterialTheme.colorScheme.surface),
             ) {
                 item {
                     PriceHeader(
@@ -121,7 +127,7 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
                         icon = coin.image.small,
                         price = currentPrice,
                         changeRate = changePercentage,
-                        isChangeRatePositive = isPositive
+                        isChangeRatePositive = isPositive,
                     )
                 }
 
@@ -130,7 +136,7 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                        selectedTimeRange = uiState.timeRange
+                        selectedTimeRange = uiState.timeRange,
                     ) { timeRange ->
                         viewModel.onTimeRangeChange(coin.id, timeRange)
                     }
@@ -141,7 +147,7 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp),
-                        lineDataSet = getLineDataSet(LocalContext.current, isPositive, chartValues)
+                        lineDataSet = getLineDataSet(LocalContext.current, isPositive, chartValues),
                     )
                 }
 
@@ -164,7 +170,7 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 16.dp, top = 24.dp, end = 16.dp),
-                        aboutChart = coin.description.en
+                        aboutChart = coin.description.en,
                     )
                 }
             }

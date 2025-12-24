@@ -5,41 +5,41 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.selim.cryptomarket.ui.detail.DetailScreen
 import com.selim.cryptomarket.ui.home.HomeScreen
 import com.selim.cryptomarket.ui.settings.SettingsScreen
 import com.selim.cryptomarket.ui.theme.ThemeViewModel
-import com.selim.cryptomarket.ui.navigation.Screen.Detail
-import com.selim.cryptomarket.ui.navigation.Screen.Home
-import com.selim.cryptomarket.ui.navigation.Screen.Search
-import com.selim.cryptomarket.ui.navigation.Screen.Settings
 import com.selim.cryptomarket.ui.search.SearchScreen
 
 @Composable
 fun Navigation(
     modifier: Modifier = Modifier,
-    startDestination: String = Home.route,
     themeViewModel: ThemeViewModel,
-    isDarkMode: Boolean
+    isDarkMode: Boolean,
 ) {
     val navController = rememberNavController()
 
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = startDestination
+        startDestination = Screen.Home,
     ) {
-        composable(route = Home.route) {
+        composable<Screen.Home> {
             HomeScreen(navController, themeViewModel, isDarkMode)
         }
-        composable(route = Settings.route) {
+
+        composable<Screen.Settings> {
             SettingsScreen(navController)
         }
-        composable(route = Search.route) {
+
+        composable<Screen.Search> {
             SearchScreen(navController)
         }
-        composable(route = Detail.route, arguments = Detail.arguments) {
-            DetailScreen()
+
+        composable<Screen.Detail> { backStackEntry ->
+            val detail = backStackEntry.toRoute<Screen.Detail>()
+            DetailScreen(coinId = detail.coinId)
         }
     }
 }

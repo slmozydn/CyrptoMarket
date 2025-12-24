@@ -47,6 +47,7 @@ import com.selim.cryptomarket.data.Trending
 import com.selim.cryptomarket.ui.home.ErrorState
 import com.selim.cryptomarket.ui.home.LoadingState
 import com.selim.cryptomarket.ui.home.SearchBar
+import com.selim.cryptomarket.ui.navigation.Screen
 import com.selim.cryptomarket.util.formatMarketCap
 import com.selim.cryptomarket.util.formatScore
 import com.selim.cryptomarket.util.formatSymbol
@@ -65,13 +66,13 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
         topBar = {
             Surface(
                 shadowElevation = 8.dp,
-                modifier = modifier.fillMaxWidth()
+                modifier = modifier.fillMaxWidth(),
             ) {
                 Row(
                     Modifier
                         .background(MaterialTheme.colorScheme.background)
                         .padding(bottom = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     SearchBar(searchQuery, navController, readOnly = false, viewModel::onSearch) {
                         coroutineScope.launch {
@@ -85,7 +86,7 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
                             .clickable { navController.navigateUp() },
                         text = stringResource(id = R.string.cancel),
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primaryContainer
+                        color = MaterialTheme.colorScheme.primaryContainer,
                     )
                 }
             }
@@ -98,7 +99,7 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
                 modifier = modifier
                     .background(backgroundColor)
                     .padding(horizontal = 16.dp)
-                    .fillMaxSize()
+                    .fillMaxSize(),
             ) {
                 items(uiState) { uiState ->
                     when (uiState) {
@@ -107,17 +108,24 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
                         is SearchItem.SearchHistory -> SearchHistory(
                             uiState.searchQueries,
                             viewModel::onSearch,
-                            viewModel::clearHistory
+                            viewModel::clearHistory,
                         )
 
                         is SearchItem.Title -> Title(titleResId = uiState.titleResId)
                         is SearchItem.Nfts -> Nfts(nfts = uiState.nfts)
-                        is SearchItem.Currency -> Currency(currency = uiState.currencyResponse)
-                        is SearchItem.Trending -> Trending(trending = uiState.trendingResponse.trendingCoin)
+                        is SearchItem.Currency -> Currency(
+                            currency = uiState.currencyResponse,
+                            navController = navController,
+                        )
+
+                        is SearchItem.Trending -> Trending(
+                            trending = uiState.trendingResponse.trendingCoin,
+                            navController = navController,
+                        )
                     }
                 }
             }
-        }
+        },
     )
 }
 
@@ -126,7 +134,7 @@ fun Title(titleResId: Int) {
     Text(
         text = stringResource(id = titleResId),
         style = MaterialTheme.typography.titleLarge,
-        modifier = Modifier.padding(top = 16.dp)
+        modifier = Modifier.padding(top = 16.dp),
     )
 }
 
@@ -142,7 +150,7 @@ fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit, onCle
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp)
+            .padding(top = 16.dp),
     ) {
         LazyRow {
             items(
@@ -159,9 +167,9 @@ fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit, onCle
                             .clip(RoundedCornerShape(4.dp))
                             .background(MaterialTheme.colorScheme.surfaceVariant)
                             .padding(6.dp)
-                            .requiredWidth(48.dp)
+                            .requiredWidth(48.dp),
                     )
-                }
+                },
             )
         }
 
@@ -177,18 +185,25 @@ fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit, onCle
                         onClear()
                     }
                 },
-            tint = MaterialTheme.colorScheme.onSurface
+            tint = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
 
 @Composable
-fun Currency(currency: CurrencyResponse, modifier: Modifier = Modifier) {
+fun Currency(
+    currency: CurrencyResponse,
+    navController: NavController,
+    modifier: Modifier = Modifier,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .clickable {
+                navController.navigate(Screen.Detail(coinId = currency.id))
+            }
+            .padding(vertical = 8.dp),
     ) {
         AsyncImage(
             model = currency.large,
@@ -196,40 +211,48 @@ fun Currency(currency: CurrencyResponse, modifier: Modifier = Modifier) {
                 .size(48.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Fit,
-            contentDescription = null
+            contentDescription = null,
         )
 
         Column(Modifier.padding(start = 16.dp)) {
             Row {
                 Text(
                     text = currency.name,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
 
                 Text(
                     text = currency.symbol.formatSymbol(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.tertiary,
-                    modifier = modifier.padding(top = 2.dp, start = 4.dp)
+                    modifier = modifier.padding(top = 2.dp, start = 4.dp),
                 )
             }
 
             Text(
                 text = currency.marketCapRank.formatMarketCap(),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.tertiary
+                color = MaterialTheme.colorScheme.tertiary,
+                modifier = modifier.padding(top = 4.dp),
             )
         }
     }
 }
 
 @Composable
-fun Trending(trending: Trending, modifier: Modifier = Modifier) {
+fun Trending(
+    trending: Trending,
+    navController: NavController,
+    modifier: Modifier = Modifier,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .clickable {
+                navController.navigate(Screen.Detail(coinId = trending.id))
+            }
+            .padding(vertical = 8.dp),
     ) {
         AsyncImage(
             model = trending.imageUrl,
@@ -237,7 +260,7 @@ fun Trending(trending: Trending, modifier: Modifier = Modifier) {
                 .size(48.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Fit,
-            contentDescription = null
+            contentDescription = null,
         )
 
         Column(Modifier.padding(start = 16.dp)) {
@@ -251,26 +274,27 @@ fun Trending(trending: Trending, modifier: Modifier = Modifier) {
                         .padding(end = 8.dp)
                         .clip(shape = RoundedCornerShape(4.dp))
                         .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .requiredWidth(24.dp)
+                        .requiredWidth(24.dp),
                 )
 
                 Text(
                     text = trending.name,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
 
                 Text(
                     text = trending.symbol.formatSymbol(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.tertiary,
-                    modifier = modifier.padding(top = 2.dp, start = 4.dp, bottom = 4.dp)
+                    modifier = modifier.padding(top = 2.dp, start = 4.dp, bottom = 4.dp),
                 )
             }
 
             Text(
                 text = trending.marketCapRank.formatMarketCap(),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.tertiary
+                color = MaterialTheme.colorScheme.tertiary,
+                modifier = modifier.padding(top = 4.dp),
             )
         }
     }
@@ -281,14 +305,14 @@ fun Nfts(nfts: List<NftResponse>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp)
+            .padding(top = 8.dp),
     ) {
         LazyRow {
             items(
                 count = nfts.size,
                 itemContent = { index ->
                     Nft(nfts[index])
-                }
+                },
             )
         }
     }
@@ -298,7 +322,7 @@ fun Nfts(nfts: List<NftResponse>) {
 fun Nft(nft: NftResponse, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.padding(end = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         AsyncImage(
             model = nft.thumb,
@@ -306,21 +330,21 @@ fun Nft(nft: NftResponse, modifier: Modifier = Modifier) {
                 .size(48.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop,
-            contentDescription = null
+            contentDescription = null,
         )
 
         Column {
             Text(
                 text = nft.name,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = modifier.padding(horizontal = 16.dp)
+                modifier = modifier.padding(horizontal = 16.dp),
             )
 
             Text(
                 text = nft.symbol.formatSymbol(),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.tertiary,
-                modifier = modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                modifier = modifier.padding(horizontal = 16.dp, vertical = 4.dp),
             )
         }
     }

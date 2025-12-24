@@ -61,9 +61,7 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.ui.draw.clip
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.data.CoinResponse
-import com.selim.cryptomarket.ui.navigation.Screen.Detail
-import com.selim.cryptomarket.ui.navigation.Screen.Search
-import com.selim.cryptomarket.ui.navigation.Screen.Settings
+import com.selim.cryptomarket.ui.navigation.Screen
 import com.selim.cryptomarket.ui.theme.ThemeViewModel
 import com.selim.cryptomarket.util.formatPercentage
 import com.selim.cryptomarket.util.formatPrice
@@ -124,7 +122,7 @@ private fun MainAppBar(
             )
         }
 
-        IconButton(onClick = { navController.navigate(Settings.route) }) {
+        IconButton(onClick = { navController.navigate(Screen.Settings) }) {
             Icon(
                 painterResource(R.drawable.icon_settings),
                 modifier = Modifier.size(26.dp),
@@ -151,7 +149,7 @@ internal fun SearchBar(
             .height(48.dp)
             .onFocusChanged {
                 if (it.isFocused && readOnly) {
-                    navController.navigate(Search.route)
+                    navController.navigate(Screen.Search)
                 }
             }
             .run {
@@ -270,12 +268,7 @@ private fun CoinContent(
                 .fillMaxWidth()
                 .background(colorScheme.surface)
                 .clickable {
-                    navController.navigate(
-                        Detail.route.replace(
-                            oldValue = "{id}",
-                            newValue = coinItem.id
-                        )
-                    )
+                    navController.navigate(Screen.Detail(coinId = coinItem.id))
                 }
                 .padding(vertical = 8.dp)
         ) {

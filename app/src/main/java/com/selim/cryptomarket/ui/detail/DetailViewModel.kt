@@ -1,6 +1,5 @@
 package com.selim.cryptomarket.ui.detail
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.selim.cryptomarket.data.CoinChartResponse
@@ -20,18 +19,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val cryptoCurrencyService: CryptoCurrencyService,
     private val settingsDataStore: SettingsDataStore
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailUiState(loading = true))
     val uiState: StateFlow<DetailUiState> = _uiState
-
-    init {
-        val id = savedStateHandle.get<String>("id")!!
-        getDetail(id)
-    }
 
     fun getDetail(id: String) = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isRefreshing = true, error = null)
@@ -40,6 +33,7 @@ class DetailViewModel @Inject constructor(
                 val currencyCode = settingsDataStore.currencyCode.first()
                 val result = async { cryptoCurrencyService.coinDetails(id) }
                 val chart = async { cryptoCurrencyService.coinChart(id, _uiState.value.timeRange.value) }
+
                 _uiState.value.copy(
                     coinDetail = result.await(),
                     currencyCode = currencyCode,
