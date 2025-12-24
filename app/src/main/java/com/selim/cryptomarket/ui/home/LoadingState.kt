@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingState(modifier: Modifier = Modifier, backgroundColor: Color = MaterialTheme.colors.background) {
+fun LoadingState(modifier: Modifier = Modifier, backgroundColor: Color = MaterialTheme.colorScheme.background) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -28,8 +28,8 @@ fun LoadingState(modifier: Modifier = Modifier, backgroundColor: Color = Materia
         CircularProgressIndicator(modifier = modifier.size(32.dp))
         Text(
             text = "Please wait...",
-            color = MaterialTheme.colors.primaryVariant,
-            style = MaterialTheme.typography.subtitle2,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleSmall,
             modifier = modifier.padding(top = 16.dp)
         )
     }

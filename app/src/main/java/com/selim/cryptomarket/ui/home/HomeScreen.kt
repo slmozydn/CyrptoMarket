@@ -1,9 +1,9 @@
 package com.selim.cryptomarket.ui.home
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,18 +17,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -46,18 +49,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import coil.compose.AsyncImage
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.ui.draw.clip
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.data.CoinResponse
 import com.selim.cryptomarket.ui.navigation.Screen.Detail
@@ -69,7 +70,6 @@ import com.selim.cryptomarket.util.formatPrice
 import com.selim.cryptomarket.util.formatSymbol
 import com.selim.cryptomarket.util.formatVolume
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(navController: NavController, themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
     val homeViewModel = hiltViewModel<HomeViewModel>()
@@ -82,27 +82,34 @@ fun HomeScreen(navController: NavController, themeViewModel: ThemeViewModel, isD
                 MainAppBar(navController, themeViewModel, isDarkTheme)
             }
         },
-        content = {
-            when (coins.loadState.refresh) {
-                is LoadState.Loading -> LoadingState()
-                is LoadState.Error -> {
-                    val error = coins.loadState.refresh as LoadState.Error
-                    ErrorState(message = error.error.message.orEmpty())
+        content = { paddingValues ->
+            Box(modifier = Modifier.padding(paddingValues)) {
+                when (coins.loadState.refresh) {
+                    is LoadState.Loading -> LoadingState()
+                    is LoadState.Error -> {
+                        val error = coins.loadState.refresh as LoadState.Error
+                        ErrorState(message = error.error.message.orEmpty())
+                    }
+
+                    else -> CoinList(navController, coins)
                 }
-                else -> CoinList(navController, coins)
             }
         }
     )
 }
 
 @Composable
-private fun MainAppBar(navController: NavController, themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
-    val colors = MaterialTheme.colors
+private fun MainAppBar(
+    navController: NavController,
+    themeViewModel: ThemeViewModel,
+    isDarkTheme: Boolean
+) {
+    val colorScheme = MaterialTheme.colorScheme
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(colors.background),
+            .background(colorScheme.background),
         verticalAlignment = Alignment.CenterVertically
     ) {
         SearchBar(searchQuery = null, navController, readOnly = true)
@@ -155,17 +162,25 @@ internal fun SearchBar(
                 }
             },
         value = searchQuery?.value ?: "",
-        textStyle = MaterialTheme.typography.caption,
+        textStyle = MaterialTheme.typography.bodySmall,
         shape = RoundedCornerShape(24.dp),
         singleLine = true,
-        placeholder = { Text(text = stringResource(id = R.string.search), style = MaterialTheme.typography.caption) },
+        placeholder = {
+            Text(
+                text = stringResource(id = R.string.search),
+                style = MaterialTheme.typography.bodySmall
+            )
+        },
         leadingIcon = { Icon(painterResource(R.drawable.icon_search), contentDescription = null) },
         trailingIcon = {
             if (searchQuery?.value?.isEmpty() == false) {
-                Icon(painterResource(R.drawable.icon_close), contentDescription = null, modifier = Modifier.clickable {
-                    searchQuery.value = ""
-                    onSearch("")
-                })
+                Icon(
+                    painterResource(R.drawable.icon_close),
+                    contentDescription = null,
+                    modifier = Modifier.clickable {
+                        searchQuery.value = ""
+                        onSearch("")
+                    })
             }
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -177,10 +192,13 @@ internal fun SearchBar(
             searchQuery?.value = query
             onSearch(query)
         },
-        colors = TextFieldDefaults.textFieldColors(
-            textColor = Color.Gray,
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = Color.Gray,
             disabledTextColor = Color.Transparent,
-            backgroundColor = MaterialTheme.colors.secondaryVariant,
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            disabledContainerColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
@@ -194,31 +212,26 @@ internal fun SearchBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CoinList(navController: NavController, coinPagingItems: LazyPagingItems<CoinResponse>) {
     val listState = rememberLazyListState()
-    val swipeRefreshState = rememberSwipeRefreshState(false)
+    val isRefreshing = coinPagingItems.loadState.refresh is LoadState.Loading
+    val pullToRefreshState = rememberPullToRefreshState()
 
-    SwipeRefresh(
-        state = swipeRefreshState,
-        onRefresh = {
-            coinPagingItems.refresh()
-        },
-        indicator = { state, trigger ->
-            SwipeRefreshIndicator(
-                state = state,
-                refreshTriggerDistance = trigger,
-                contentColor = MaterialTheme.colors.primary,
-                backgroundColor = MaterialTheme.colors.onBackground
-            )
-        },
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = { coinPagingItems.refresh() },
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 8.dp),
+        state = pullToRefreshState
     ) {
         Card(
-            backgroundColor = MaterialTheme.colors.onBackground,
-            elevation = 8.dp,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
             shape = RoundedCornerShape(
                 topStart = 24.dp,
                 topEnd = 24.dp,
@@ -231,9 +244,11 @@ private fun CoinList(navController: NavController, coinPagingItems: LazyPagingIt
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                items(coinPagingItems) { coinItem ->
-                    if (coinItem != null) {
-                        CoinContent(navController, coinItem)
+                items(coinPagingItems.itemCount) { index ->
+                    coinPagingItems[index].let { coinItem ->
+                        if (coinItem != null) {
+                            CoinContent(navController, coinItem)
+                        }
                     }
                 }
             }
@@ -242,14 +257,18 @@ private fun CoinList(navController: NavController, coinPagingItems: LazyPagingIt
 }
 
 @Composable
-private fun CoinContent(navController: NavController, coinItem: CoinResponse, modifier: Modifier = Modifier) {
-    val colors = MaterialTheme.colors
+private fun CoinContent(
+    navController: NavController,
+    coinItem: CoinResponse,
+    modifier: Modifier = Modifier
+) {
+    val colorScheme = MaterialTheme.colorScheme
     Surface {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
                 .fillMaxWidth()
-                .background(colors.onBackground)
+                .background(colorScheme.surface)
                 .clickable {
                     navController.navigate(
                         Detail.route.replace(
@@ -262,26 +281,32 @@ private fun CoinContent(navController: NavController, coinItem: CoinResponse, mo
         ) {
             AsyncImage(
                 model = coinItem.image,
-                modifier = modifier.size(44.dp),
+                modifier = modifier
+                    .size(48.dp)
+                    .clip(CircleShape),
                 contentScale = ContentScale.Fit,
                 contentDescription = null
             )
+
             Column(Modifier.padding(start = 16.dp)) {
                 Row {
                     Text(
                         text = coinItem.name.take(10),
-                        style = MaterialTheme.typography.subtitle1,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
+
                     Text(
                         text = coinItem.symbol.formatSymbol(),
-                        style = MaterialTheme.typography.caption,
+                        style = MaterialTheme.typography.bodySmall,
                         modifier = modifier.padding(top = 2.dp, start = 4.dp)
                     )
                 }
 
                 Text(
                     text = coinItem.totalVolume.formatVolume(),
-                    style = MaterialTheme.typography.caption
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = modifier.padding(top = 4.dp)
                 )
             }
 
@@ -289,21 +314,22 @@ private fun CoinContent(navController: NavController, coinItem: CoinResponse, mo
 
             Text(
                 text = coinItem.currentPrice.formatPrice(coinItem.currencyCode),
-                style = MaterialTheme.typography.subtitle1,
+                color = MaterialTheme.colorScheme.onSecondary,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = modifier.padding(end = 8.dp)
             )
 
             val percentage = coinItem.priceChangePercentage24h
             val priceColor = when {
-                percentage == null || percentage == 0.0 -> colors.secondary
-                percentage > 0 -> Color(0xFF2FBE85)
-                else -> Color(0xFFF6455D)
+                percentage == null || percentage == 0.0 -> colorScheme.secondary
+                percentage > 0 -> colorScheme.onPrimary
+                else -> colorScheme.onTertiary
             }
 
             Text(
                 textAlign = TextAlign.Center,
                 text = coinItem.priceChangePercentage24h.formatPercentage(),
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.titleMedium,
                 color = Color.White,
                 modifier = modifier
                     .drawBehind {

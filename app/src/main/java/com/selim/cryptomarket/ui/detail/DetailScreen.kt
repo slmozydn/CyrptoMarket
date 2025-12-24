@@ -2,14 +2,13 @@ package com.selim.cryptomarket.ui.detail
 
 import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.Surface
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -19,9 +18,8 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.ui.detail.DetailViewModel.DetailUiState
 import com.selim.cryptomarket.ui.home.ErrorState
@@ -38,12 +36,13 @@ fun DetailScreen() {
     val uiState = viewModel.uiState.collectAsState().value
 
     when {
-        uiState.loading -> LoadingState()
+        uiState.loading && uiState.coinDetail == null -> LoadingState()
         uiState.error != null -> ErrorState(message = uiState.error.message.orEmpty())
         else -> DetailContent(viewModel, uiState)
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
     val currencyCode = uiState.currencyCode
@@ -99,75 +98,75 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
             it[1].toFloat()
         )
     }
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = uiState.loading)
-    val scrollState = rememberScrollState()
+    val pullToRefreshState = rememberPullToRefreshState()
 
     Surface {
-        SwipeRefresh(
-            state = swipeRefreshState,
-            onRefresh = {
-                viewModel.getDetail(coin.id)
-            },
-            indicator = { state, trigger ->
-                SwipeRefreshIndicator(
-                    state = state,
-                    refreshTriggerDistance = trigger,
-                    contentColor = colors.primary,
-                    backgroundColor = colors.onBackground,
-                )
-            },
+        PullToRefreshBox(
+            isRefreshing = uiState.isRefreshing,
+            onRefresh = { viewModel.getDetail(coin.id) },
+            modifier = Modifier.fillMaxSize(),
+            state = pullToRefreshState
         ) {
-            Column(
-                Modifier
+            LazyColumn(
+                modifier = Modifier
                     .fillMaxSize()
-                    .background(colors.background)
-                    .verticalScroll(scrollState)
+                    .background(MaterialTheme.colorScheme.surface)
             ) {
-                PriceHeader(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                    currency = coin.name + " (${coin.symbol.uppercase()})",
-                    icon = coin.image.small,
-                    price = currentPrice,
-                    changeRate = changePercentage,
-                    isChangeRatePositive = isPositive
-                )
-
-                TimeRangePicker(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                    selectedTimeRange = uiState.timeRange
-                ) { timeRange ->
-                    viewModel.onTimeRangeChange(coin.id, timeRange)
+                item {
+                    PriceHeader(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                        currency = coin.name + " (${coin.symbol.uppercase()})",
+                        icon = coin.image.small,
+                        price = currentPrice,
+                        changeRate = changePercentage,
+                        isChangeRatePositive = isPositive
+                    )
                 }
 
-                Chart(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    lineDataSet = getLineDataSet(LocalContext.current, isPositive, chartValues)
-                )
+                item {
+                    TimeRangePicker(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                        selectedTimeRange = uiState.timeRange
+                    ) { timeRange ->
+                        viewModel.onTimeRangeChange(coin.id, timeRange)
+                    }
+                }
 
-                Price(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                    athPrice = athPrice,
-                    atlPrice = atlPrice,
-                    highPrice = highestPrice,
-                    lowPrice = lowestPrice,
-                    averagePrice = volume,
-                    changePrice = changePrice,
-                )
+                item {
+                    Chart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        lineDataSet = getLineDataSet(LocalContext.current, isPositive, chartValues)
+                    )
+                }
 
-                AboutChart(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, top = 24.dp, end = 16.dp),
-                    aboutChart = coin.description.en
-                )
+                item {
+                    Price(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                        athPrice = athPrice,
+                        atlPrice = atlPrice,
+                        highPrice = highestPrice,
+                        lowPrice = lowestPrice,
+                        averagePrice = volume,
+                        changePrice = changePrice,
+                    )
+                }
+
+                item {
+                    AboutChart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, top = 24.dp, end = 16.dp),
+                        aboutChart = coin.description.en
+                    )
+                }
             }
         }
     }

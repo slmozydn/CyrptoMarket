@@ -10,9 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -83,7 +82,7 @@ private fun TimeRangeChip(
     Box(
         modifier = Modifier
             .background(
-                color = colors.secondaryVariant,
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable { onTimeRangeSelected() }
@@ -96,8 +95,8 @@ private fun TimeRangeChip(
             text = time,
             textAlign = TextAlign.Center,
             fontWeight = if (isSelected) FontWeight.Bold else Companion.Normal,
-            style = MaterialTheme.typography.subtitle2,
-            color = if (isSelected) colors.onSecondary else colors.primaryVariant
+            style = MaterialTheme.typography.titleSmall,
+            color = if (isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurface
         )
     }
 }

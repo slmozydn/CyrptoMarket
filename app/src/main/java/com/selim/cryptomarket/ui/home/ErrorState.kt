@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +21,7 @@ import com.selim.cryptomarket.R
 fun ErrorState(
     modifier: Modifier = Modifier,
     message: String = "",
-    backgroundColor: Color = MaterialTheme.colors.background
+    backgroundColor: Color = MaterialTheme.colorScheme.background
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -33,12 +33,12 @@ fun ErrorState(
         Icon(
             painter = painterResource(id = R.drawable.icon_error),
             contentDescription = null,
-            tint = MaterialTheme.colors.primaryVariant
+            tint = MaterialTheme.colorScheme.primary
         )
         Text(
             text = "Something went wrong !",
-            color = MaterialTheme.colors.primaryVariant,
-            style = MaterialTheme.typography.subtitle2,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleSmall,
             modifier = modifier.padding(top = 16.dp)
         )
     }

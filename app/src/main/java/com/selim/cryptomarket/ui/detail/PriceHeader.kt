@@ -1,19 +1,23 @@
 package com.selim.cryptomarket.ui.detail
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
 
 @Composable
@@ -25,58 +29,57 @@ fun PriceHeader(
     changeRate: String,
     isChangeRatePositive: Boolean
 ) {
-    ConstraintLayout(modifier = modifier) {
-        val (coinIcon, textCurrency, textPrice, imageChangeRate, textChangeRate) = createRefs()
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = icon,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(32.dp)
+                    .padding(end = 8.dp)
+            )
 
-        AsyncImage(
-            model = icon, contentDescription = null, modifier = Modifier
-                .constrainAs(coinIcon) {
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                }
-                .size(32.dp)
-                .padding(end = 8.dp)
-        )
+            Text(
+                text = currency,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSecondary
+            )
+        }
 
-        Text(
-            text = currency,
-            style = typography.subtitle2,
+        Row(
             modifier = Modifier
-                .constrainAs(textCurrency) {
-                    start.linkTo(coinIcon.end)
-                    top.linkTo(coinIcon.top)
-                    bottom.linkTo(coinIcon.bottom)
-                }
-        )
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = price,
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.onSecondary
+            )
 
-        Text(text = price, style = typography.h1, modifier = Modifier
-            .constrainAs(textPrice) {
-                start.linkTo(parent.start)
-                top.linkTo(coinIcon.bottom)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = if (isChangeRatePositive) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
+                    tint = if (isChangeRatePositive) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onTertiary,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Text(
+                    text = changeRate,
+                    color = if (isChangeRatePositive) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onTertiary,
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
-            .padding(top = 8.dp))
-
-        Icon(
-            imageVector = if (isChangeRatePositive) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
-            tint = if (isChangeRatePositive) Color(0xFF2FBE85) else Color(0xFFF6455D),
-            contentDescription = null,
-            modifier = Modifier
-                .constrainAs(imageChangeRate) {
-                    top.linkTo(textChangeRate.top)
-                    bottom.linkTo(textChangeRate.bottom)
-                    end.linkTo(textChangeRate.start)
-                    height = Dimension.fillToConstraints
-                }
-        )
-
-        Text(
-            text = changeRate,
-            color = if (isChangeRatePositive) Color(0xFF2FBE85) else Color(0xFFF6455D),
-            style = typography.subtitle1,
-            modifier = Modifier.constrainAs(textChangeRate) {
-                top.linkTo(textPrice.top)
-                bottom.linkTo(textPrice.bottom)
-                end.linkTo(parent.end)
-            })
+        }
     }
 }

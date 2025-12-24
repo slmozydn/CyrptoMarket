@@ -1,21 +1,22 @@
 package com.selim.cryptomarket.ui.detail
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
 
 @Composable
 fun Price(
@@ -27,175 +28,73 @@ fun Price(
     averagePrice: String,
     changePrice: String
 ) {
-    ConstraintLayout(modifier = modifier) {
-        val (
-            viewDivider,
-            textPrice,
-            textOpen, textOpenPrice,
-            textHigh, textHighPrice,
-            textAverage, textAveragePrice,
-            textClose, textClosePrice,
-            textLow, textLowPrice,
-            textChange, textChangePrice
-        ) = createRefs()
-
+    Column(modifier = modifier) {
         Text(
             text = "Price",
-            style = typography.h1,
-            modifier = Modifier.constrainAs(textPrice) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-            })
-
-        Text(
-            text = "Ath",
-            style = typography.subtitle1,
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .constrainAs(textOpen) {
-                    top.linkTo(textPrice.bottom)
-                    start.linkTo(parent.start)
-                }
+            style = MaterialTheme.typography.displaySmall,
+            color = MaterialTheme.colorScheme.onSecondary
         )
 
-        Text(
-            text = athPrice,
-            style = typography.subtitle2,
+        Row(
             modifier = Modifier
-                .padding(top = 8.dp, end = 16.dp)
-                .constrainAs(textOpenPrice) {
-                    top.linkTo(textOpen.top)
-                    bottom.linkTo(textOpen.bottom)
-                    end.linkTo(viewDivider.start)
-                }
-        )
-
-        Text(
-            text = "High",
-            style = typography.subtitle1,
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .constrainAs(textHigh) {
-                    top.linkTo(textOpen.bottom)
-                    start.linkTo(parent.start)
-                }
-        )
-
-        Text(
-            text = highPrice,
-            style = typography.subtitle2,
-            modifier = Modifier
-                .padding(top = 8.dp, end = 16.dp)
-                .constrainAs(textHighPrice) {
-                    top.linkTo(textHigh.top)
-                    bottom.linkTo(textHigh.bottom)
-                    end.linkTo(viewDivider.start)
-                }
-        )
-
-        Text(
-            text = "Volume",
-            style = typography.subtitle1,
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .constrainAs(textAverage) {
-                    top.linkTo(textHigh.bottom)
-                    start.linkTo(parent.start)
-                }
-        )
-
-        Text(
-            text = averagePrice,
-            style = typography.subtitle2,
-            modifier = Modifier
-                .padding(top = 8.dp, end = 16.dp)
-                .constrainAs(textAveragePrice) {
-                    top.linkTo(textAverage.top)
-                    bottom.linkTo(textAverage.bottom)
-                    end.linkTo(viewDivider.start)
-                }
-        )
-
-        Text(
-            text = "Atl",
-            style = typography.subtitle1,
-            modifier = Modifier
-                .padding(top = 8.dp, start = 16.dp)
-                .constrainAs(textClose) {
-                    top.linkTo(textPrice.bottom)
-                    start.linkTo(viewDivider.end)
-                }
-        )
-
-        Text(
-            text = atlPrice,
-            style = typography.subtitle2,
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .constrainAs(textClosePrice) {
-                    top.linkTo(textClose.top)
-                    bottom.linkTo(textClose.bottom)
-                    end.linkTo(parent.end)
-                }
-        )
-
-        Text(
-            text = "Low",
-            style = typography.subtitle1,
-            modifier = Modifier
-                .padding(top = 8.dp, start = 16.dp)
-                .constrainAs(textLow) {
-                    top.linkTo(textClose.bottom)
-                    start.linkTo(viewDivider.end)
-                }
-        )
-
-        Text(
-            text = lowPrice,
-            style = typography.subtitle2,
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .constrainAs(textLowPrice) {
-                    top.linkTo(textLow.top)
-                    bottom.linkTo(textLow.bottom)
-                    end.linkTo(parent.end)
-                }
-        )
-
-        Text(
-            text = "Change",
-            style = typography.subtitle1,
-            modifier = Modifier
-                .padding(top = 8.dp, start = 16.dp)
-                .constrainAs(textChange) {
-                    top.linkTo(textLow.bottom)
-                    start.linkTo(viewDivider.end)
-                }
-        )
-
-        Text(
-            text = changePrice,
-            style = typography.subtitle2,
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .constrainAs(textChangePrice) {
-                    top.linkTo(textChange.top)
-                    bottom.linkTo(textChange.bottom)
-                    end.linkTo(parent.end)
-                }
-        )
-
-        Divider(modifier = Modifier
-            .padding(top = 8.dp)
-            .constrainAs(viewDivider) {
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                top.linkTo(textOpen.top)
-                bottom.linkTo(textAverage.bottom)
-                height = fillToConstraints
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                PriceRow(label = "Ath", value = athPrice)
+                PriceRow(label = "High", value = highPrice)
+                PriceRow(label = "Volume", value = averagePrice)
             }
-            .width(1.dp)
-            .background(colors.primaryVariant))
+
+            VerticalDivider(
+                modifier = Modifier
+                    .height(84.dp)
+                    .padding(horizontal = 24.dp),
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.onSecondary
+            )
+
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.End
+            ) {
+                PriceRow(label = "Atl", value = atlPrice)
+                PriceRow(label = "Low", value = lowPrice)
+                PriceRow(label = "Change", value = changePrice)
+            }
+        }
+    }
+}
+
+@Composable
+private fun PriceRow(
+    label: String,
+    value: String,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSecondary,
+            modifier = Modifier
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSecondary
+        )
     }
 }
 

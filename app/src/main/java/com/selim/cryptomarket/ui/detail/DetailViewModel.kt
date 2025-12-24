@@ -34,20 +34,22 @@ class DetailViewModel @Inject constructor(
     }
 
     fun getDetail(id: String) = viewModelScope.launch {
+        _uiState.value = _uiState.value.copy(isRefreshing = true, error = null)
         _uiState.value = try {
             coroutineScope {
                 val currencyCode = settingsDataStore.currencyCode.first()
                 val result = async { cryptoCurrencyService.coinDetails(id) }
-                val chart = async { cryptoCurrencyService.coinChart(id, THIRTY_DAYS.value) }
+                val chart = async { cryptoCurrencyService.coinChart(id, _uiState.value.timeRange.value) }
                 _uiState.value.copy(
                     coinDetail = result.await(),
                     currencyCode = currencyCode,
                     coinChart = chart.await(),
+                    isRefreshing = false,
                     loading = false
                 )
             }
         } catch (exception: Exception) {
-            _uiState.value.copy(error = exception, loading = false)
+            _uiState.value.copy(error = exception, isRefreshing = false, loading = false)
         }
     }
 
@@ -67,6 +69,7 @@ class DetailViewModel @Inject constructor(
         val coinChart: CoinChartResponse? = null,
         val timeRange: TimeRange = THIRTY_DAYS,
         val error: Throwable? = null,
-        val loading: Boolean = true
+        val loading: Boolean = true,
+        val isRefreshing: Boolean = false
     )
 }

@@ -1,36 +1,65 @@
 package com.selim.cryptomarket.ui.theme
 
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-// use material 3
-val LightThemeColors = lightColors(
+val LightThemeColors = lightColorScheme(
     primary = Color(0xFFF0B90B),
-    primaryVariant = Color(0xFF888D91),
+    onPrimary = Color(0xFF2FBE85),
+    primaryContainer = Color(0xFFD5A50D),
+    onPrimaryContainer = Color(0xFF181E26),
     secondary = Color(0xFFBAC3D0),
-    secondaryVariant = Color(0xFFEBECEF),
-    background = Color(0xFFF5F5F5),
-    surface = Color(0xFFD5A50D),
-    error = Color.DarkGray, // boş
-    onPrimary = Color(0xFF2FBE85), // boş
     onSecondary = Color.Black,
-    onBackground = Color.White,
+    secondaryContainer = Color(0xFFEBECEF),
+    onSecondaryContainer = Color(0xFF181E26),
+    tertiary = Color(0xFF888D91),
+    onTertiary = Color(0xFFF6455D),
+    error = Color(0xFFCF6679),
+    onError = Color.White,
+    errorContainer = Color(0xFFCF6679),
+    onErrorContainer = Color.White,
+    background = Color(0xFFF5F5F5),
+    onBackground = Color(0xFF181E26),
+    surface = Color.White,
     onSurface = Color(0xFF8F9BA7),
-    onError = Color(0xFFCF6679) // boş
+    surfaceVariant = Color(0xFFEBECEF),
+    onSurfaceVariant = Color(0xFF888D91),
+    outline = Color(0xFFBAC3D0),
+    outlineVariant = Color(0xFFEBECEF),
+    scrim = Color.Black,
+    inverseSurface = Color(0xFF202630),
+    inverseOnSurface = Color(0xFFF5F5F5),
+    inversePrimary = Color(0xFFF0B90B),
+    surfaceTint = Color(0xFFF0B90B),
 )
 
-val DarkThemeColors = darkColors(
+val DarkThemeColors = darkColorScheme(
     primary = Color(0xFFF0B90B),
-    primaryVariant = Color(0xFF888D91),
+    onPrimary = Color(0xFF2FBE85),
+    primaryContainer = Color(0xFFD5A50D),
+    onPrimaryContainer = Color(0xFFF5F5F5),
     secondary = Color(0xFFBAC3D0),
-    secondaryVariant = Color(0xFF343B46),
-    background = Color(0xFF181E26),
-    surface = Color(0xFFD5A50D),
-    error = Color.DarkGray, // boş
-    onPrimary = Color(0xFF2FBE85), // boş
     onSecondary = Color.White,
-    onBackground = Color(0xFF202630),
+    secondaryContainer = Color(0xFF343B46),
+    onSecondaryContainer = Color(0xFFBAC3D0),
+    tertiary = Color(0xFF888D91),
+    onTertiary = Color(0xFFF6455D),
+    error = Color(0xFFCF6679),
+    onError = Color.White,
+    errorContainer = Color(0xFFCF6679),
+    onErrorContainer = Color.White,
+    background = Color(0xFF181E26),
+    onBackground = Color(0xFFF5F5F5),
+    surface = Color(0xFF202630),
     onSurface = Color(0xFF8F9BA7),
-    onError = Color(0xFF1C1C1C) //boş
+    surfaceVariant = Color(0xFF343B46),
+    onSurfaceVariant = Color(0xFFBAC3D0),
+    outline = Color(0xFF888D91),
+    outlineVariant = Color(0xFF343B46),
+    scrim = Color.Black,
+    inverseSurface = Color(0xFFF5F5F5),
+    inverseOnSurface = Color(0xFF181E26),
+    inversePrimary = Color(0xFFF0B90B),
+    surfaceTint = Color(0xFFF0B90B),
 )
