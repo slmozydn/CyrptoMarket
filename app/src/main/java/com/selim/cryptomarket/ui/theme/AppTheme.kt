@@ -1,9 +1,13 @@
 package com.selim.cryptomarket.ui.theme
 
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 @Composable
 fun AppTheme(
@@ -12,10 +16,17 @@ fun AppTheme(
 ) {
     val colorScheme = if (isDarkTheme) DarkThemeColors else LightThemeColors
     val typography = LightTypography
-    val systemUiController = rememberSystemUiController()
-    
-    systemUiController.setSystemBarsColor(color = colorScheme.background)
-    
+    val view = LocalView.current
+
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.background.toArgb()
+            window.navigationBarColor = colorScheme.background.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !isDarkTheme
+        }
+    }
+
     MaterialTheme(
         colorScheme = colorScheme,
         typography = typography,

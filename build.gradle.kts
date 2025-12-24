@@ -2,19 +2,14 @@ buildscript {
   repositories {
     google()
     mavenCentral()
+    gradlePluginPortal()
   }
   dependencies {
-    classpath("com.android.tools.build:gradle:8.2.2")
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
-    classpath("com.google.dagger:hilt-android-gradle-plugin:2.48")
-  }
-}
-
-allprojects {
-  repositories {
-    google()
-    mavenCentral()
-    maven("https://jitpack.io")
+    classpath("com.android.tools.build:gradle:8.7.3")
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
+    classpath("org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.1.0")
+    classpath("com.google.dagger:hilt-android-gradle-plugin:2.52")
+    classpath("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.1.0-1.0.29")
   }
 }
 
