@@ -8,8 +8,8 @@ import com.selim.cryptomarket.data.CoinDetailResponse
 import com.selim.cryptomarket.data.CoinResponse
 import com.selim.cryptomarket.data.SearchResult
 import com.selim.cryptomarket.data.SearchTrendingResult
+import com.selim.cryptomarket.data.paging.CoinsPagingSource
 import com.selim.cryptomarket.service.CryptoCurrencyService
-import com.selim.cryptomarket.ui.home.CoinsPagingSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
