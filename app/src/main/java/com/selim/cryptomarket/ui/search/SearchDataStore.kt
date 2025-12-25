@@ -22,8 +22,13 @@ class SearchDataStore @Inject constructor(
     suspend fun updateSearchPreference(query: String) {
         searchDataStore.edit { search ->
             val previousHistory = search[KEY_SEARCH_QUERY] ?: ""
-            val searchQueries = previousHistory.split(" ").toList().dropWhile { it == "" }.takeLast(3).toMutableList()
-            searchQueries.add(query)
+            val searchQueries = previousHistory
+                .split(" ")
+                .filter { it.isNotBlank() }
+                .takeLast(3)
+                .toMutableList()
+
+            searchQueries.add(query.trim())
             search[KEY_SEARCH_QUERY] = searchQueries.joinToString(separator = " ")
         }
     }

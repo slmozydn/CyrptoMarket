@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -96,9 +97,11 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
                 uiState.isLoading -> {
                     LoadingState()
                 }
+
                 uiState.error != null -> {
                     ErrorState()
                 }
+
                 else -> {
                     LazyColumn(
                         contentPadding = paddingValues,
@@ -164,6 +167,7 @@ fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit, onCle
                     Text(
                         text = searchQueries[index].uppercase(),
                         textAlign = TextAlign.Center,
+                        maxLines = 1,
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier
@@ -172,7 +176,7 @@ fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit, onCle
                             .clip(RoundedCornerShape(4.dp))
                             .background(MaterialTheme.colorScheme.surfaceVariant)
                             .padding(6.dp)
-                            .requiredWidth(48.dp),
+                            .width(48.dp),
                     )
                 },
             )

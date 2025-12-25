@@ -95,7 +95,9 @@ class SearchViewModel @Inject constructor(
     }
 
     suspend fun saveHistory(query: String) {
-        searchDataStore.updateSearchPreference(query)
+        if (query.isNotBlank()) {
+            searchDataStore.updateSearchPreference(query)
+        }
     }
 
     fun clearHistory() {

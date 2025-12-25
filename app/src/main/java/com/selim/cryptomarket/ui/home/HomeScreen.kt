@@ -68,6 +68,8 @@ import com.selim.cryptomarket.util.formatPrice
 import com.selim.cryptomarket.util.formatSymbol
 import com.selim.cryptomarket.util.formatVolume
 
+private const val MAX_SEARCH_LENGTH = 20
+
 @Composable
 fun HomeScreen(navController: NavController, themeViewModel: ThemeViewModel, isDarkTheme: Boolean) {
     val homeViewModel = hiltViewModel<HomeViewModel>()
@@ -185,8 +187,10 @@ internal fun SearchBar(
             },
         ),
         onValueChange = { query ->
-            searchQuery?.value = query
-            onSearch(query)
+            if (query.length <= MAX_SEARCH_LENGTH) {
+                searchQuery?.value = query
+                onSearch(query)
+            }
         },
         colors = TextFieldDefaults.colors(
             focusedTextColor = MaterialTheme.colorScheme.onSurface,
