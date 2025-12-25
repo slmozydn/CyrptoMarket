@@ -98,8 +98,8 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
                     LoadingState()
                 }
 
-                uiState.error != null -> {
-                    ErrorState()
+                uiState.errorMessage != null -> {
+                    ErrorState(message = uiState.errorMessage)
                 }
 
                 else -> {
@@ -239,7 +239,7 @@ fun Currency(
             }
 
             Text(
-                text = currency.marketCapRank.formatMarketCap(),
+                text = currency.marketCapRank?.formatMarketCap().orEmpty(),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.tertiary,
                 modifier = modifier.padding(top = 4.dp),

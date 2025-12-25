@@ -8,6 +8,7 @@ import com.selim.cryptomarket.data.repository.CryptoRepository
 import com.selim.cryptomarket.ui.detail.TimeRange.THIRTY_DAYS
 import com.selim.cryptomarket.ui.settings.CurrencyType.USD
 import com.selim.cryptomarket.ui.settings.SettingsDataStore
+import com.selim.cryptomarket.util.ErrorHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -23,13 +24,14 @@ import javax.inject.Inject
 class DetailViewModel @Inject constructor(
     private val repository: CryptoRepository,
     private val settingsDataStore: SettingsDataStore,
+    private val errorHandler: ErrorHandler,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailUiState())
     val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
 
     fun getDetail(id: String) = viewModelScope.launch {
-        _uiState.update { it.copy(isRefreshing = true, error = null) }
+        _uiState.update { it.copy(isRefreshing = true, errorMessage = null) }
 
         runCatching {
             coroutineScope {
@@ -51,14 +53,14 @@ class DetailViewModel @Inject constructor(
                         currencyCode = currency,
                         isRefreshing = false,
                         loading = false,
-                        error = null,
+                        errorMessage = null,
                     )
                 }
             },
             onFailure = { exception ->
                 _uiState.update {
                     it.copy(
-                        error = exception,
+                        errorMessage = errorHandler.handleError(exception),
                         isRefreshing = false,
                         loading = false,
                     )
@@ -68,7 +70,7 @@ class DetailViewModel @Inject constructor(
     }
 
     fun onTimeRangeChange(id: String, timeRange: TimeRange) = viewModelScope.launch {
-        _uiState.update { it.copy(loading = true, error = null) }
+        _uiState.update { it.copy(loading = true, errorMessage = null) }
 
         runCatching {
             repository.getCoinChart(id, timeRange.value)
@@ -79,14 +81,14 @@ class DetailViewModel @Inject constructor(
                         coinChart = chart,
                         timeRange = timeRange,
                         loading = false,
-                        error = null,
+                        errorMessage = null,
                     )
                 }
             },
             onFailure = { exception ->
                 _uiState.update {
                     it.copy(
-                        error = exception,
+                        errorMessage = errorHandler.handleError(exception),
                         loading = false,
                     )
                 }
@@ -99,7 +101,7 @@ class DetailViewModel @Inject constructor(
         val currencyCode: String = USD.value,
         val coinChart: CoinChartResponse? = null,
         val timeRange: TimeRange = THIRTY_DAYS,
-        val error: Throwable? = null,
+        val errorMessage: String? = null,
         val loading: Boolean = true,
         val isRefreshing: Boolean = false,
     )

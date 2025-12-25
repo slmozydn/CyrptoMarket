@@ -107,6 +107,7 @@ dependencies {
 
     // Third Party
     implementation(libs.mpandroidchart)
+    implementation(libs.timber)
 
     // Testing
     testImplementation(libs.junit)

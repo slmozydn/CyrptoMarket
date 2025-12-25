@@ -20,6 +20,7 @@ import com.selim.cryptomarket.R
 @Composable
 fun ErrorState(
     modifier: Modifier = Modifier,
+    message: String? = null,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -38,7 +39,7 @@ fun ErrorState(
         )
 
         Text(
-            text = "Something went wrong !",
+            text = message ?: "Something went wrong !",
             color = MaterialTheme.colorScheme.tertiary,
             style = MaterialTheme.typography.bodyMedium,
         )

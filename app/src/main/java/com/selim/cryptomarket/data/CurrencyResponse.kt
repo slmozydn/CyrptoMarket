@@ -9,5 +9,5 @@ data class CurrencyResponse(
     val name: String,
     val symbol: String,
     val large: String,
-    @SerialName("market_cap_rank") val marketCapRank: Int
+    @SerialName("market_cap_rank") val marketCapRank: Int? = null,
 )

@@ -7,6 +7,7 @@ import com.selim.cryptomarket.data.SearchResult
 import com.selim.cryptomarket.data.TrendingCoinResponse
 import com.selim.cryptomarket.data.repository.CryptoRepository
 import com.selim.cryptomarket.ui.search.SearchItem.Currency
+import com.selim.cryptomarket.util.ErrorHandler
 import com.selim.cryptomarket.ui.search.SearchItem.Nfts
 import com.selim.cryptomarket.ui.search.SearchItem.SearchHistory
 import com.selim.cryptomarket.ui.search.SearchItem.Title
@@ -31,6 +32,7 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val repository: CryptoRepository,
     private val searchDataStore: SearchDataStore,
+    private val errorHandler: ErrorHandler,
 ) : ViewModel() {
 
     private val queryChanges = MutableStateFlow("")
@@ -55,7 +57,7 @@ class SearchViewModel @Inject constructor(
         // if (searchString.isBlank()) return
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             runCatching {
                 coroutineScope {
@@ -78,12 +80,13 @@ class SearchViewModel @Inject constructor(
             }.fold(
                 onSuccess = { items ->
                     _uiState.update {
-                        it.copy(items = items, isLoading = false, error = null)
+                        it.copy(items = items, isLoading = false, errorMessage = null)
                     }
                 },
                 onFailure = { exception ->
+                    val errorMessage = errorHandler.handleError(exception)
                     _uiState.update {
-                        it.copy(isLoading = false, error = exception)
+                        it.copy(isLoading = false, errorMessage = errorMessage)
                     }
                 },
             )
@@ -150,7 +153,7 @@ class SearchViewModel @Inject constructor(
     data class SearchUiState(
         val items: List<SearchItem> = emptyList(),
         val isLoading: Boolean = false,
-        val error: Throwable? = null,
+        val errorMessage: String? = null,
     )
 
     companion object {
