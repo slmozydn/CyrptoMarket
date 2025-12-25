@@ -85,8 +85,7 @@ fun HomeScreen(navController: NavController, themeViewModel: ThemeViewModel, isD
                 when (coins.loadState.refresh) {
                     is LoadState.Loading -> LoadingState()
                     is LoadState.Error -> {
-                        val error = coins.loadState.refresh as LoadState.Error
-                        ErrorState(message = error.error.message.orEmpty())
+                        ErrorState()
                     }
 
                     else -> CoinList(navController, coins)

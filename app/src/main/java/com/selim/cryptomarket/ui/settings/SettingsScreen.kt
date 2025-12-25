@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -21,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -58,41 +60,46 @@ fun SettingsScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.settings_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSecondary
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_back),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSecondary
+            Surface(
+                shadowElevation = 4.dp,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.settings_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onSecondary,
                         )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_back),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSecondary,
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                    ),
                 )
-            )
-        }
+            }
+        },
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.surface)
-                .padding(paddingValues)
+                .padding(paddingValues),
         ) {
             SettingsItem(
                 coroutineScope,
                 sheetState,
                 R.drawable.icon_dollar,
                 R.string.currency,
-                currencyPreference
+                currencyPreference,
             )
 
             HorizontalDivider(Modifier.padding(horizontal = 16.dp))
@@ -105,7 +112,7 @@ fun SettingsScreen(navController: NavController) {
                 onDismissRequest = { coroutineScope.launch { sheetState.hide() } },
                 sheetState = sheetState,
                 shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = MaterialTheme.colorScheme.surface,
             ) {
                 BottomSheet(currencyPreference)
             }
@@ -120,7 +127,7 @@ fun SettingsItem(
     sheetState: SheetState,
     iconResId: Int,
     textResId: Int,
-    preference: String
+    preference: String,
 ) {
     Row(
         modifier = Modifier
@@ -130,13 +137,13 @@ fun SettingsItem(
                 }
             }
             .padding(16.dp),
-        verticalAlignment = CenterVertically
+        verticalAlignment = CenterVertically,
     ) {
         Icon(
             modifier = Modifier.align(CenterVertically),
             painter = painterResource(id = iconResId),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurface
+            tint = MaterialTheme.colorScheme.onSurface,
         )
 
         Text(
@@ -150,14 +157,14 @@ fun SettingsItem(
         Text(
             text = preference,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.tertiary
+            color = MaterialTheme.colorScheme.tertiary,
         )
 
         Icon(
             modifier = Modifier.padding(start = 12.dp),
             painter = painterResource(id = R.drawable.icon_right_arrow),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.primary,
         )
     }
 }
@@ -168,7 +175,7 @@ fun BottomSheet(currencyPreference: String) {
         Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         CurrencyItem(R.string.usd, isSelected = currencyPreference == "USD")
         CurrencyItem(R.string.eur, isSelected = currencyPreference == "EUR")
@@ -202,7 +209,7 @@ fun CurrencyItem(textResId: Int, isSelected: Boolean) {
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleMedium,
             color = textColor,
-            fontWeight = fontWeight
+            fontWeight = fontWeight,
         )
     }
 }

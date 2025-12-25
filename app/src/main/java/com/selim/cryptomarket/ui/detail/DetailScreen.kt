@@ -43,7 +43,7 @@ fun DetailScreen(coinId: String) {
 
     when {
         uiState.loading && uiState.coinDetail == null -> LoadingState()
-        uiState.error != null -> ErrorState(message = uiState.error.message.orEmpty())
+        uiState.error != null -> ErrorState()
         else -> DetailContent(viewModel, uiState)
     }
 }

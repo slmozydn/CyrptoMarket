@@ -14,7 +14,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,38 +27,71 @@ class DetailViewModel @Inject constructor(
     private val settingsDataStore: SettingsDataStore,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(DetailUiState(loading = true))
-    val uiState: StateFlow<DetailUiState> = _uiState
+    private val _uiState = MutableStateFlow(DetailUiState())
+    val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
 
     fun getDetail(id: String) = viewModelScope.launch {
-        _uiState.value = _uiState.value.copy(isRefreshing = true, error = null)
-        _uiState.value = try {
+        _uiState.update { it.copy(isRefreshing = true, error = null) }
+
+        runCatching {
             coroutineScope {
                 val currencyCode = settingsDataStore.currencyCode.first()
-                val result = async { getCoinDetailUseCase(id) }
-                val chart = async { getCoinChartUseCase(id, _uiState.value.timeRange.value) }
+                val currentTimeRange = _uiState.value.timeRange.value
+                val detailDeferred = async { getCoinDetailUseCase(id) }
+                val chartDeferred = async { getCoinChartUseCase(id, currentTimeRange) }
 
-                _uiState.value.copy(
-                    coinDetail = result.await(),
-                    currencyCode = currencyCode,
-                    coinChart = chart.await(),
-                    isRefreshing = false,
-                    loading = false,
-                )
+                Triple(detailDeferred.await(), chartDeferred.await(), currencyCode)
             }
-        } catch (exception: Exception) {
-            _uiState.value.copy(error = exception, isRefreshing = false, loading = false)
-        }
+        }.fold(
+            onSuccess = { (detail, chart, currency) ->
+                _uiState.update {
+                    it.copy(
+                        coinDetail = detail,
+                        coinChart = chart,
+                        currencyCode = currency,
+                        isRefreshing = false,
+                        loading = false,
+                        error = null,
+                    )
+                }
+            },
+            onFailure = { exception ->
+                _uiState.update {
+                    it.copy(
+                        error = exception,
+                        isRefreshing = false,
+                        loading = false,
+                    )
+                }
+            },
+        )
     }
 
     fun onTimeRangeChange(id: String, timeRange: TimeRange) = viewModelScope.launch {
-        _uiState.value = _uiState.value.copy(loading = true)
-        _uiState.value = try {
-            val chart = getCoinChartUseCase(id, timeRange.value)
-            _uiState.value.copy(coinChart = chart, timeRange = timeRange, loading = false)
-        } catch (exception: Exception) {
-            _uiState.value.copy(error = exception, loading = false)
-        }
+        _uiState.update { it.copy(loading = true, error = null) }
+
+        runCatching {
+            getCoinChartUseCase(id, timeRange.value)
+        }.fold(
+            onSuccess = { chart ->
+                _uiState.update {
+                    it.copy(
+                        coinChart = chart,
+                        timeRange = timeRange,
+                        loading = false,
+                        error = null,
+                    )
+                }
+            },
+            onFailure = { exception ->
+                _uiState.update {
+                    it.copy(
+                        error = exception,
+                        loading = false,
+                    )
+                }
+            },
+        )
     }
 
     data class DetailUiState(

@@ -12,25 +12,28 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingState(modifier: Modifier = Modifier, backgroundColor: Color = MaterialTheme.colorScheme.background) {
+fun LoadingState(modifier: Modifier = Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundColor)
+            .background(MaterialTheme.colorScheme.surface),
     ) {
-        CircularProgressIndicator(modifier = modifier.size(32.dp))
+        CircularProgressIndicator(
+            modifier = modifier.size(32.dp),
+            color = MaterialTheme.colorScheme.tertiary,
+        )
+
         Text(
             text = "Please wait...",
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.tertiary,
             style = MaterialTheme.typography.titleSmall,
-            modifier = modifier.padding(top = 16.dp)
+            modifier = modifier.padding(top = 16.dp),
         )
     }
 }

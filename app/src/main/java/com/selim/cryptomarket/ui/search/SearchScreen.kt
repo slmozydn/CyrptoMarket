@@ -65,7 +65,7 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
         modifier = modifier.statusBarsPadding(),
         topBar = {
             Surface(
-                shadowElevation = 8.dp,
+                shadowElevation = 4.dp,
                 modifier = modifier.fillMaxWidth(),
             ) {
                 Row(
@@ -92,36 +92,42 @@ fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
             }
         },
         content = { paddingValues ->
-            val backgroundColor = MaterialTheme.colorScheme.surface
+            when {
+                uiState.isLoading -> {
+                    LoadingState()
+                }
+                uiState.error != null -> {
+                    ErrorState()
+                }
+                else -> {
+                    LazyColumn(
+                        contentPadding = paddingValues,
+                        modifier = modifier
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(horizontal = 16.dp)
+                            .fillMaxSize(),
+                    ) {
+                        items(uiState.items) { item ->
+                            when (item) {
+                                is SearchItem.SearchHistory -> SearchHistory(
+                                    item.searchQueries,
+                                    viewModel::onSearch,
+                                    viewModel::clearHistory,
+                                )
 
-            LazyColumn(
-                contentPadding = paddingValues,
-                modifier = modifier
-                    .background(backgroundColor)
-                    .padding(horizontal = 16.dp)
-                    .fillMaxSize(),
-            ) {
-                items(uiState) { uiState ->
-                    when (uiState) {
-                        SearchItem.Error -> ErrorState(backgroundColor = backgroundColor)
-                        SearchItem.Loading -> LoadingState(backgroundColor = backgroundColor)
-                        is SearchItem.SearchHistory -> SearchHistory(
-                            uiState.searchQueries,
-                            viewModel::onSearch,
-                            viewModel::clearHistory,
-                        )
+                                is SearchItem.Title -> Title(titleResId = item.titleResId)
+                                is SearchItem.Nfts -> Nfts(nfts = item.nfts)
+                                is SearchItem.Currency -> Currency(
+                                    currency = item.currencyResponse,
+                                    navController = navController,
+                                )
 
-                        is SearchItem.Title -> Title(titleResId = uiState.titleResId)
-                        is SearchItem.Nfts -> Nfts(nfts = uiState.nfts)
-                        is SearchItem.Currency -> Currency(
-                            currency = uiState.currencyResponse,
-                            navController = navController,
-                        )
-
-                        is SearchItem.Trending -> Trending(
-                            trending = uiState.trendingResponse.trendingCoin,
-                            navController = navController,
-                        )
+                                is SearchItem.Trending -> Trending(
+                                    trending = item.trendingResponse.trendingCoin,
+                                    navController = navController,
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -140,7 +146,6 @@ fun Title(titleResId: Int) {
 
 @Composable
 fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit, onClear: () -> Unit) {
-
     if (searchQueries.isEmpty()) return
 
     Title(titleResId = R.string.search_history)

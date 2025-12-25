@@ -11,6 +11,4 @@ sealed class SearchItem {
     data class Trending(val trendingResponse: TrendingCoinResponse) : SearchItem()
     data class Title(@StringRes val titleResId: Int) : SearchItem()
     data class SearchHistory(val searchQueries: List<String>) : SearchItem()
-    object Loading : SearchItem()
-    object Error : SearchItem()
 }

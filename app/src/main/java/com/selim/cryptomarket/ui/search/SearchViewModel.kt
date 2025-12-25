@@ -3,11 +3,11 @@ package com.selim.cryptomarket.ui.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.selim.cryptomarket.R.string
+import com.selim.cryptomarket.data.SearchResult
+import com.selim.cryptomarket.data.TrendingCoinResponse
 import com.selim.cryptomarket.domain.usecase.GetTrendingCoinsUseCase
 import com.selim.cryptomarket.domain.usecase.SearchCoinsUseCase
 import com.selim.cryptomarket.ui.search.SearchItem.Currency
-import com.selim.cryptomarket.ui.search.SearchItem.Error
-import com.selim.cryptomarket.ui.search.SearchItem.Loading
 import com.selim.cryptomarket.ui.search.SearchItem.Nfts
 import com.selim.cryptomarket.ui.search.SearchItem.SearchHistory
 import com.selim.cryptomarket.ui.search.SearchItem.Title
@@ -18,12 +18,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,21 +32,21 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val searchCoinsUseCase: SearchCoinsUseCase,
     private val getTrendingCoinsUseCase: GetTrendingCoinsUseCase,
-    private val searchDataStore: SearchDataStore
+    private val searchDataStore: SearchDataStore,
 ) : ViewModel() {
 
     private val queryChanges = MutableStateFlow("")
-    private val _uiState = MutableStateFlow<List<SearchItem>>(emptyList())
-    val uiState: StateFlow<List<SearchItem>> = _uiState
+
+    private val _uiState = MutableStateFlow(SearchUiState())
+    val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
 
     init {
         setQueryChanges()
-        onSearch(" ")
     }
 
     @OptIn(FlowPreview::class)
     private fun setQueryChanges() {
-        queryChanges.drop(1)
+        queryChanges
             .debounce(DEBOUNCE_MS)
             .distinctUntilChanged()
             .onEach { searchCoins(it) }
@@ -53,62 +54,104 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun searchCoins(searchString: String) {
-        if (searchString.isBlank()) return
+        // if (searchString.isBlank()) return
 
         viewModelScope.launch {
-            _uiState.emit(listOf(Loading))
-            try {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+
+            runCatching {
                 coroutineScope {
-                    val searchResponse = async { searchCoinsUseCase(searchString) }
-                    val trendingResponse = async { getTrendingCoinsUseCase() }
-                    val searchHistory = searchDataStore.searchQueries.first()
+                    val searchDeferred = async { searchCoinsUseCase(searchString) }
 
-                    val result = buildList {
-                        val searchResult = searchResponse.await()
-                        val trendingCoins = trendingResponse.await().coins.map(::Trending).take(RESULT_COIN_SIZE)
-                        val coins = searchResult.coins.take(RESULT_COIN_SIZE).map(::Currency)
-                        val nfts = searchResult.nfts.filter { it.thumb != EMPTY_IMAGE_URL }.take(RESULT_NFT_SIZE)
-
-                        if (searchHistory.isNotEmpty()) {
-                            val searchQueries: List<String> = searchHistory.split(" ").toList().reversed()
-                            add(SearchHistory(searchQueries))
-                        }
-
-                        if (coins.isNotEmpty()) {
-                            add(Title(string.coins))
-                            addAll(coins)
-                        }
-                        if (nfts.isNotEmpty()) {
-                            add(Title(string.nfts))
-                            add(Nfts(nfts))
-                        }
-                        if (trendingCoins.isNotEmpty()) {
-                            add(Title(string.trending))
-                            addAll(trendingCoins)
-                        }
+                    val trendingDeferred = async {
+                        runCatching { getTrendingCoinsUseCase().coins }.getOrDefault(emptyList())
                     }
-                    _uiState.emit(result)
+
+                    val historyDeferred = async {
+                        runCatching { searchDataStore.searchQueries.first() }.getOrDefault("")
+                    }
+
+                    val searchResult = searchDeferred.await()
+                    val trendingCoins = trendingDeferred.await()
+                    val searchHistory = historyDeferred.await()
+
+                    buildSearchItemsList(searchResult, trendingCoins, searchHistory)
                 }
-            } catch (exception: Exception) {
-                _uiState.emit(listOf(Error))
+            }.fold(
+                onSuccess = { items ->
+                    _uiState.update {
+                        it.copy(items = items, isLoading = false, error = null)
+                    }
+                },
+                onFailure = { exception ->
+                    _uiState.update {
+                        it.copy(isLoading = false, error = exception)
+                    }
+                },
+            )
+        }
+    }
+
+    fun onSearch(query: String) {
+        queryChanges.tryEmit(query)
+    }
+
+    suspend fun saveHistory(query: String) {
+        searchDataStore.updateSearchPreference(query)
+    }
+
+    fun clearHistory() {
+        viewModelScope.launch {
+            searchDataStore.clearSearchPreference()
+            _uiState.update {
+                it.copy(items = it.items.dropWhile { item -> item is SearchHistory })
             }
         }
     }
 
-    internal fun onSearch(query: String) {
-        queryChanges.tryEmit(query)
-    }
+    private fun buildSearchItemsList(
+        searchResult: SearchResult,
+        trendingCoins: List<TrendingCoinResponse>,
+        searchHistory: String,
+    ): List<SearchItem> = buildList {
+        val trending = trendingCoins
+            .map(::Trending)
+            .take(RESULT_COIN_SIZE)
 
-    internal suspend fun saveHistory(query: String) {
-        searchDataStore.updateSearchPreference(query)
-    }
+        val coins = searchResult.coins
+            .take(RESULT_COIN_SIZE)
+            .map(::Currency)
 
-    internal fun clearHistory() {
-        viewModelScope.launch {
-            searchDataStore.clearSearchPreference()
-            _uiState.value = _uiState.value.dropWhile { it is SearchHistory }
+        val nfts = searchResult.nfts
+            .filter { it.thumb != EMPTY_IMAGE_URL }
+            .take(RESULT_NFT_SIZE)
+
+        if (searchHistory.isNotEmpty()) {
+            val searchQueries = searchHistory.split(" ").reversed()
+            add(SearchHistory(searchQueries))
+        }
+
+        if (coins.isNotEmpty()) {
+            add(Title(string.coins))
+            addAll(coins)
+        }
+
+        if (nfts.isNotEmpty()) {
+            add(Title(string.nfts))
+            add(Nfts(nfts))
+        }
+
+        if (trendingCoins.isNotEmpty()) {
+            add(Title(string.trending))
+            addAll(trending)
         }
     }
+
+    data class SearchUiState(
+        val items: List<SearchItem> = emptyList(),
+        val isLoading: Boolean = false,
+        val error: Throwable? = null,
+    )
 
     companion object {
         private const val EMPTY_IMAGE_URL = "missing_thumb.png"
