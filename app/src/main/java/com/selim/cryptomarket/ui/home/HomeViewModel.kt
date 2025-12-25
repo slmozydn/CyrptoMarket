@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.selim.cryptomarket.data.CoinResponse
-import com.selim.cryptomarket.domain.usecase.GetCoinsUseCase
+import com.selim.cryptomarket.data.repository.CryptoRepository
 import com.selim.cryptomarket.ui.settings.SettingsDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getCoinsUseCase: GetCoinsUseCase,
+    private val repository: CryptoRepository,
     dataStore: SettingsDataStore,
 ) : ViewModel() {
 
@@ -24,7 +24,7 @@ class HomeViewModel @Inject constructor(
     val coins: Flow<PagingData<CoinResponse>> = dataStore.currencyCode
         .distinctUntilChanged()
         .flatMapLatest { currencyCode ->
-            getCoinsUseCase(currencyCode)
+            repository.getCoins(currencyCode)
         }
         .cachedIn(viewModelScope)
 

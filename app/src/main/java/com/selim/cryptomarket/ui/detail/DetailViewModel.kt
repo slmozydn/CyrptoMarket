@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.selim.cryptomarket.data.CoinChartResponse
 import com.selim.cryptomarket.data.CoinDetailResponse
-import com.selim.cryptomarket.domain.usecase.GetCoinChartUseCase
-import com.selim.cryptomarket.domain.usecase.GetCoinDetailUseCase
+import com.selim.cryptomarket.data.repository.CryptoRepository
 import com.selim.cryptomarket.ui.detail.TimeRange.THIRTY_DAYS
 import com.selim.cryptomarket.ui.settings.CurrencyType.USD
 import com.selim.cryptomarket.ui.settings.SettingsDataStore
@@ -22,8 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val getCoinDetailUseCase: GetCoinDetailUseCase,
-    private val getCoinChartUseCase: GetCoinChartUseCase,
+    private val repository: CryptoRepository,
     private val settingsDataStore: SettingsDataStore,
 ) : ViewModel() {
 
@@ -37,8 +35,10 @@ class DetailViewModel @Inject constructor(
             coroutineScope {
                 val currencyCode = settingsDataStore.currencyCode.first()
                 val currentTimeRange = _uiState.value.timeRange.value
-                val detailDeferred = async { getCoinDetailUseCase(id) }
-                val chartDeferred = async { getCoinChartUseCase(id, currentTimeRange) }
+                val detailDeferred = async { repository.getCoinDetail(id) }
+                val chartDeferred = async {
+                    runCatching { repository.getCoinChart(id, currentTimeRange) }.getOrNull()
+                }
 
                 Triple(detailDeferred.await(), chartDeferred.await(), currencyCode)
             }
@@ -71,7 +71,7 @@ class DetailViewModel @Inject constructor(
         _uiState.update { it.copy(loading = true, error = null) }
 
         runCatching {
-            getCoinChartUseCase(id, timeRange.value)
+            repository.getCoinChart(id, timeRange.value)
         }.fold(
             onSuccess = { chart ->
                 _uiState.update {

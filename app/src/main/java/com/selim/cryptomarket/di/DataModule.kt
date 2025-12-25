@@ -4,9 +4,6 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.selim.cryptomarket.data.repository.CryptoRepository
-import com.selim.cryptomarket.data.repository.CryptoRepositoryImpl
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,15 +32,4 @@ object DataModule {
     fun provideSearchDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
         return context.searchDataStore
     }
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
-
-    @Binds
-    @Singleton
-    abstract fun bindCryptoRepository(
-        cryptoRepositoryImpl: CryptoRepositoryImpl
-    ): CryptoRepository
 }

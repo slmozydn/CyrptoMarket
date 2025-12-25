@@ -5,8 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.selim.cryptomarket.R.string
 import com.selim.cryptomarket.data.SearchResult
 import com.selim.cryptomarket.data.TrendingCoinResponse
-import com.selim.cryptomarket.domain.usecase.GetTrendingCoinsUseCase
-import com.selim.cryptomarket.domain.usecase.SearchCoinsUseCase
+import com.selim.cryptomarket.data.repository.CryptoRepository
 import com.selim.cryptomarket.ui.search.SearchItem.Currency
 import com.selim.cryptomarket.ui.search.SearchItem.Nfts
 import com.selim.cryptomarket.ui.search.SearchItem.SearchHistory
@@ -30,8 +29,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchCoinsUseCase: SearchCoinsUseCase,
-    private val getTrendingCoinsUseCase: GetTrendingCoinsUseCase,
+    private val repository: CryptoRepository,
     private val searchDataStore: SearchDataStore,
 ) : ViewModel() {
 
@@ -61,10 +59,10 @@ class SearchViewModel @Inject constructor(
 
             runCatching {
                 coroutineScope {
-                    val searchDeferred = async { searchCoinsUseCase(searchString) }
+                    val searchDeferred = async { repository.searchCoins(searchString) }
 
                     val trendingDeferred = async {
-                        runCatching { getTrendingCoinsUseCase().coins }.getOrDefault(emptyList())
+                        runCatching { repository.getTrendingCoins().coins }.getOrDefault(emptyList())
                     }
 
                     val historyDeferred = async {

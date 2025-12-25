@@ -98,7 +98,7 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
     }.formatVolume().replace("Volume ", "")
 
     val isPositive = coin.marketData.priceChangePercentage24h > 0
-    val chartValues = uiState.coinChart!!.prices.map {
+    val chartValues = uiState.coinChart?.prices?.map {
         Entry(
             it[0].toFloat(),
             it[1].toFloat(),
@@ -131,24 +131,26 @@ private fun DetailContent(viewModel: DetailViewModel, uiState: DetailUiState) {
                     )
                 }
 
-                item {
-                    TimeRangePicker(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                        selectedTimeRange = uiState.timeRange,
-                    ) { timeRange ->
-                        viewModel.onTimeRangeChange(coin.id, timeRange)
+                if (chartValues != null) {
+                    item {
+                        TimeRangePicker(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                            selectedTimeRange = uiState.timeRange,
+                        ) { timeRange ->
+                            viewModel.onTimeRangeChange(coin.id, timeRange)
+                        }
                     }
-                }
 
-                item {
-                    Chart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        lineDataSet = getLineDataSet(LocalContext.current, isPositive, chartValues),
-                    )
+                    item {
+                        Chart(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            lineDataSet = getLineDataSet(LocalContext.current, isPositive, chartValues),
+                        )
+                    }
                 }
 
                 item {
