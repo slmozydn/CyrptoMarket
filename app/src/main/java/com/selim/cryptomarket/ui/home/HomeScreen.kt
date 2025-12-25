@@ -84,14 +84,11 @@ fun HomeScreen(navController: NavController, themeViewModel: ThemeViewModel, isD
             Box(modifier = Modifier.padding(paddingValues)) {
                 when (coins.loadState.refresh) {
                     is LoadState.Loading -> LoadingState()
-                    is LoadState.Error -> {
-                        ErrorState()
-                    }
-
+                    is LoadState.Error -> ErrorState()
                     else -> CoinList(navController, coins)
                 }
             }
-        }
+        },
     )
 }
 
@@ -99,7 +96,7 @@ fun HomeScreen(navController: NavController, themeViewModel: ThemeViewModel, isD
 private fun MainAppBar(
     navController: NavController,
     themeViewModel: ThemeViewModel,
-    isDarkTheme: Boolean
+    isDarkTheme: Boolean,
 ) {
     val colorScheme = MaterialTheme.colorScheme
 
@@ -107,7 +104,7 @@ private fun MainAppBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(colorScheme.background),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         SearchBar(searchQuery = null, navController, readOnly = true)
 
@@ -117,7 +114,7 @@ private fun MainAppBar(
             Icon(
                 painterResource(icon),
                 contentDescription = null,
-                modifier = Modifier.size(26.dp)
+                modifier = Modifier.size(26.dp),
             )
         }
 
@@ -125,7 +122,7 @@ private fun MainAppBar(
             Icon(
                 painterResource(R.drawable.icon_settings),
                 modifier = Modifier.size(26.dp),
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }
@@ -137,7 +134,7 @@ internal fun SearchBar(
     navController: NavController,
     readOnly: Boolean,
     onSearch: (String) -> Unit = {},
-    saveHistory: (String) -> Unit = {}
+    saveHistory: (String) -> Unit = {},
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -165,7 +162,7 @@ internal fun SearchBar(
         placeholder = {
             Text(
                 text = stringResource(id = R.string.search),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
             )
         },
         leadingIcon = { Icon(painterResource(R.drawable.icon_search), contentDescription = null) },
@@ -177,14 +174,16 @@ internal fun SearchBar(
                     modifier = Modifier.clickable {
                         searchQuery.value = ""
                         onSearch("")
-                    })
+                    },
+                )
             }
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(
             onSearch = {
                 saveHistory(searchQuery?.value ?: "")
-            }),
+            },
+        ),
         onValueChange = { query ->
             searchQuery?.value = query
             onSearch(query)
@@ -198,8 +197,8 @@ internal fun SearchBar(
             disabledContainerColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
-        )
+            disabledIndicatorColor = Color.Transparent,
+        ),
     )
 
     if (!readOnly) {
@@ -222,19 +221,19 @@ private fun CoinList(navController: NavController, coinPagingItems: LazyPagingIt
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 8.dp),
-        state = pullToRefreshState
+        state = pullToRefreshState,
     ) {
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = MaterialTheme.colorScheme.surface,
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
             shape = RoundedCornerShape(
                 topStart = 24.dp,
                 topEnd = 24.dp,
                 bottomEnd = 0.dp,
-                bottomStart = 0.dp
-            )
+                bottomStart = 0.dp,
+            ),
         ) {
             LazyColumn(
                 state = listState,
@@ -257,7 +256,7 @@ private fun CoinList(navController: NavController, coinPagingItems: LazyPagingIt
 private fun CoinContent(
     navController: NavController,
     coinItem: CoinResponse,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     Surface {
@@ -269,7 +268,7 @@ private fun CoinContent(
                 .clickable {
                     navController.navigate(Screen.Detail(coinId = coinItem.id))
                 }
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
         ) {
             AsyncImage(
                 model = coinItem.image,
@@ -277,7 +276,7 @@ private fun CoinContent(
                     .size(48.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Fit,
-                contentDescription = null
+                contentDescription = null,
             )
 
             Column(Modifier.padding(start = 16.dp)) {
@@ -285,20 +284,20 @@ private fun CoinContent(
                     Text(
                         text = coinItem.name.take(10),
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSecondary
+                        color = MaterialTheme.colorScheme.onSecondary,
                     )
 
                     Text(
                         text = coinItem.symbol.formatSymbol(),
                         style = MaterialTheme.typography.bodySmall,
-                        modifier = modifier.padding(top = 2.dp, start = 4.dp)
+                        modifier = modifier.padding(top = 2.dp, start = 4.dp),
                     )
                 }
 
                 Text(
                     text = coinItem.totalVolume.formatVolume(),
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = modifier.padding(top = 4.dp)
+                    modifier = modifier.padding(top = 4.dp),
                 )
             }
 
@@ -308,7 +307,7 @@ private fun CoinContent(
                 text = coinItem.currentPrice.formatPrice(coinItem.currencyCode),
                 color = MaterialTheme.colorScheme.onSecondary,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = modifier.padding(end = 8.dp)
+                modifier = modifier.padding(end = 8.dp),
             )
 
             val percentage = coinItem.priceChangePercentage24h
@@ -327,11 +326,11 @@ private fun CoinContent(
                     .drawBehind {
                         drawRoundRect(
                             cornerRadius = CornerRadius(10f, 10f),
-                            color = priceColor
+                            color = priceColor,
                         )
                     }
                     .padding(6.dp)
-                    .requiredWidth(60.dp)
+                    .requiredWidth(60.dp),
             )
         }
     }
