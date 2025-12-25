@@ -2,12 +2,10 @@ package com.selim.cryptomarket.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.selim.cryptomarket.data.CoinResponse
-import com.selim.cryptomarket.service.CryptoCurrencyService
+import com.selim.cryptomarket.domain.usecase.GetCoinsUseCase
 import com.selim.cryptomarket.ui.settings.SettingsDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,17 +16,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val cryptoCurrencyService: CryptoCurrencyService,
-    dataStore: SettingsDataStore
+    private val getCoinsUseCase: GetCoinsUseCase,
+    dataStore: SettingsDataStore,
 ) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val coins: Flow<PagingData<CoinResponse>> = dataStore.currencyCode
         .distinctUntilChanged()
         .flatMapLatest { currencyCode ->
-            Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-                CoinsPagingSource(cryptoCurrencyService, currencyCode)
-            }.flow
+            getCoinsUseCase(currencyCode)
         }
         .cachedIn(viewModelScope)
 

@@ -3,7 +3,8 @@ package com.selim.cryptomarket.ui.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.selim.cryptomarket.R.string
-import com.selim.cryptomarket.service.CryptoCurrencyService
+import com.selim.cryptomarket.domain.usecase.GetTrendingCoinsUseCase
+import com.selim.cryptomarket.domain.usecase.SearchCoinsUseCase
 import com.selim.cryptomarket.ui.search.SearchItem.Currency
 import com.selim.cryptomarket.ui.search.SearchItem.Error
 import com.selim.cryptomarket.ui.search.SearchItem.Loading
@@ -28,7 +29,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val cryptoCurrencyService: CryptoCurrencyService,
+    private val searchCoinsUseCase: SearchCoinsUseCase,
+    private val getTrendingCoinsUseCase: GetTrendingCoinsUseCase,
     private val searchDataStore: SearchDataStore
 ) : ViewModel() {
 
@@ -51,12 +53,14 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun searchCoins(searchString: String) {
+        if (searchString.isBlank()) return
+
         viewModelScope.launch {
             _uiState.emit(listOf(Loading))
             try {
                 coroutineScope {
-                    val searchResponse = async { cryptoCurrencyService.search(searchString) }
-                    val trendingResponse = async { cryptoCurrencyService.searchTrending() }
+                    val searchResponse = async { searchCoinsUseCase(searchString) }
+                    val trendingResponse = async { getTrendingCoinsUseCase() }
                     val searchHistory = searchDataStore.searchQueries.first()
 
                     val result = buildList {
