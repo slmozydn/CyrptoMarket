@@ -2,7 +2,6 @@ package com.selim.cryptomarket.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.selim.cryptomarket.service.CryptoCurrencyService
-import com.selim.cryptomarket.ui.settings.SettingsDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,7 +49,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideCurrencyInterceptor(settingsDataStore: SettingsDataStore) = CurrencyInterceptor(settingsDataStore)
+    fun provideCurrencyInterceptor(currencyProvider: CurrencyProvider) = CurrencyInterceptor(currencyProvider)
 
     @Provides
     @Singleton
@@ -64,6 +63,7 @@ object NetworkModule {
         apiKeyInterceptor: ApiKeyInterceptor
     ) = OkHttpClient.Builder()
         .addInterceptor(apiKeyInterceptor)
+        .addInterceptor(currencyInterceptor)
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(currencyInterceptor)
         .build()

@@ -1,8 +1,5 @@
 package com.selim.cryptomarket.ui.settings
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,7 +32,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.selim.cryptomarket.R
-import com.selim.cryptomarket.util.restart
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,7 +49,6 @@ fun SettingsScreen(navController: NavController) {
     val currencyPreference by viewModel.currencyCode.collectAsState(initial = "USD")
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -88,7 +82,7 @@ fun SettingsScreen(navController: NavController) {
                 sheetState.hide()
             }.invokeOnCompletion {
                 showBottomSheet = false
-                context.getActivity()?.restart()
+                navController.navigateUp()
             }
         }
     )
@@ -272,10 +266,4 @@ fun CurrencyItem(
         color = textColor,
         fontWeight = fontWeight,
     )
-}
-
-fun Context.getActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.getActivity()
-    else -> null
 }
