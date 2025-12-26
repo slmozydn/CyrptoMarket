@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -29,9 +28,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -43,49 +45,69 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.selim.cryptomarket.R
 import com.selim.cryptomarket.util.restart
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController) {
+    val viewModel = hiltViewModel<SettingsViewModel>()
+    val currencyPreference by viewModel.currencyCode.collectAsState(initial = "USD")
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
-    val viewModel = hiltViewModel<SettingsViewModel>()
-    val currencyPreference = viewModel.currencyCode.collectAsState(initial = "USD").value
+    val context = LocalContext.current
 
-    BackHandler(sheetState.isVisible) {
-        coroutineScope.launch { sheetState.hide() }
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    BackHandler(showBottomSheet) {
+        coroutineScope.launch {
+            sheetState.hide()
+        }.invokeOnCompletion {
+            showBottomSheet = false
+        }
     }
 
+    SettingsContent(
+        navController = navController,
+        currencyPreference = currencyPreference,
+        sheetState = sheetState,
+        showBottomSheet = showBottomSheet,
+        onSettingClick = {
+            showBottomSheet = true
+        },
+        onDismissSheet = {
+            coroutineScope.launch {
+                sheetState.hide()
+            }.invokeOnCompletion {
+                showBottomSheet = false
+            }
+        },
+        onCurrencySelected = { selectedCurrency ->
+            viewModel.onCurrencySelected(selectedCurrency)
+
+            coroutineScope.launch {
+                sheetState.hide()
+            }.invokeOnCompletion {
+                showBottomSheet = false
+                context.getActivity()?.restart()
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SettingsContent(
+    navController: NavController,
+    currencyPreference: String,
+    sheetState: SheetState,
+    showBottomSheet: Boolean,
+    onSettingClick: () -> Unit,
+    onDismissSheet: () -> Unit,
+    onCurrencySelected: (String) -> Unit
+) {
     Scaffold(
         topBar = {
-            Surface(
-                shadowElevation = 4.dp,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(id = R.string.settings_title),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSecondary,
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.icon_back),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSecondary,
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                    ),
-                )
-            }
+            SettingsTopBar(onBackClick = { navController.navigateUp() })
         },
     ) { paddingValues ->
         Column(
@@ -95,26 +117,33 @@ fun SettingsScreen(navController: NavController) {
                 .padding(paddingValues),
         ) {
             SettingsItem(
-                coroutineScope,
-                sheetState,
-                R.drawable.icon_dollar,
-                R.string.currency,
-                currencyPreference,
+                iconResId = R.drawable.icon_dollar,
+                textResId = R.string.currency,
+                value = currencyPreference,
+                onClick = onSettingClick
             )
 
             HorizontalDivider(Modifier.padding(horizontal = 16.dp))
 
-            SettingsItem(coroutineScope, sheetState, R.drawable.icon_text, R.string.language, "EN")
+            SettingsItem(
+                iconResId = R.drawable.icon_text,
+                textResId = R.string.language,
+                value = "EN",
+                onClick = onSettingClick
+            )
         }
 
-        if (sheetState.isVisible) {
+        if (showBottomSheet) {
             ModalBottomSheet(
-                onDismissRequest = { coroutineScope.launch { sheetState.hide() } },
+                onDismissRequest = onDismissSheet,
                 sheetState = sheetState,
                 shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                 containerColor = MaterialTheme.colorScheme.surface,
             ) {
-                BottomSheet(currencyPreference)
+                CurrencyBottomSheetContent(
+                    selectedCurrency = currencyPreference,
+                    onCurrencySelected = onCurrencySelected
+                )
             }
         }
     }
@@ -122,25 +151,49 @@ fun SettingsScreen(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+private fun SettingsTopBar(onBackClick: () -> Unit) {
+    Surface(
+        shadowElevation = 4.dp,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        TopAppBar(
+            title = {
+                Text(
+                    text = stringResource(id = R.string.settings_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_back),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondary,
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.background,
+            ),
+        )
+    }
+}
+
+@Composable
 fun SettingsItem(
-    coroutineScope: CoroutineScope,
-    sheetState: SheetState,
     iconResId: Int,
     textResId: Int,
-    preference: String,
+    value: String,
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
-            .clickable {
-                coroutineScope.launch {
-                    sheetState.show()
-                }
-            }
+            .clickable(onClick = onClick)
             .padding(16.dp),
-        verticalAlignment = CenterVertically,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            modifier = Modifier.align(CenterVertically),
             painter = painterResource(id = iconResId),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface,
@@ -155,7 +208,7 @@ fun SettingsItem(
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
-            text = preference,
+            text = value,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.tertiary,
         )
@@ -170,48 +223,55 @@ fun SettingsItem(
 }
 
 @Composable
-fun BottomSheet(currencyPreference: String) {
+fun CurrencyBottomSheetContent(
+    selectedCurrency: String,
+    onCurrencySelected: (String) -> Unit
+) {
     Column(
         Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        CurrencyItem(R.string.usd, isSelected = currencyPreference == "USD")
-        CurrencyItem(R.string.eur, isSelected = currencyPreference == "EUR")
-        CurrencyItem(R.string.tl, isSelected = currencyPreference == "TRY")
+        val currencies = listOf(
+            "USD" to R.string.usd,
+            "EUR" to R.string.eur,
+            "TRY" to R.string.tl
+        )
+
+        currencies.forEach { (code, nameRes) ->
+            CurrencyItem(
+                textResId = nameRes,
+                currencyCode = code,
+                isSelected = selectedCurrency == code,
+                onCurrencySelected = onCurrencySelected
+            )
+        }
     }
 }
 
 @Composable
-fun CurrencyItem(textResId: Int, isSelected: Boolean) {
-    val settingsViewModel = hiltViewModel<SettingsViewModel>()
+fun CurrencyItem(
+    textResId: Int,
+    currencyCode: String,
+    isSelected: Boolean,
+    onCurrencySelected: (String) -> Unit,
+) {
     val colorScheme = MaterialTheme.colorScheme
-    val context = LocalContext.current
+    val textColor = if (isSelected) colorScheme.primary else colorScheme.tertiary
+    val fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
 
-    Row {
-        val (textColor, fontWeight) = if (isSelected) {
-            colorScheme.primary to FontWeight.Bold
-        } else {
-            colorScheme.tertiary to FontWeight.Normal
-        }
-        val text = stringResource(id = textResId)
-
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    settingsViewModel.onCurrencySelected(text)
-                    context.getActivity()?.restart()
-                }
-                .padding(vertical = 8.dp),
-            text = text,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleMedium,
-            color = textColor,
-            fontWeight = fontWeight,
-        )
-    }
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onCurrencySelected(currencyCode) }
+            .padding(vertical = 12.dp),
+        text = stringResource(id = textResId),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.titleMedium,
+        color = textColor,
+        fontWeight = fontWeight,
+    )
 }
 
 fun Context.getActivity(): Activity? = when (this) {

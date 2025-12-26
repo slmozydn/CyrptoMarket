@@ -30,6 +30,10 @@ class DetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DetailUiState())
     val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
 
+    private var coinDetailResponse: CoinDetailResponse? = null
+    private var currencyCode: String = USD.value
+    private var coinChart: CoinChartResponse? = null
+
     fun getDetail(id: String) = viewModelScope.launch {
         _uiState.update { it.copy(isRefreshing = true, errorMessage = null) }
 
@@ -45,12 +49,14 @@ class DetailViewModel @Inject constructor(
                 Triple(detailDeferred.await(), chartDeferred.await(), currencyCode)
             }
         }.fold(
-            onSuccess = { (detail, chart, currency) ->
+            onSuccess = { (detail, chart, code) ->
+                coinDetailResponse = detail
+                currencyCode = code
+                coinChart = chart
+                val displayModel = mapToDisplayModel(detail, code, chart)
                 _uiState.update {
                     it.copy(
-                        coinDetail = detail,
-                        coinChart = chart,
-                        currencyCode = currency,
+                        displayModel = displayModel,
                         isRefreshing = false,
                         loading = false,
                         errorMessage = null,
@@ -76,10 +82,14 @@ class DetailViewModel @Inject constructor(
             repository.getCoinChart(id, timeRange.value)
         }.fold(
             onSuccess = { chart ->
+                coinChart = chart
+                val displayModel = coinDetailResponse?.let { response ->
+                    mapToDisplayModel(response, currencyCode, chart)
+                }
                 _uiState.update {
                     it.copy(
-                        coinChart = chart,
                         timeRange = timeRange,
+                        displayModel = displayModel,
                         loading = false,
                         errorMessage = null,
                     )
@@ -96,10 +106,20 @@ class DetailViewModel @Inject constructor(
         )
     }
 
+    private fun mapToDisplayModel(
+        coinResponse: CoinDetailResponse,
+        currencyCode: String,
+        coinChart: CoinChartResponse?,
+    ): CoinDisplayModel {
+        return CoinDisplayModelMapper.mapToDisplayModel(
+            coinResponse = coinResponse,
+            currencyCode = currencyCode,
+            coinChart = coinChart,
+        )
+    }
+
     data class DetailUiState(
-        val coinDetail: CoinDetailResponse? = null,
-        val currencyCode: String = USD.value,
-        val coinChart: CoinChartResponse? = null,
+        val displayModel: CoinDisplayModel? = null,
         val timeRange: TimeRange = THIRTY_DAYS,
         val errorMessage: String? = null,
         val loading: Boolean = true,

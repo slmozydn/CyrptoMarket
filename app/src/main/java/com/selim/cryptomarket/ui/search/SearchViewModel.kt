@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -35,8 +36,6 @@ class SearchViewModel @Inject constructor(
     private val errorHandler: ErrorHandler,
 ) : ViewModel() {
 
-    private val queryChanges = MutableStateFlow("")
-
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
 
@@ -46,7 +45,8 @@ class SearchViewModel @Inject constructor(
 
     @OptIn(FlowPreview::class)
     private fun setQueryChanges() {
-        queryChanges
+        _uiState
+            .map { it.searchQuery }
             .debounce(DEBOUNCE_MS)
             .distinctUntilChanged()
             .onEach { searchCoins(it) }
@@ -94,7 +94,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onSearch(query: String) {
-        queryChanges.tryEmit(query)
+        _uiState.update { it.copy(searchQuery = query) }
     }
 
     suspend fun saveHistory(query: String) {
@@ -151,6 +151,7 @@ class SearchViewModel @Inject constructor(
     }
 
     data class SearchUiState(
+        val searchQuery: String = "",
         val items: List<SearchItem> = emptyList(),
         val isLoading: Boolean = false,
         val errorMessage: String? = null,

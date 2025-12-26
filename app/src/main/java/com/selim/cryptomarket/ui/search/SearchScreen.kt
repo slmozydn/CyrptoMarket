@@ -1,9 +1,9 @@
 package com.selim.cryptomarket.ui.search
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -47,95 +47,158 @@ import com.selim.cryptomarket.data.NftResponse
 import com.selim.cryptomarket.data.Trending
 import com.selim.cryptomarket.ui.home.ErrorState
 import com.selim.cryptomarket.ui.home.LoadingState
-import com.selim.cryptomarket.ui.home.SearchBar
 import com.selim.cryptomarket.ui.navigation.Screen
 import com.selim.cryptomarket.util.formatMarketCap
 import com.selim.cryptomarket.util.formatScore
 import com.selim.cryptomarket.util.formatSymbol
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun SearchScreen(navController: NavController, modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<SearchViewModel>()
-    val uiState = viewModel.uiState.collectAsState().value
-    val searchQuery = remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         modifier = modifier.statusBarsPadding(),
         topBar = {
-            Surface(
-                shadowElevation = 4.dp,
-                modifier = modifier.fillMaxWidth(),
-            ) {
-                Row(
-                    Modifier
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(bottom = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    SearchBar(searchQuery, navController, readOnly = false, viewModel::onSearch) {
-                        coroutineScope.launch {
-                            viewModel.saveHistory(it)
-                        }
+            SearchTopBar(
+                searchQuery = uiState.searchQuery,
+                onQueryChange = viewModel::onSearch,
+                saveHistory = { query ->
+                    coroutineScope.launch {
+                        viewModel.saveHistory(query)
                     }
-
-                    Text(
-                        modifier = modifier
-                            .padding(start = 8.dp)
-                            .clickable { navController.navigateUp() },
-                        text = stringResource(id = R.string.cancel),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                    )
-                }
-            }
+                },
+                onCancel = { navController.navigateUp() },
+                modifier = modifier,
+            )
         },
         content = { paddingValues ->
-            when {
-                uiState.isLoading -> {
-                    LoadingState()
-                }
-
-                uiState.errorMessage != null -> {
-                    ErrorState(message = uiState.errorMessage)
-                }
-
-                else -> {
-                    LazyColumn(
-                        contentPadding = paddingValues,
-                        modifier = modifier
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(horizontal = 16.dp)
-                            .fillMaxSize(),
-                    ) {
-                        items(uiState.items) { item ->
-                            when (item) {
-                                is SearchItem.SearchHistory -> SearchHistory(
-                                    item.searchQueries,
-                                    viewModel::onSearch,
-                                    viewModel::clearHistory,
-                                )
-
-                                is SearchItem.Title -> Title(titleResId = item.titleResId)
-                                is SearchItem.Nfts -> Nfts(nfts = item.nfts)
-                                is SearchItem.Currency -> Currency(
-                                    currency = item.currencyResponse,
-                                    navController = navController,
-                                )
-
-                                is SearchItem.Trending -> Trending(
-                                    trending = item.trendingResponse.trendingCoin,
-                                    navController = navController,
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+            SearchContent(
+                uiState = uiState,
+                onSearch = viewModel::onSearch,
+                onClearHistory = viewModel::clearHistory,
+                onCoinClick = { coinId ->
+                    navController.navigate(Screen.Detail(coinId = coinId))
+                },
+                paddingValues = paddingValues,
+                modifier = modifier,
+            )
         },
     )
+}
+
+@Composable
+private fun SearchTopBar(
+    searchQuery: String,
+    onQueryChange: (String) -> Unit,
+    saveHistory: (String) -> Unit,
+    onCancel: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        shadowElevation = 4.dp,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SearchBar(
+                searchQuery = searchQuery,
+                readOnly = false,
+                onQueryChange = onQueryChange,
+                onSearchClick = {},
+                saveHistory = saveHistory,
+            )
+
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .clickable(onClick = onCancel),
+                text = stringResource(id = R.string.cancel),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primaryContainer,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SearchContent(
+    uiState: SearchViewModel.SearchUiState,
+    onSearch: (String) -> Unit,
+    onClearHistory: () -> Unit,
+    onCoinClick: (String) -> Unit,
+    paddingValues: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
+    when {
+        uiState.isLoading -> {
+            LoadingState()
+        }
+
+        uiState.errorMessage != null -> {
+            ErrorState(message = uiState.errorMessage)
+        }
+
+        else -> {
+            SearchItemsList(
+                items = uiState.items,
+                onSearch = onSearch,
+                onClearHistory = onClearHistory,
+                onCoinClick = onCoinClick,
+                paddingValues = paddingValues,
+                modifier = modifier,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SearchItemsList(
+    items: List<SearchItem>,
+    onSearch: (String) -> Unit,
+    onClearHistory: () -> Unit,
+    onCoinClick: (String) -> Unit,
+    paddingValues: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
+    LazyColumn(
+        contentPadding = paddingValues,
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(horizontal = 16.dp)
+            .fillMaxSize(),
+    ) {
+        items(
+            items = items,
+            key = { item -> item.hashCode() },
+        ) { item ->
+            when (item) {
+                is SearchItem.SearchHistory -> SearchHistory(
+                    searchQueries = item.searchQueries,
+                    onSearch = onSearch,
+                    onClear = onClearHistory,
+                )
+
+                is SearchItem.Title -> Title(titleResId = item.titleResId)
+                is SearchItem.Nfts -> Nfts(nfts = item.nfts)
+                is SearchItem.Currency -> Currency(
+                    currency = item.currencyResponse,
+                    onCoinClick = onCoinClick,
+                )
+
+                is SearchItem.Trending -> Trending(
+                    trending = item.trendingResponse.trendingCoin,
+                    onCoinClick = onCoinClick,
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -148,7 +211,11 @@ fun Title(titleResId: Int) {
 }
 
 @Composable
-fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit, onClear: () -> Unit) {
+private fun SearchHistory(
+    searchQueries: List<String>,
+    onSearch: (String) -> Unit,
+    onClear: () -> Unit,
+) {
     if (searchQueries.isEmpty()) return
 
     Title(titleResId = R.string.search_history)
@@ -163,30 +230,33 @@ fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit, onCle
         LazyRow {
             items(
                 count = searchQueries.size,
-                itemContent = { index ->
-                    Text(
-                        text = searchQueries[index].uppercase(),
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .clickable { onSearch(searchQueries[index]) }
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .padding(6.dp)
-                            .width(48.dp),
-                    )
-                },
-            )
+                key = { index -> "${searchQueries[index]}_$index" },
+            ) { index ->
+                val query = searchQueries[index]
+                val upperQuery = remember(query) { query.uppercase() }
+
+                Text(
+                    text = upperQuery,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .clickable { onSearch(query) }
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(6.dp)
+                        .width(48.dp),
+                )
+            }
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
         Icon(
             imageVector = Icons.Filled.Clear,
-            contentDescription = null,
+            contentDescription = "Clear history",
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .clickable {
@@ -200,27 +270,35 @@ fun SearchHistory(searchQueries: List<String>, onSearch: (String) -> Unit, onCle
 }
 
 @Composable
-fun Currency(
+private fun Currency(
     currency: CurrencyResponse,
-    navController: NavController,
+    onCoinClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val formattedSymbol = remember(currency.symbol) {
+        currency.symbol.formatSymbol()
+    }
+
+    val formattedMarketCap = remember(currency.marketCapRank) {
+        currency.marketCapRank?.formatMarketCap().orEmpty()
+    }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
             .clickable {
-                navController.navigate(Screen.Detail(coinId = currency.id))
+                onCoinClick(currency.id)
             }
             .padding(vertical = 8.dp),
     ) {
         AsyncImage(
             model = currency.large,
-            modifier = modifier
+            modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Fit,
-            contentDescription = null,
+            contentDescription = "${currency.name} icon",
         )
 
         Column(Modifier.padding(start = 16.dp)) {
@@ -231,55 +309,67 @@ fun Currency(
                 )
 
                 Text(
-                    text = currency.symbol.formatSymbol(),
+                    text = formattedSymbol,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.tertiary,
-                    modifier = modifier.padding(top = 2.dp, start = 4.dp),
+                    modifier = Modifier.padding(top = 2.dp, start = 4.dp),
                 )
             }
 
             Text(
-                text = currency.marketCapRank?.formatMarketCap().orEmpty(),
+                text = formattedMarketCap,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.tertiary,
-                modifier = modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = 4.dp),
             )
         }
     }
 }
 
 @Composable
-fun Trending(
+private fun Trending(
     trending: Trending,
-    navController: NavController,
+    onCoinClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val formattedScore = remember(trending.score) {
+        trending.score.formatScore()
+    }
+
+    val formattedSymbol = remember(trending.symbol) {
+        trending.symbol.formatSymbol()
+    }
+
+    val formattedMarketCap = remember(trending.marketCapRank) {
+        trending.marketCapRank.formatMarketCap()
+    }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
             .clickable {
-                navController.navigate(Screen.Detail(coinId = trending.id))
+                onCoinClick(trending.id)
             }
             .padding(vertical = 8.dp),
     ) {
         AsyncImage(
             model = trending.imageUrl,
-            modifier = modifier
+            modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Fit,
-            contentDescription = null,
+            contentDescription = "${trending.name} icon",
         )
 
         Column(Modifier.padding(start = 16.dp)) {
             Row {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = trending.score.formatScore(),
+                    text = formattedScore,
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = Bold),
                     color = MaterialTheme.colorScheme.primaryContainer,
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(end = 8.dp)
                         .clip(shape = RoundedCornerShape(4.dp))
                         .background(MaterialTheme.colorScheme.secondaryContainer)
@@ -292,25 +382,25 @@ fun Trending(
                 )
 
                 Text(
-                    text = trending.symbol.formatSymbol(),
+                    text = formattedSymbol,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.tertiary,
-                    modifier = modifier.padding(top = 2.dp, start = 4.dp, bottom = 4.dp),
+                    modifier = Modifier.padding(top = 2.dp, start = 4.dp, bottom = 4.dp),
                 )
             }
 
             Text(
-                text = trending.marketCapRank.formatMarketCap(),
+                text = formattedMarketCap,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.tertiary,
-                modifier = modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = 4.dp),
             )
         }
     }
 }
 
 @Composable
-fun Nfts(nfts: List<NftResponse>) {
+private fun Nfts(nfts: List<NftResponse>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -318,42 +408,46 @@ fun Nfts(nfts: List<NftResponse>) {
     ) {
         LazyRow {
             items(
-                count = nfts.size,
-                itemContent = { index ->
-                    Nft(nfts[index])
-                },
-            )
+                items = nfts,
+                key = { nft -> nft.id },
+            ) { nft ->
+                Nft(nft = nft)
+            }
         }
     }
 }
 
 @Composable
-fun Nft(nft: NftResponse, modifier: Modifier = Modifier) {
+private fun Nft(nft: NftResponse, modifier: Modifier = Modifier) {
+    val formattedSymbol = remember(nft.symbol) {
+        nft.symbol.formatSymbol()
+    }
+
     Row(
         modifier = modifier.padding(end = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         AsyncImage(
             model = nft.thumb,
-            modifier = modifier
+            modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop,
-            contentDescription = null,
+            contentDescription = "${nft.name} icon",
         )
 
         Column {
             Text(
                 text = nft.name,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
 
             Text(
-                text = nft.symbol.formatSymbol(),
+                text = formattedSymbol,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.tertiary,
-                modifier = modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
             )
         }
     }
