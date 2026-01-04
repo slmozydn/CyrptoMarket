@@ -1,5 +1,6 @@
 package com.selim.cryptomarket.ui.search
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.selim.cryptomarket.R.string
@@ -13,6 +14,9 @@ import com.selim.cryptomarket.ui.search.SearchItem.SearchHistory
 import com.selim.cryptomarket.ui.search.SearchItem.Title
 import com.selim.cryptomarket.ui.search.SearchItem.Trending
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -107,7 +111,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             searchDataStore.clearSearchPreference()
             _uiState.update {
-                it.copy(items = it.items.dropWhile { item -> item is SearchHistory })
+                it.copy(items = it.items.dropWhile { item -> item is SearchHistory }.toImmutableList())
             }
         }
     }
@@ -116,7 +120,7 @@ class SearchViewModel @Inject constructor(
         searchResult: SearchResult,
         trendingCoins: List<TrendingCoinResponse>,
         searchHistory: String,
-    ): List<SearchItem> = buildList {
+    ): ImmutableList<SearchItem> = buildList {
         val trending = trendingCoins
             .map(::Trending)
             .take(RESULT_COIN_SIZE)
@@ -128,9 +132,10 @@ class SearchViewModel @Inject constructor(
         val nfts = searchResult.nfts
             .filter { it.thumb != EMPTY_IMAGE_URL }
             .take(RESULT_NFT_SIZE)
+            .toImmutableList()
 
         if (searchHistory.isNotEmpty()) {
-            val searchQueries = searchHistory.split(" ").reversed()
+            val searchQueries = searchHistory.split(" ").reversed().toImmutableList()
             add(SearchHistory(searchQueries))
         }
 
@@ -148,11 +153,12 @@ class SearchViewModel @Inject constructor(
             add(Title(string.trending))
             addAll(trending)
         }
-    }
+    }.toImmutableList()
 
+    @Immutable
     data class SearchUiState(
         val searchQuery: String = "",
-        val items: List<SearchItem> = emptyList(),
+        val items: ImmutableList<SearchItem> = persistentListOf(),
         val isLoading: Boolean = false,
         val errorMessage: String? = null,
     )

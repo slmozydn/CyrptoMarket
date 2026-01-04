@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import kotlinx.collections.immutable.ImmutableList
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -160,7 +161,7 @@ private fun SearchContent(
 
 @Composable
 private fun SearchItemsList(
-    items: List<SearchItem>,
+    items: ImmutableList<SearchItem>,
     onSearch: (String) -> Unit,
     onClearHistory: () -> Unit,
     onCoinClick: (String) -> Unit,
@@ -176,7 +177,7 @@ private fun SearchItemsList(
     ) {
         items(
             items = items,
-            key = { item -> item.hashCode() },
+            key = { item -> item.hashCode() }, // TODO Use unique keys.
         ) { item ->
             when (item) {
                 is SearchItem.SearchHistory -> SearchHistory(
@@ -212,7 +213,7 @@ fun Title(titleResId: Int) {
 
 @Composable
 private fun SearchHistory(
-    searchQueries: List<String>,
+    searchQueries: ImmutableList<String>,
     onSearch: (String) -> Unit,
     onClear: () -> Unit,
 ) {
@@ -400,7 +401,7 @@ private fun Trending(
 }
 
 @Composable
-private fun Nfts(nfts: List<NftResponse>) {
+private fun Nfts(nfts: ImmutableList<NftResponse>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

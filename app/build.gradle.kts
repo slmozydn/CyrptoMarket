@@ -105,6 +105,9 @@ dependencies {
     // DataStore
     implementation(libs.androidx.datastore.preferences)
 
+    // Collections
+    implementation(libs.kotlinx.collections.immutable)
+
     // Third Party
     implementation(libs.mpandroidchart)
     implementation(libs.timber)
