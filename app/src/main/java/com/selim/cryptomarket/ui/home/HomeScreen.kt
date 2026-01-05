@@ -162,7 +162,7 @@ private fun CoinList(
             ) {
                 items(
                     count = coins.itemCount,
-                    key = { index -> coins[index]?.id ?: index },
+                    key = { index -> coins.peek(index)?.id ?: "item_$index" },
                 ) { index ->
                     val uiModel = coins[index]
                     if (uiModel != null) {

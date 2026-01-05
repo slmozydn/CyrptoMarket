@@ -51,6 +51,10 @@ timber = "5.0.1"
 junit = "4.13.2"
 junitExt = "1.1.5"
 espresso = "3.5.1"
+mockk = "1.13.9"
+coroutinesTest = "1.8.0"
+turbine = "1.0.0"
+truth = "1.4.0"
 
 [libraries]
 # AndroidX Core
@@ -111,6 +115,10 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

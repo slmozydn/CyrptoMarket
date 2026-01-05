@@ -63,7 +63,6 @@ object NetworkModule {
         apiKeyInterceptor: ApiKeyInterceptor
     ) = OkHttpClient.Builder()
         .addInterceptor(apiKeyInterceptor)
-        .addInterceptor(currencyInterceptor)
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(currencyInterceptor)
         .build()
